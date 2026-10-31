@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>stayCube 特殊取消申请本地预览</title>
+<style>
+:root{--ink:#0b1f44;--muted:#586b80;--hint:#7a8ca0;--blue:#176be8;--line:#dce5ee;--field:#c9d5e1;--bg:#eef2f6;--screen:#f7f9fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif}
+.toolbar{position:sticky;top:0;z-index:5;padding:10px 18px 8px;background:rgba(238,242,246,.96);border-bottom:1px solid #dfe6ed}
+.toolbar .tag{margin:0;color:#71849a;font-size:13px;letter-spacing:2px}.toolbar h1{margin:3px 0;font-size:21px}.toolbar p{margin:0;color:#667b91;font-size:14px}
+.tabs{display:flex;overflow-x:auto;gap:7px;margin-top:9px}.tabs button{flex:none;min-height:35px;padding:0 12px;border:1px solid #cbd9e7;border-radius:12px;background:#fff;color:#29425d;font:inherit;cursor:pointer}.tabs button[aria-pressed=true]{border-color:var(--blue);background:#eaf2ff;color:var(--blue);font-weight:700}
+.widths{display:flex;gap:7px;margin-top:7px}.widths button{min-height:30px;padding:0 10px;border:1px solid #cbd9e7;border-radius:10px;background:#fff;font:inherit;font-size:13px;cursor:pointer}.widths button[aria-pressed=true]{border-color:var(--blue);color:var(--blue)}
+.content{display:flex;justify-content:center;padding:12px}
+.phone{width:calc(var(--w,375px) + 16px);min-height:812px;background:var(--screen);border:8px solid #25282c;border-radius:44px;box-shadow:0 22px 60px #13233a25;overflow:hidden;display:flex;flex-direction:column;padding:44px 20px 28px}
+.view{display:none;flex:1;flex-direction:column}.view.active{display:flex}
+.head{height:28px;display:flex;align-items:center;gap:7px;flex:none}.logo{height:21px;width:auto}.divider{width:1px;height:15px;background:#d7e2ec}.product{font-size:13.5px;font-weight:700}
+.screen{flex:1;display:flex;flex-direction:column;padding-top:24px}
+.eyebrow{color:var(--blue);font-size:10.5px;font-weight:700;letter-spacing:1px}
+.title{margin-top:6px;font-size:19px;line-height:1.4;font-weight:700}
+.body{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.65}
+.section{margin-top:13px;padding-top:11px;border-top:1px solid var(--line)}
+.section-title{font-size:13.5px;line-height:1.5;font-weight:700}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:10px}.field.first{margin-top:0}
+.label{color:#42566e;font-size:12px;font-weight:600}
+.hint{display:block;margin-top:4px;color:var(--hint);font-size:11px;line-height:1.5}.warn{color:#9a5b00;margin-top:10px}
+.input,.picker,.area{width:100%;border:1px solid var(--field);border-radius:6px;background:#fff;color:var(--ink);font:inherit}
+.input{height:46px;padding:0 11px;font-size:15px}.code{letter-spacing:4px;font-weight:600}
+.picker{min-height:44px;padding:11px 10px;font-size:14px;display:flex;justify-content:space-between;align-items:center}.ph{color:#9aa9b9}.arrow{color:#71849a}
+.area{height:90px;padding:9px 11px;font-size:13.5px;line-height:1.55;color:#9aa9b9}
+.mat-head{display:flex;justify-content:space-between;gap:8px}.count{color:#42566e;font-size:12px;font-weight:650}
+.mat{margin-top:9px;padding:10px;border:1px solid #d7e2ec;border-radius:7px;background:#fff}.mat-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.mat-name{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.choose{flex:none;height:32px;padding:0 10px;border:1px solid var(--blue);border-radius:5px;background:#fff;color:var(--blue);font-size:11.5px;font-weight:650;display:flex;align-items:center}
+.mat .area{height:65px;margin-top:8px}
+.add{width:100%;min-height:44px;margin-top:9px;border:1px dashed #a9bed3;border-radius:7px;background:#fff;color:var(--blue);font-size:12px;font-weight:650;display:flex;align-items:center;justify-content:center}
+.check{display:flex;gap:6px;align-items:flex-start;margin-top:9px;color:#485c70;font-size:12px;line-height:1.6}.box{flex:none;width:16px;height:16px;margin-top:2px;border:1px solid #b5c4d3;border-radius:3px;background:#fff}.box.on{background:var(--blue);border-color:var(--blue)}
+.sign{position:relative;margin-top:7px;height:150px;border:1px solid var(--field);border-radius:7px;background:#fff;display:flex;align-items:center;justify-content:center;color:#a5b3c2;font-size:12px}
+.link{margin-top:5px;color:var(--blue);font-size:12px}
+.actions{display:flex;gap:7px;margin-top:14px}.btn{position:relative;flex:1;min-height:45px;border-radius:6px;font-size:13px;font-weight:650;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px}
+.secondary{border:1px solid var(--field);background:#fff;color:#29425d}.primary{border:1px solid var(--blue);background:var(--blue);color:#fff}.primary .a{position:absolute;right:12px;font-size:17px}.disabled{opacity:.55}
+.status{margin-top:10px;padding:13px;border-radius:8px;background:#e9f1ff;display:flex;flex-direction:column;gap:4px}.status small{color:#42566e;font-size:11px;font-weight:600}.status strong{font-size:18px}.status span{color:var(--muted);font-size:12px}
+.note{margin-top:6px;padding:9px;border-radius:6px;background:#f3f6fa;color:#42566e;font-size:12px;line-height:1.6}
+.row{display:flex;gap:10px;margin-top:7px;font-size:12px;line-height:1.6}.row span:first-child{flex:none;width:85px;color:var(--hint)}
+.att{margin-top:7px;padding:9px 10px;border:1px solid #d7e2ec;border-radius:6px;background:#fff;display:flex;flex-direction:column;gap:3px}.att b{font-size:12px}.att span{color:#71849a;font-size:11px}.badge{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:10px;background:#e6f4ec;color:#23734f;font-size:10px;font-weight:400}
+.tl{position:relative;margin-top:8px;padding-left:13px;display:flex;flex-direction:column;gap:2px}.tl:before{content:'';position:absolute;left:0;top:6px;width:5px;height:5px;border-radius:50%;background:var(--blue)}.tl time{color:var(--hint);font-size:10.5px}.tl b{font-size:12px}.tl p{margin:0;color:#42566e;font-size:11.5px}
+.foot{margin-top:auto;padding-top:15px;color:#91a1b3;text-align:center;font-size:11px}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <p class="tag">PREVIEW · pages/special-cancellation/index</p>
+  <h1>特殊取消申请</h1>
+  <p>首页入口与自助入住、行李寄存、预抵问卷并列。内容与 Web 端旅客页一致。</p>
+  <div class="tabs" id="tabs">
+    <button data-view="access" aria-pressed="true">申请码</button>
+    <button data-view="s1" aria-pressed="false">1 订单信息</button>
+    <button data-view="s2" aria-pressed="false">2 原因与材料</button>
+    <button data-view="s3" aria-pressed="false">3 声明与签名</button>
+    <button data-view="progress" aria-pressed="false">申请进度（待补充）</button>
+  </div>
+  <div class="widths" id="widths"><button data-w="320">320</button><button data-w="375" aria-pressed="true">375</button><button data-w="430">430</button></div>
+</div>
+<div class="content"><div class="phone" id="phone">
+  <div class="head"><img class="logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方" /><span class="divider"></span><span class="product">stayCube</span></div>
+
+  <div class="view active" data-view="access"><div class="screen">
+    <div class="title">申请特殊取消</div>
+    <div class="body">请输入前台 staff 提供的六位申请码。</div>
+    <div class="field" style="margin-top:21px"><span class="label">申请码</span><div class="input code" style="display:flex;align-items:center">382915</div></div>
+    <div class="actions"><div class="btn secondary">返回</div><div class="btn primary">继续<span class="a">→</span></div></div>
+    <div class="foot">Powered by stayCube</div>
+  </div></div>
+
+  <div class="view" data-view="s1"><div class="screen">
+    <div class="eyebrow">特殊取消申请 · SC-MH3K2Q</div>
+    <div class="title">申请特殊取消</div>
+    <div class="body">申请通过之前，你的订单将按照原取消政策执行。填写内容会在继续下一步时保存。</div>
+    <span class="hint warn">尚未填写订单号。请填写真实订单号后继续；如无法找到，请联系前台 staff。</span>
+    <div class="section">
+      <div class="field first"><span class="label">订单号 *</span><div class="input"></div><span class="hint">如有多笔订单，请分别填写申请。</span></div>
+      <div class="field"><span class="label">联系方式 *</span><div class="input"></div></div>
+    </div>
+    <div class="actions"><div class="btn secondary">返回</div><div class="btn primary disabled">继续<span class="a">→</span></div></div>
+    <div class="foot">Powered by stayCube</div>
+  </div></div>
+
+  <div class="view" data-view="s2"><div class="screen">
+    <div class="eyebrow">特殊取消申请 · SC-MH3K2Q</div>
+    <div class="title">申请特殊取消</div>
+    <div class="body">申请通过之前，你的订单将按照原取消政策执行。填写内容会在继续下一步时保存。</div>
+    <div class="section">
+      <div class="field first"><span class="label">主要原因 *</span><div class="picker">不可抗力<span class="arrow">⌄</span></div></div>
+      <div class="field"><span class="label">具体情况 *</span><div class="picker">航班列车异常<span class="arrow">⌄</span></div></div>
+      <div class="field"><span class="label">交通方式 *</span><div class="picker">火车<span class="arrow">⌄</span></div></div>
+      <div class="field"><span class="label">班次 *</span><div class="input" style="display:flex;align-items:center">G1234</div></div>
+      <div class="field"><span class="label">日期 *</span><div class="picker"><span class="ph">请选择</span><span class="arrow">⌄</span></div></div>
+      <div class="field"><span class="label">原因补充说明</span><div class="area">此项非必填</div></div>
+    </div>
+    <div class="section">
+      <div class="mat-head"><div><div class="section-title">证明材料 *</div><span class="hint">请分别选择“班次异常”和“本人购买／乘坐”材料用途。</span></div><span class="count">1/5</span></div>
+      <div class="mat"><div class="mat-top"><span class="mat-name">停运通知截图.jpg</span><span class="choose">重新选择</span></div><div class="field"><span class="label">材料用途</span><div class="picker">班次异常<span class="arrow">⌄</span></div></div><div class="area">针对该证明的文字说明</div></div>
+      <div class="mat"><div class="mat-top"><span class="mat-name">第 2 份证明</span><span class="choose">选择照片或 PDF</span></div><div class="field"><span class="label">材料用途</span><div class="picker">本人购买／乘坐<span class="arrow">⌄</span></div></div><div class="area">针对该证明的文字说明</div></div>
+      <div class="add">＋ 新增材料</div>
+    </div>
+    <div class="actions"><div class="btn secondary">上一步</div><div class="btn primary">继续<span class="a">→</span></div></div>
+    <div class="foot">Powered by stayCube</div>
+  </div></div>
+
+  <div class="view" data-view="s3"><div class="screen">
+    <div class="eyebrow">特殊取消申请 · SC-MH3K2Q</div>
+    <div class="title">申请特殊取消</div>
+    <div class="body">申请通过之前，你的订单将按照原取消政策执行。填写内容会在继续下一步时保存。</div>
+    <div class="section">
+      <div class="section-title">确认提交</div>
+      <span class="hint">请确认以下声明，并在下方手写签名。</span>
+      <div class="check"><span class="box on"></span>我知晓本订单的原本的取消规则。</div>
+      <div class="check"><span class="box on"></span>我理解此次提交属于特殊情况申请，并非正常免费取消。</div>
+      <div class="check"><span class="box"></span>我理解提交申请及材料并不代表申请一定获得批准。</div>
+      <div class="check"><span class="box"></span>我确认本次提交的信息及材料真实有效。</div>
+    </div>
+    <div class="section"><div class="section-title">手写签名 *</div><div class="sign">请在此处手写签名</div><div class="link">重新签名</div></div>
+    <div class="actions"><div class="btn secondary">上一步</div><div class="btn primary disabled">提交申请<span class="a">→</span></div></div>
+    <div class="foot">Powered by stayCube</div>
+  </div></div>
+
+  <div class="view" data-view="progress"><div class="screen">
+    <div class="eyebrow">特殊取消申请 · SC-MH3K2Q</div>
+    <div class="status"><small>当前状态</small><strong>待补充材料</strong><span>跟进补充材料</span></div>
+    <div class="section"><div class="section-title">最近一次审核结果</div><div style="margin-top:5px;font-size:13.5px;font-weight:650">要求补充资料</div><div class="note">请补充车站出具的停运证明。</div></div>
+    <div class="section"><div class="section-title">申请信息</div>
+      <div class="row"><span>订单号</span><span>HB2026102901</span></div>
+      <div class="row"><span>申请原因</span><span>不可抗力 / 航班列车异常</span></div>
+      <div class="row"><span>原因补充说明</span><span>—</span></div>
+      <div class="row"><span>最近提交时间</span><span>2026/10/29 14:20</span></div>
+    </div>
+    <div class="section"><div class="mat-head"><div class="section-title">已提交的证明材料</div><span class="count">2/5</span></div>
+      <div class="att"><b>停运通知截图.jpg</b><span>班次异常</span></div>
+      <div class="att"><b>车票订单.jpg</b><span>本人购买／乘坐</span></div>
+    </div>
+    <div class="section"><div class="section-title">补充资料</div>
+      <div class="body">请根据管理员的审核意见补充证明材料。原申请内容与已提交材料保持不变，每份材料最多 5 项。</div>
+      <div class="add">＋ 添加照片或 PDF</div>
+      <span class="hint">本轮已新增 0 项；至少新增一份证明材料后才能提交。</span>
+      <div class="actions" style="margin-top:10px"><div class="btn primary disabled">提交补充资料</div></div>
+    </div>
+    <div class="section"><div class="section-title">处理进度</div>
+      <div class="tl"><time>2026/10/29 14:20</time><b>旅客 · 提交申请</b></div>
+      <div class="tl"><time>2026/10/29 16:05</time><b>管理员 · 要求补充资料</b><p>请补充车站出具的停运证明。</p></div>
+    </div>
+    <div class="actions"><div class="btn secondary">返回首页</div></div>
+    <div class="foot">Powered by stayCube</div>
+  </div></div>
+</div></div>
+<script>
+document.getElementById('tabs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return
+  document.querySelectorAll('#tabs button').forEach(x => x.setAttribute('aria-pressed', x === b))
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.dataset.view === b.dataset.view))
+})
+document.getElementById('widths').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return
+  document.querySelectorAll('#widths button').forEach(x => x.setAttribute('aria-pressed', x === b))
+  document.getElementById('phone').style.setProperty('--w', b.dataset.w + 'px')
+})
+</script>
+</body>
+</html>

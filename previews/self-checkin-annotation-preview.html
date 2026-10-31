@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>stayCube 自助入住登记 · 本地预览</title>
+  <style>
+    .action.primary{position:relative;padding-left:42px;padding-right:42px;line-height:1.3;overflow-wrap:anywhere}.action.primary .arrow{position:absolute;right:12px}
+    .success-edit-trigger{display:block;margin:20px auto 0;padding:9px 16px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#244365;font-weight:650;cursor:pointer}.success-edit{display:grid;gap:10px;margin-top:12px}.success-edit[hidden]{display:none}
+    :root { color-scheme: light; --ink:#0b1f44; --muted:#586b80; --blue:#176be8; --line:#d2deea; --paper:#fff; --bg:#f7f9fc; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:#eef1f5; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    button,input,textarea { font:inherit; }
+    .workspace { max-width:1120px; margin:0 auto; padding:12px 24px 24px; }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:12px; }
+    .eyebrow { margin:0 0 4px; color:#708197; font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:0; font-size:20px; line-height:1.3; }
+    .toolbar-note { margin:5px 0 0; color:#64758a; font-size:13px; }
+    .toolbar-actions { display:flex; align-items:center; gap:8px; }
+    .utility-button,.switch-button { min-height:42px; padding:0 14px; border:1px solid var(--line); border-radius:10px; background:#fff; color:#29425d; cursor:pointer; }
+    .utility-button:hover,.switch-button:hover { border-color:#8fb5e8; }
+    .switcher { display:flex; flex-wrap:wrap; gap:7px; margin:0 0 12px; }
+    .switch-button { min-height:38px; padding:0 12px; font-size:13px; }
+    .switch-button[aria-pressed="true"] { border-color:var(--blue); background:#eaf2ff; color:var(--blue); font-weight:650; }
+    .preview-layout { display:grid; grid-template-columns:minmax(250px,1fr) minmax(220px,300px) minmax(250px,1fr); align-items:center; gap:22px; }
+    .side-note { min-height:110px; padding:18px; border:1px solid #dde5ed; border-radius:14px; background:rgba(255,255,255,.75); color:#566b81; font-size:14px; line-height:1.7; }
+    .side-note strong { display:block; margin-bottom:7px; color:var(--ink); font-size:14px; }
+    .screen-meta { margin-top:14px; color:#77889b; font-size:12px; text-align:center; }
+    .preview-page { display:none; }
+    .preview-page.active { display:block; }
+    .device { position:relative; width:min(300px,calc(46vh - 92px)); height:min(650px,calc(100vh - 200px)); margin:0 auto; padding:8px; border-radius:43px; background:#25282c; box-shadow:0 20px 50px rgba(20,35,52,.24); }
+    .device-screen { position:relative; display:flex; flex-direction:column; width:100%; height:100%; overflow:hidden; border-radius:35px; background:var(--bg); }
+    .notch { position:absolute; z-index:5; top:0; left:50%; width:48%; height:25px; transform:translateX(-50%); border-radius:0 0 18px 18px; background:#050505; }
+    .statusbar { display:flex; flex:none; height:30px; align-items:center; justify-content:space-between; padding:0 16px; color:#111; font-size:12px; }
+    .status-icons { display:flex; align-items:center; gap:6px; }
+    .wifi { width:14px; height:10px; border:2px solid #111; border-top-color:#111; border-left-color:transparent; border-right-color:transparent; border-bottom:0; border-radius:12px 12px 0 0; transform:scaleY(.85); }
+    .battery { position:relative; width:21px; height:10px; border:1.5px solid #111; border-radius:3px; }
+    .battery:before { content:""; position:absolute; inset:2px; background:#111; border-radius:1px; }
+    .battery:after { content:""; position:absolute; right:-4px; top:2px; width:2px; height:4px; border-radius:0 2px 2px 0; background:#111; }
+    .wxnav { position:relative; display:flex; flex:none; height:47px; align-items:center; justify-content:center; color:#111; font-size:14px; }
+    .capsule { position:absolute; right:8px; top:5px; display:flex; width:77px; height:31px; align-items:center; justify-content:space-around; border:1px solid #d7d7d7; border-radius:18px; background:#fff; }
+    .capsule-dots { display:flex; gap:3px; }
+    .capsule-dots i { width:5px; height:5px; border-radius:50%; background:#111; }
+    .capsule-circle { width:15px; height:15px; border:2px solid #111; border-radius:50%; }
+    .brandline { display:flex; flex:none; height:50px; align-items:center; gap:8px; padding:0 17px; }
+    .brand-logo { width:58px; height:auto; }
+    .brand-divider { width:1px; height:20px; background:#d7e2ec; }
+    .brand-name { color:var(--ink); font-size:15px; font-weight:750; letter-spacing:-.5px; }
+    .screen-scroll { flex:1; min-height:0; overflow:auto; padding:0 17px 12px; scrollbar-width:thin; }
+    .screen-scroll.language { padding-top:0; }
+    .screen-scroll.code { padding-top:27px; }
+    .screen-scroll.flow { padding-top:9px; }
+    .screen-scroll.success { display:flex; flex-direction:column; justify-content:center; padding-top:10px; padding-bottom:25px; }
+    .screen-scroll::-webkit-scrollbar { width:3px; }
+    .screen-scroll::-webkit-scrollbar-thumb { background:#d5dee8; border-radius:3px; }
+    .hero-mark { display:flex; height:112px; align-items:center; gap:16px; margin-bottom:5px; }
+    .hero-icon { display:flex; width:42px; height:42px; flex:none; align-items:center; justify-content:center; border-radius:15px; background:#e9f1ff; }
+    .hero-icon:before { content:""; width:18px; height:18px; border:3px solid var(--blue); border-radius:6px; background:radial-gradient(circle at 35% 35%,var(--blue) 0 3px,transparent 3.5px); }
+    .hero-copy { min-width:0; }
+    .hero-copy strong { display:block; font-size:18px; line-height:1.35; }
+    .hero-copy span { display:block; margin-top:4px; color:#77889b; font-size:9px; font-weight:700; letter-spacing:.1em; }
+    .screen-title { display:block; margin:0; color:var(--ink); font-size:23px; line-height:1.35; font-weight:750; }
+    .screen-title-en { display:block; margin-top:4px; color:#77889b; font-size:10px; font-weight:700; letter-spacing:.12em; }
+    .language-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:21px; }
+    .language-choice { display:flex; height:42px; align-items:center; justify-content:space-between; padding:0 12px; border:1px solid #d4e0ec; border-radius:8px; background:#fff; font-size:14px; font-weight:650; }
+    .language-choice b { color:var(--blue); font-size:20px; font-weight:500; }
+    .code-title { white-space:pre-line; font-size:22px; line-height:1.45; }
+    .field { display:block; margin-top:18px; color:#42566e; font-size:12px; font-weight:650; }
+    .input-box,.textarea-box { display:block; width:100%; margin-top:7px; padding:0 12px; border:1px solid #c9d5e1; border-radius:8px; background:#fff; color:var(--ink); }
+    .input-box { height:44px; line-height:44px; font-size:17px; }
+    .textarea-box { height:74px; padding-top:10px; }
+    .two-actions { display:flex; gap:7px; margin-top:12px; }
+    .rule-actions .action:first-child { flex:0 0 32%; }
+    .action { display:flex; flex:1; min-width:0; height:44px; align-items:center; justify-content:center; gap:7px; border:1px solid #c9d5e1; border-radius:8px; background:#fff; color:#25415f; font-size:13px; font-weight:650; }
+    .action.primary { border-color:var(--blue); background:var(--blue); color:#fff; }
+    .action.disabled { color:#b7c1ca; }
+    .arrow { font-size:20px; font-weight:400; }
+    .step-count { color:var(--blue); font-size:11px; font-weight:750; letter-spacing:.12em; }
+    .step-count span { color:#9aaaba; font-weight:500; }
+    .step-track { display:flex; margin:18px -4px 17px; padding-bottom:10px; border-bottom:1px solid #dce5ed; }
+    .step-item { display:flex; flex:1; min-width:0; flex-direction:column; align-items:center; gap:5px; color:#9aa8b6; text-align:center; }
+    .step-dot { display:flex; width:20px; height:20px; align-items:center; justify-content:center; border:1px solid #cbd6e0; border-radius:50%; background:var(--bg); font-size:10px; }
+    .step-item.active { color:var(--blue); }
+    .step-item.active .step-dot { border-color:var(--blue); background:var(--blue); color:#fff; }
+    .step-label { width:100%; overflow:hidden; font-size:8px; line-height:1.35; white-space:nowrap; text-overflow:ellipsis; }
+    .section-title { margin:0 0 14px; font-size:17px; line-height:1.4; font-weight:750; }
+    .rule-meta { margin:18px 0 8px; color:#73869a; font-size:12px; }
+    .rule-card { padding:16px 13px; border-left:2px solid var(--blue); border-radius:0 8px 8px 0; background:#fff; box-shadow:0 2px 9px rgba(11,31,68,.04); }
+    .rule-card h3 { margin:0; font-size:16px; }
+    .rule-card p { margin:12px 0 0; color:#455b72; font-size:14px; line-height:1.65; }
+    .qr-card { display:flex; flex-direction:column; align-items:center; margin-top:8px; padding:13px; border:1px solid #e1e8ef; border-radius:9px; background:#fff; }
+    .qr-card h3 { margin:0; font-size:14px; }
+    .police-qr { width:180px; height:180px; margin:12px auto 7px; object-fit:contain; }
+    .deposit-qr { width:180px; height:180px; margin:12px auto 7px; object-fit:contain; border-radius:5px; }
+    .qr-tip { width:100%; color:#65798f; font-size:11px; line-height:1.55; }
+    .qr-tip.center { text-align:center; }
+    .consent { display:flex; align-items:flex-start; gap:8px; margin:14px 0; color:#344d68; font-size:12px; line-height:1.5; }
+    .check { width:15px; height:15px; flex:none; border:1px solid #b9c8d8; border-radius:4px; background:#fff; }
+    .signature-box { display:flex; height:155px; align-items:center; justify-content:center; margin-top:9px; border:1px dashed #bdcddd; border-radius:9px; background:#fff; color:#95a3b2; font-size:12px; }
+    .upload-box { display:flex; min-height:54px; align-items:center; justify-content:center; margin-top:7px; border:1px dashed #bccbd9; border-radius:8px; color:#8a99a9; font-size:12px; }
+    .small-heading { margin:15px 0 0; color:#42566e; font-size:12px; font-weight:650; }
+    .page-foot { display:flex; flex:none; justify-content:center; padding:7px 17px 16px; color:#97a4b1; font-size:9px; }
+    .section-description { margin:0 0 12px; color:#586b80; font-size:12px; line-height:1.6; }
+    .home-indicator { position:absolute; bottom:5px; left:50%; width:82px; height:4px; transform:translateX(-50%); border-radius:4px; background:#171717; }
+    .nav-bottom { margin-top:13px; }
+    .step-content { padding-bottom:12px; }
+    .success-pill { display:flex; align-items:center; align-self:center; gap:6px; padding:6px 9px; border-radius:22px; background:#e6f4ec; color:#23734f; font-size:11px; }
+    .success-pill i { width:6px; height:6px; border-radius:50%; background:#2d9a68; }
+    .success-copy { max-width:100%; margin:24px auto 0; color:#3d5671; font-size:14px; font-weight:600; line-height:1.7; text-align:center; }
+    .success-divider { width:46px; height:1px; flex:none; margin:20px auto 0; background:#d7e2ec; }
+    .success-notice { max-width:100%; margin:16px auto 0; color:#8999ab; font-size:11px; line-height:1.7; text-align:center; }
+    .note-text { margin:8px 0 0; color:#65798f; font-size:12px; line-height:1.6; }
+    @media(max-width:760px) {
+      .workspace { padding:15px 12px 24px; }
+      .toolbar { align-items:flex-start; }
+      .toolbar-note { max-width:290px; }
+      .toolbar-actions .utility-button { min-height:38px; padding:0 10px; font-size:12px; }
+      .preview-layout { display:block; }
+      .side-note { display:none; }
+      .device { width:min(300px,82vw,calc(46dvh - 108px)); height:min(650px,calc(100dvh - 230px)); }
+    }
+    @media print {
+      @page { size: A5 portrait; margin:10mm; }
+      body { background:#fff; }
+      .workspace { max-width:none; padding:0; }
+      .toolbar,.switcher,.side-note,.screen-meta { display:none !important; }
+      .preview-layout { display:block; }
+      .preview-page { display:block !important; break-after:page; page-break-after:always; }
+      .device { width:300px; height:650px; margin:0 auto; box-shadow:none; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+    }
+  </style>
+</head>
+<body>
+  <div class="workspace">
+    <header class="toolbar">
+      <div>
+        <p class="eyebrow">stayCube · 本地预览</p>
+        <h1>自助入住登记页面</h1>
+        <p class="toolbar-note">切换页面逐屏批注；打印时会按每页一屏排版。</p>
+      </div>
+      <div class="toolbar-actions">
+        <button class="utility-button" type="button" onclick="window.print()">打印 / 导出 PDF</button>
+      </div>
+    </header>
+
+    <nav class="switcher" aria-label="预览页面">
+      <button class="switch-button" data-index="0" aria-pressed="true">语言选择</button>
+      <button class="switch-button" data-index="1" aria-pressed="false">入住码</button>
+      <button class="switch-button" data-index="2" aria-pressed="false">01 基础信息</button>
+      <button class="switch-button" data-index="3" aria-pressed="false">02 入住须知</button>
+      <button class="switch-button" data-index="4" aria-pressed="false">03 签名确认</button>
+      <button class="switch-button" data-index="5" aria-pressed="false">04 公安登记</button>
+      <button class="switch-button" data-index="6" aria-pressed="false">05 押金缴纳</button>
+      <button class="switch-button" data-index="7" aria-pressed="false">提交成功</button>
+      <button class="switch-button" data-index="8" aria-pressed="false">05 其他方式支付</button>
+    </nav>
+
+    <div class="preview-layout">
+      <aside class="side-note"><strong>批注提示</strong>页面按小程序手机视口排版。可直接截图或使用上方“打印 / 导出 PDF”生成逐页稿，批注后把截图或 PDF 发回即可。</aside>
+      <main id="preview-pages">
+        <article class="preview-page active" data-index="0" aria-label="语言选择页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:14</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll language">
+              <div class="hero-mark"><span class="hero-icon"></span><div class="hero-copy"><strong>自助入住登记</strong><span>SELF-CHECK-IN REGISTRATION</span></div></div>
+              <h2 class="screen-title">请选择登记语言</h2><span class="screen-title-en">PLEASE SELECT A REGISTRATION LANGUAGE</span>
+              <div class="language-grid">
+                <div class="language-choice">中文<b>›</b></div><div class="language-choice">English<b>›</b></div>
+                <div class="language-choice">Deutsch<b>›</b></div><div class="language-choice">Français<b>›</b></div>
+                <div class="language-choice">Español<b>›</b></div><div class="language-choice">Italiano<b>›</b></div>
+                <div class="language-choice">日本語<b>›</b></div><div class="language-choice">한국어<b>›</b></div>
+              </div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+
+        <article class="preview-page" data-index="1" aria-label="入住码输入页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:16</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll code">
+              <h2 class="screen-title code-title">请输入前台提供的 6 位自助入住码<br>进入登记流程</h2>
+              <label class="field">自助入住码<span class="input-box">123456</span></label>
+              <div class="two-actions"><div class="action">返回</div><div class="action primary">进入登记流程 <span class="arrow">→</span></div></div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+
+        <article class="preview-page" data-index="2" aria-label="基础信息登记页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:19</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll flow"><div class="step-count">01 <span>/ 05</span></div>
+              <div class="step-track"><div class="step-item active"><span class="step-dot">1</span><span class="step-label">基础信息登记</span></div><div class="step-item"><span class="step-dot">2</span><span class="step-label">入住须知阅读</span></div><div class="step-item"><span class="step-dot">3</span><span class="step-label">签名确认</span></div><div class="step-item"><span class="step-dot">4</span><span class="step-label">公安登记</span></div><div class="step-item"><span class="step-dot">5</span><span class="step-label">押金缴纳</span></div></div>
+              <div class="step-content"><h2 class="section-title">1. 基础信息登记</h2>
+                <label class="field">旅客真实姓名<span class="input-box" aria-readonly="true">由前台档案带入（只读）</span><small class="note-text">姓名如有误，请联系前台更正。</small></label>
+                <label class="field">联系方式<span class="input-box"></span></label>
+                <label class="field">旅客备注<span class="textarea-box"></span></label>
+                <div class="two-actions nav-bottom"><div class="action">返回</div><div class="action primary">下一步 <span class="arrow">→</span></div></div>
+              </div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+
+        <article class="preview-page" data-index="3" aria-label="入住须知阅读页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:20</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll flow"><div class="step-count">02 <span>/ 05</span></div>
+              <div class="step-track"><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">基础信息登记</span></div><div class="step-item active"><span class="step-dot">2</span><span class="step-label">入住须知阅读</span></div><div class="step-item"><span class="step-dot">3</span><span class="step-label">签名确认</span></div><div class="step-item"><span class="step-dot">4</span><span class="step-label">公安登记</span></div><div class="step-item"><span class="step-dot">5</span><span class="step-label">押金缴纳</span></div></div>
+              <div class="step-content"><h2 class="section-title">2. 入住须知阅读</h2><div class="rule-meta">7 / 9 <span>3s</span></div>
+                <div class="rule-card"><h3>仅在指定区域吸烟</h3><p>舍内严格禁止吸烟。您仅可在吸烟区内吸烟（包括电子烟）。</p></div>
+                <div class="two-actions rule-actions nav-bottom"><div class="action disabled">上一条</div><div class="action disabled">我已阅读并理解（3s）</div></div>
+              </div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+
+        <article class="preview-page" data-index="4" aria-label="签名确认页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:21</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll flow"><div class="step-count">03 <span>/ 05</span></div>
+              <div class="step-track"><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">基础信息登记</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">入住须知阅读</span></div><div class="step-item active"><span class="step-dot">3</span><span class="step-label">签名确认</span></div><div class="step-item"><span class="step-dot">4</span><span class="step-label">公安登记</span></div><div class="step-item"><span class="step-dot">5</span><span class="step-label">押金缴纳</span></div></div>
+              <div class="step-content"><h2 class="section-title">3. 签名确认</h2><div class="consent"><span class="check"></span><span>我已完整阅读并确认入住须知</span></div><strong class="small-heading">手写签名</strong><div class="signature-box">请在此区域完成手写签名</div><div class="action" style="margin:6px 0 0 auto;min-height:38px;height:38px;flex:none;padding:0 12px;color:var(--blue);border:0;background:transparent">清除重写</div>
+                <div class="two-actions nav-bottom"><div class="action">上一步</div><div class="action primary">下一步 <span class="arrow">→</span></div></div>
+              </div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+
+        <article class="preview-page" data-index="5" aria-label="公安登记页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:22</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll flow"><div class="step-count">04 <span>/ 05</span></div>
+              <div class="step-track"><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">基础信息登记</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">入住须知阅读</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">签名确认</span></div><div class="step-item active"><span class="step-dot">4</span><span class="step-label">公安登记</span></div><div class="step-item"><span class="step-dot">5</span><span class="step-label">押金缴纳</span></div></div>
+              <div class="step-content"><h2 class="section-title">4. 公安登记验证码回填</h2>
+                <p class="section-description">请使用支付宝扫码完成公安登记。登记完成后页面会生成 6 位验证码，请填写在下方供前台核验。</p>
+                <div class="qr-card"><h3>公安登记二维码</h3><img class="police-qr" src="police-registration-qr-preview.png" alt="公安登记二维码"/><p class="qr-tip center">请保存图片，使用支付宝扫一扫从相册中选择并识别二维码，完成公安登记。</p></div>
+                <label class="field">公安登记 6 位验证码<span class="input-box"></span></label><div class="consent"><span class="check"></span><span>我确认已完成公安登记</span></div>
+                <div class="two-actions nav-bottom"><div class="action">上一步</div><div class="action primary">下一步 <span class="arrow">→</span></div></div>
+              </div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+
+        <article class="preview-page" data-index="6" aria-label="押金缴纳页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:23</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll flow"><div class="step-count">05 <span>/ 05</span></div>
+              <div class="step-track"><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">基础信息登记</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">入住须知阅读</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">签名确认</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">公安登记</span></div><div class="step-item active"><span class="step-dot">5</span><span class="step-label">押金缴纳</span></div></div>
+              <div class="step-content"><h2 class="section-title">5. 押金缴纳记录</h2>
+                <p class="section-description">押金 ¥100。选择支付方式后完成付款。</p>
+                <div class="action primary" style="margin-bottom:8px">微信支付 ¥100</div>
+                <p class="note-text">付款后由系统核实到账，无需上传截图。退款仍由员工手动办理。</p>
+                <div class="action" style="margin-top:12px;color:var(--blue)">使用其他方式支付</div>
+                <p class="note-text">选择其他方式后展示收款二维码，并上传支付成功截图，由员工确认。</p>
+                <div class="two-actions nav-bottom"><div class="action">上一步</div><div class="action primary">提交自助入住登记 <span class="arrow">→</span></div></div>
+              </div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+
+        <article class="preview-page" data-index="7" aria-label="提交成功页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:24</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll success">
+              <div class="success-pill"><i></i>您已提交自助入住登记</div>
+              <p class="success-copy">前台将在确认信息后，通过微信将开门密码、<span class="keep-together">房间/床位</span>、拖鞋编号等信息发送给您。</p>
+              <div class="success-divider"></div>
+              <p class="success-notice">请留意微信消息。如有疑问，请在入住当日 22:30 前<span class="keep-together">联系我们</span>。</p>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+        <article class="preview-page" data-index="8" aria-label="其他方式支付页面">
+          <div class="device"><div class="device-screen">
+            <div class="notch"></div><div class="statusbar"><span>13:23</span><span class="status-icons"><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="wxnav">stayCube<div class="capsule"><span class="capsule-dots"><i></i><i></i><i></i></span><span class="capsule-circle"></span></div></div>
+            <div class="brandline"><img class="brand-logo" src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"/><i class="brand-divider"></i><span class="brand-name">stayCube</span></div>
+            <section class="screen-scroll flow"><div class="step-count">05 <span>/ 05</span></div>
+              <div class="step-track"><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">基础信息登记</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">入住须知阅读</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">签名确认</span></div><div class="step-item active"><span class="step-dot">✓</span><span class="step-label">公安登记</span></div><div class="step-item active"><span class="step-dot">5</span><span class="step-label">押金缴纳</span></div></div>
+              <div class="step-content"><h2 class="section-title">5. 押金缴纳记录</h2>
+                <div class="action">改用微信支付</div>
+                <div class="qr-card"><h3>押金收款二维码</h3><img class="deposit-qr" src="../miniprogram/assets/self-checkin-deposit.png" alt="押金收款二维码"/><p class="qr-tip">请保存图片，使用支付宝扫一扫或其他支付工具从相册中选择并识别二维码完成支付。</p></div>
+                <strong class="small-heading">上传支付成功截图</strong><div class="upload-box">尚未上传付款截图</div><div class="action" style="margin-top:8px;color:var(--blue)">选择付款截图</div>
+                <div class="two-actions nav-bottom"><div class="action">上一步</div><div class="action primary">提交自助入住登记 <span class="arrow">→</span></div></div>
+              </div>
+            </section>
+            <footer class="page-foot">Powered by stayCube</footer><div class="home-indicator"></div>
+          </div></div>
+        </article>
+      </main>
+      <aside class="side-note"><strong>当前页面 <span id="current-title">语言选择</span></strong>预览只呈现页面结构和文案。实际小程序仍需在微信开发者工具或真机中确认滚动、安全区、输入键盘和二维码显示。</aside>
+    </div>
+    <div class="screen-meta"><span id="current-page">1 / 9</span>　·　使用 ← / → 键切换页面</div>
+  </div>
+  <script>
+    const pages = [...document.querySelectorAll('.preview-page')]
+    const buttons = [...document.querySelectorAll('.switch-button')]
+    const titles = ['语言选择', '入住码', '01 基础信息', '02 入住须知', '03 签名确认', '04 公安登记', '05 押金缴纳', '提交成功', '05 其他方式支付']
+    let current = 0
+    function showPage(index) {
+      current = (index + pages.length) % pages.length
+      pages.forEach((page, i) => page.classList.toggle('active', i === current))
+      pages[current].querySelector('.screen-scroll').scrollTop = 0
+      buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === current)))
+      document.getElementById('current-page').textContent = `${current + 1} / ${pages.length}`
+      document.getElementById('current-title').textContent = titles[current]
+    }
+    buttons.forEach((button) => button.addEventListener('click', () => showPage(Number(button.dataset.index))))
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') showPage(current + 1)
+      if (event.key === 'ArrowLeft') showPage(current - 1)
+    })
+  </script>
+</body>
+</html>

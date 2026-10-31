@@ -1,0 +1,91 @@
+<view class="page luggage-page">
+  <view class="page-head">
+    <image class="brand-logo" src="/assets/sifang-blue.png" mode="heightFix" />
+    <text class="brand-divider"></text>
+    <text class="brand-product">stayCube</text>
+    <language-switcher id="lang-switcher" wx:if="{{screen !== 'success'}}" locale="{{locale}}" bindchange="changeLocale" />
+  </view>
+
+  <view wx:if="{{screen === 'form'}}" class="screen luggage-form-screen">
+    <text class="screen-title">{{text.title}}</text>
+
+    <view wx:if="{{formStep === 0}}" class="form-step">
+    <view class="form-section first-form-section">
+      <text class="form-section-title">{{text.nameLabel}}</text>
+      <input class="text-input luggage-input" value="{{form.guest_name}}" data-field="guest_name" bindinput="updateForm" />
+      <view class="field-block contact-method-block">
+        <text class="field-label">{{globalText.contact.method}}</text>
+        <radio-group class="contact-options" bindchange="updateContactMethod">
+          <label class="contact-option"><radio value="phone" checked="{{form.contact_method === 'phone'}}" color="#176BE8" /><text>{{globalText.contact.phone}}</text></label>
+          <label class="contact-option"><radio value="email" checked="{{form.contact_method === 'email'}}" color="#176BE8" /><text>{{globalText.contact.email}}</text></label>
+        </radio-group>
+      </view>
+      <view wx:if="{{form.contact_method === 'phone'}}" class="field-block"><text class="field-label">{{globalText.contact.phoneLabel}}</text>
+        <view class="phone-row">
+          <picker mode="selector" range="{{countryCodes}}" bindchange="updateCountryCode"><view class="country-code">{{form.country_code}}<text class="country-code-arrow">▼</text></view></picker>
+          <input class="text-input luggage-input phone-number-input" value="{{form.contact}}" data-field="contact" bindinput="updateForm" type="number" maxlength="{{form.country_code === '+86' ? 11 : 15}}" />
+        </view>
+        <text wx:if="{{form.country_code === '+86'}}" class="field-hint">{{globalText.phone.mainlandHint}}</text>
+      </view>
+      <view wx:else class="field-block"><text class="field-label">{{globalText.contact.email}}</text>
+        <input class="text-input luggage-input" value="{{form.contact}}" data-field="contact" bindinput="updateForm" type="text" maxlength="100" placeholder="{{text.emailPlaceholder}}" /></view>
+    </view>
+
+    <view class="form-section">
+      <text class="form-section-title">{{text.claimDateLabel}} / {{text.claimTimeLabel}}</text>
+      <view class="date-time-grid">
+        <view class="field-block"><text class="field-label">{{text.claimDateLabel}}</text><picker mode="date" start="{{today}}" value="{{form.claim_date}}" bindchange="updateClaimDate"><view class="picker-value">{{form.claim_date}}</view></picker></view>
+        <view class="field-block"><text class="field-label">{{text.claimTimeLabel}}</text><picker mode="selector" range="{{claimTimeOptions}}" value="{{claimTimeIndex}}" bindchange="updateClaimTime"><view class="picker-value">{{form.claim_time}}<text class="picker-arrow">⌄</text></view></picker></view>
+      </view>
+    </view>
+    </view>
+
+    <view wx:if="{{formStep === 1}}" class="form-step">
+    <view class="form-section fee-section">
+      <text class="form-section-title">{{text.feeTitle}}</text>
+      <checkbox-group bindchange="updateFeeAcknowledgement"><label class="notice-row"><checkbox value="fee" checked="{{form.fee_acknowledged}}" color="#176BE8" /><text>{{text.claimDateHint}}</text></label></checkbox-group>
+    </view>
+
+    <view class="form-section notices-section">
+      <text class="form-section-title">{{text.noticesTitle}}</text>
+      <checkbox-group bindchange="updateAcknowledgements">
+        <label class="notice-row"><checkbox value="claim_hours" checked="{{form.claim_hours_acknowledged}}" color="#176BE8" /><text>{{text.claimHoursLabel}}</text></label>
+        <label class="notice-row"><checkbox value="unclaimed_policy" checked="{{form.unclaimed_policy_acknowledged}}" color="#176BE8" /><text>{{text.unclaimedPolicyLabel}}</text></label>
+        <label class="notice-row"><checkbox value="no_valuables" checked="{{form.no_valuables_acknowledged}}" color="#176BE8" /><text>{{text.noValuablesLabel}}</text></label>
+      </checkbox-group>
+    </view>
+
+    <view class="form-section photo-section">
+      <text class="form-section-title">{{text.photoLabel}}</text>
+      <view wx:if="{{photoPath}}" class="photo-selected">
+        <image class="photo-thumbnail" src="{{photoPath}}" mode="aspectFill" data-path="{{photoPath}}" bindtap="previewPhoto" />
+        <view class="photo-file-copy"><text>{{text.selectedPhoto}}</text><text class="photo-file-name">{{photoName}}</text></view>
+        <button class="photo-remove" bindtap="removePhoto" disabled="{{submitting}}">删除</button>
+      </view>
+      <button wx:else class="photo-choose-button" bindtap="choosePhoto" loading="{{photoProcessing}}" disabled="{{photoProcessing || submitting}}">＋ {{text.choosePhoto}}</button>
+    </view>
+
+    <checkbox-group class="privacy-check" bindchange="updatePrivacy"><label class="notice-row"><checkbox value="privacy" checked="{{form.privacy_accepted}}" color="#176BE8" /><text>{{text.privacyLabel}}</text></label></checkbox-group>
+
+    </view>
+    <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+    <view class="form-actions">
+      <button wx:if="{{formStep === 0}}" class="secondary-button form-action" bindtap="returnHome" disabled="{{submitting}}">{{globalText.common.back}}</button>
+      <button wx:else class="secondary-button form-action" bindtap="previousFormStep" disabled="{{submitting}}">{{text.previousLabel}}</button>
+      <button wx:if="{{formStep === 0}}" class="primary-button form-action" bindtap="nextFormStep"><text class="button-label">{{text.nextLabel}}</text><text class="button-arrow">→</text></button>
+      <button wx:else class="primary-button form-action {{submitting ? 'is-button-disabled' : ''}}" bindtap="submit" loading="{{submitting}}" disabled="{{submitting || photoProcessing}}"><text class="button-label">{{submitting ? text.submittingLabel : text.submitLabel}}</text><text class="button-arrow">→</text></button>
+    </view>
+  </view>
+
+  <view wx:if="{{screen === 'success'}}" class="screen luggage-success-screen">
+    <view class="success-symbol"><view class="success-check"></view></view>
+    <view class="success-pill"><view class="success-dot"></view><text>{{text.completedTitle}}</text></view>
+    <text wx:if="{{locale === 'zh-CN'}}" class="success-copy">请将行李放置在指定区域。如需修改取回时间，请<text class="keep-together">联系前台</text>。</text>
+    <text wx:else class="success-copy">{{text.completedMessage}}</text>
+    <view class="success-divider"></view>
+    <button class="secondary-button success-back" bindtap="editRegistration">{{text.editLabel}}</button>
+  </view>
+
+  <view class="page-foot">Powered by stayCube</view>
+  <canvas id="photo-processing-canvas" type="2d" class="photo-processing-canvas"></canvas>
+</view>

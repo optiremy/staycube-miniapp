@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/index/index",
+    "pages/luggage-storage/index",
+    "pages/pre-arrival/index",
+    "pages/special-cancellation/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "stayCube",
+    "navigationBarBackgroundColor": "#F7F9FC",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F9FC"
+  },
+  "style": "v2",
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于规划当前位置到肆方空间的到达路线"
+    }
+  },
+  "usingComponents": {
+    "language-switcher": "/components/language-switcher/index"
+  }
+}

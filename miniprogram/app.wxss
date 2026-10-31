@@ -1,0 +1,16 @@
+page {
+  min-height: 100%;
+  background: #f7f9fc;
+  color: #0b1f44;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+
+
+/* 全局按钮文案基线：内容水平、垂直居中；页面类可覆盖排列方式。 */
+button {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}

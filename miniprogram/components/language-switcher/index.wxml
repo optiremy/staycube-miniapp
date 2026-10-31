@@ -1,0 +1,14 @@
+<button class="lang-chip {{locked ? 'is-locked' : ''}}" aria-label="Language" bindtap="openSheet"><image class="lang-chip-globe" src="/assets/globe.svg" mode="aspectFit" /><text>{{currentLabel}}</text><text class="lang-chip-arrow">▼</text></button>
+
+<view wx:if="{{open}}" class="lang-mask" catchtap="closeSheet" catchtouchmove="stop">
+  <view class="lang-sheet" catchtap="stop">
+    <view class="lang-sheet-head">
+      <text class="lang-sheet-title">{{copy.title}}</text>
+      <button class="lang-sheet-close" bindtap="closeSheet">×</button>
+    </view>
+    <text class="lang-sheet-hint">{{copy.hint}}</text>
+    <button wx:for="{{options}}" wx:key="locale" class="lang-row {{item.locale === locale ? 'is-current' : ''}}" data-locale="{{item.locale}}" bindtap="choose">
+      <text>{{item.label}}</text><text wx:if="{{item.locale === locale}}" class="lang-row-tick">✓</text>
+    </button>
+  </view>
+</view>

@@ -1,0 +1,126 @@
+// Edit the quoted text to change this language in the mini program.
+module.exports = {
+  "label": "Français",
+  "text": {
+    "eyebrow": "SELF CHECK-IN",
+    "languageTitle": "Choisissez une langue",
+    "languageTitleEnglish": "PLEASE SELECT A REGISTRATION LANGUAGE",
+    "accessCodeTitle": "Saisissez le code d’enregistrement autonome à 6 chiffres fourni par la réception\npour commencer",
+    "accessCodeLabel": "Code d’enregistrement autonome",
+    "accessCodePlaceholder": "Saisissez le code à 6 chiffres",
+    "accessCodeChecking": "Vérification...",
+    "enterFlowLabel": "Commencer",
+    "accessCodeInvalidError": "Veuillez saisir un code à 6 chiffres.",
+    "accessCodeUnavailableError": "Ce code est introuvable ou a expiré.",
+    "loadingContext": "Chargement de l’enregistrement...",
+    "unavailableTitle": "Enregistrement indisponible",
+    "unavailableMessage": "Cet enregistrement ne peut pas être ouvert pour le moment. Contactez la réception.",
+    "backToCode": "Retour au code",
+    "submittedTitle": "Enregistrement envoyé",
+    "submittedMessage": "Après vérification de votre inscription, la réception vous enverra le code d’accès, vos numéros de chambre et de lit, ainsi que le numéro attribué à vos chaussons.",
+    "submittedNotice": "Si vous avez des questions, contactez-nous avant 22:30 le jour de votre arrivée.",
+    "nameCorrectionHint": "Si votre nom est incorrect, contactez la réception.",
+    "title": "Enregistrement autonome Sifang Space",
+    "stepsAriaLabel": "Étapes de l’enregistrement",
+    "stepTitles": [
+      "Informations de base",
+      "Règlement de séjour",
+      "Signature",
+      "Enregistrement policier",
+      "Dépôt de garantie"
+    ],
+    "basicSectionTitle": "1. Informations de base",
+    "guestNameLabel": "Nom complet",
+    "contactLabel": "Moyen de contact",
+    "guestNoteLabel": "Remarque",
+    "rulesSectionTitle": "2. Règlement de séjour",
+    "previousRuleLabel": "Précédent",
+    "nextRuleLabel": "Suivant",
+    "confirmedRuleLabel": "Confirmé",
+    "basicInfoError": "Veuillez remplir les informations de base.",
+    "rulesIncompleteError": "Veuillez lire et confirmer chaque règle.",
+    "signatureSectionTitle": "3. Signature",
+    "rulesFinalConfirmLabel": "J’ai lu et confirmé toutes les règles",
+    "signatureLabel": "Signature manuscrite",
+    "clearSignatureLabel": "Effacer et recommencer",
+    "signatureHint": "Cochez la confirmation avant de signer.",
+    "signatureError": "Confirmez les règles et terminez votre signature.",
+    "policeSectionTitle": "4. Code d’enregistrement policier",
+    "policeDescription": "Scannez le QR code avec votre téléphone et suivez les instructions. La page générera un code à 6 chiffres à saisir ci-dessous pour vérification.",
+    "policeQrTitle": "QR code d’enregistrement policier",
+    "policeQrInstruction": "Touchez le QR code pour ouvrir l’aperçu, puis maintenez l’image appuyée. Si « Reconnaître le QR code dans l’image » apparaît, sélectionnez-le. Sinon, enregistrez l’image depuis le menu, puis choisissez-la dans l’album avec Scanner d’Alipay.",
+    "policeCodeLabel": "Code policier à 6 chiffres",
+    "policeCompleteLabel": "Je confirme avoir terminé l’enregistrement policier",
+    "policeCodeError": "Le code doit comporter 6 chiffres.",
+    "policeCompleteError": "Veuillez confirmer l’enregistrement policier.",
+    "depositSectionTitle": "5. Dépôt de garantie",
+    "depositDescription": "Scannez le QR code pour payer 100 CNY par personne. Le dépôt sera remboursé sur le moyen de paiement d’origine le jour même, après vérification du self check-in par le personnel.",
+    "depositQrTitle": "QR code du dépôt",
+    "depositQrInstruction": "Veuillez enregistrer l’image, puis utiliser Scanner de WeChat ou d’Alipay pour la choisir dans votre album et lire le QR code afin de terminer le paiement.",
+    "depositConfirmLabel": "Je confirme avoir payé le dépôt comme indiqué",
+    "depositConfirmError": "Veuillez confirmer le paiement du dépôt.",
+    "backLabel": "Retour",
+    "previousStepLabel": "Étape précédente",
+    "nextStepLabel": "Étape suivante",
+    "submitLabel": "Envoyer l’enregistrement",
+    "submittingLabel": "Envoi...",
+    "loadingError": "Impossible de charger l’enregistrement.",
+    "submitError": "Échec de l’envoi. Vérifiez puis réessayez.",
+    "testCompletedTitle": "Test terminé",
+    "testCompletedMessage": "Ce test sert uniquement à vérifier les pages et le parcours. Aucun enregistrement n’a été envoyé, aucun fichier n’a été téléversé et aucune serrure n’a été activée."
+  },
+  "foreignDocuments": {
+    "stepTitle": "Documents de voyage",
+    "sectionTitle": "4. Photos des documents de voyage",
+    "description": "Prenez et téléversez les deux photos de documents requises. La réception effectuera l’enregistrement policier après vérification.",
+    "passportLabel": "Page d’informations personnelles du passeport",
+    "visaOrEntryLabel": "Page de visa / relevé d’entrée",
+    "photoHint": "Prenez une photo nette ou choisissez-la dans votre album. Le nom, le numéro de passeport et les dates doivent être lisibles.",
+    "replaceLabel": "Prendre / remplacer la photo",
+    "missingError": "Veuillez téléverser les deux photos de documents requises.",
+    "compressionError": "Cette photo ne peut pas être compressée. Prenez une nouvelle photo nette et réessayez.",
+    "depositInstruction": "Faites une capture d’écran, puis payez avec WeChat Pay ou choisissez le code QR dans votre album avec Alipay."
+  },
+  "depositProof": {
+    "title": "Téléverser la confirmation de paiement",
+    "empty": "Aucune capture sélectionnée",
+    "upload": "Choisir une capture",
+    "replace": "Remplacer la capture",
+    "selected": "Capture de paiement sélectionnée",
+    "previewAlt": "Aperçu de la capture de paiement",
+    "missingError": "Téléversez la capture du paiement réussi avant l’envoi.",
+    "compressionError": "Impossible de traiter cette capture. Choisissez une capture nette du paiement."
+  },
+  "lookupErrors": {
+    "network": {
+      "title": "Connexion réseau indisponible",
+      "message": "Impossible de joindre le service. Vérifiez le réseau ou changez entre Wi-Fi et données mobiles, puis réessayez.",
+      "retryLabel": "Reconnecter"
+    },
+    "timeout": {
+      "title": "Réponse réseau lente",
+      "message": "La demande a expiré. Réessayez.",
+      "retryLabel": "Reconnecter"
+    },
+    "service": {
+      "title": "Service temporairement indisponible",
+      "message": "Réessayez plus tard ou contactez la réception.",
+      "retryLabel": "Reconnecter"
+    },
+    "rules": {
+      "title": "Règlement indisponible",
+      "message": "Réessayez ou contactez la réception.",
+      "retryLabel": "Recharger"
+    },
+    "expired": {
+      "title": "Ce code a expiré",
+      "message": "Ce code de check-in n’est plus valide. Contactez la réception.",
+      "retryLabel": "Retour"
+    },
+    "code": {
+      "title": "Code invalide",
+      "message": "Aucun enregistrement actif ne correspond. Vérifiez le code ou contactez la réception.",
+      "retryLabel": "Revérifier"
+    }
+  }
+}

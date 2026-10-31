@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>stayCube 全局语言预览</title>
+  <style>
+    :root { color-scheme:light; --ink:#0b1f44; --muted:#586b80; --blue:#176be8; --navy:#063884; --line:#d7e2ec; --bg:#f7f9fc; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:#eef1f5; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .workspace { max-width:1700px; margin:0 auto; padding:20px; }
+    h1 { margin:0; font-size:20px; }
+    .note { margin:7px 0 18px; color:#64758a; font-size:14px; line-height:1.6; max-width:900px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:28px; }
+    .label { margin:0 0 8px; font-size:14px; font-weight:700; }
+    .label small { display:block; margin-top:3px; color:#64758a; font-weight:400; line-height:1.5; }
+    .device { position:relative; width:min(375px,100%); height:760px; margin:0 auto; padding:8px; border-radius:43px; background:#25282c; box-shadow:0 20px 50px rgba(20,35,52,.24); }
+    .screen { position:relative; display:flex; height:100%; flex-direction:column; overflow:auto; border-radius:35px; background:var(--bg); }
+    .status { height:30px; flex:none; padding:7px 18px; color:#111; font-size:12px; }
+    .nav { position:relative; height:47px; flex:none; display:flex; align-items:center; justify-content:center; font-size:14px; }
+    .capsule { position:absolute; right:9px; width:77px; height:31px; border:1px solid #d7d7d7; border-radius:18px; background:white; }
+    .brand { height:50px; flex:none; display:flex; align-items:center; gap:8px; padding:0 20px; }
+    .brand img { width:58px; height:auto; }
+    .divider { height:20px; width:1px; background:var(--line); }
+    .brand b { margin-right:auto; font-size:15px; }
+    .lang-chip { display:flex; align-items:center; gap:5px; min-height:34px; padding:0 12px; border:1px solid var(--line); border-radius:17px; background:#fff; color:var(--ink); font-size:13px; font-weight:600; }
+    .lang-chip i { font-style:normal; color:var(--blue); font-size:11px; }
+    main { flex:1; padding:44px 20px 25px; }
+    h2 { margin:0; font-size:22px; line-height:1.3; }
+    .home h2 { font-size:22px; }
+    .intro { margin:6px 0 14px; color:var(--muted); font-size:14px; line-height:1.6; }
+    .service { display:flex; min-height:56px; align-items:center; justify-content:space-between; margin-bottom:10px; padding:0 11px; border:1px solid var(--line); border-radius:8px; background:#fff; font-size:15px; font-weight:700; }
+    .arrow { color:var(--blue); font-size:24px; }
+    footer { padding:10px 20px 22px; color:#91a1b3; text-align:center; font-size:11px; }
+    .overlay { position:absolute; inset:0; display:flex; align-items:flex-end; border-radius:35px; background:rgba(11,31,68,.42); }
+    .sheet { width:100%; padding:19px 18px 22px; border-radius:14px 14px 35px 35px; background:#fff; }
+    .sheet-head { display:flex; justify-content:space-between; align-items:flex-start; }
+    .sheet h3 { margin:0; font-size:18px; }
+    .sheet p { margin:6px 0 12px; color:var(--muted); font-size:12.5px; line-height:1.55; }
+    .close { color:#718198; font-size:24px; line-height:1; }
+    .lang-row { display:flex; align-items:center; justify-content:space-between; min-height:46px; padding:0 12px; margin-bottom:7px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-weight:600; }
+    .lang-row.on { border-color:var(--blue); background:#f2f7ff; color:var(--navy); }
+    .lang-row .tick { color:var(--blue); }
+    .steps { display:flex; gap:4px; margin:0 0 16px; }
+    .steps span { flex:1; height:4px; border-radius:2px; background:#dfe7f0; }
+    .steps span.on { background:var(--blue); }
+    .page-top { display:flex; justify-content:space-between; align-items:center; padding:0 20px; }
+    .page-top .lang-chip { min-height:30px; font-size:12px; }
+    .back { color:var(--muted); font-size:13px; }
+    .choice { display:flex; gap:12px; align-items:flex-start; padding:14px 12px; margin-bottom:10px; border:1px solid var(--line); border-radius:10px; background:#fff; }
+    .choice.on { border-color:var(--blue); background:#f2f7ff; }
+    .radio { flex:none; width:18px; height:18px; margin-top:2px; border:2px solid #b7c5d4; border-radius:50%; }
+    .choice.on .radio { border:5px solid var(--blue); }
+    .choice { align-items:center; }
+    .doc-icon { position:relative; flex:none; display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background:#eef3f8; }
+    .doc-icon svg { width:26px; height:26px; fill:none; stroke:#586b80; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+    .doc-icon em { display:none; position:absolute; right:-5px; bottom:-5px; width:18px; height:18px; border:2px solid #f2f7ff; border-radius:50%; background:var(--blue); color:#fff; font-style:normal; font-size:10px; line-height:14px; text-align:center; }
+    .choice.on .doc-icon { background:#e3edff; }
+    .choice.on .doc-icon svg { stroke:var(--blue); }
+    .choice.on .doc-icon em { display:block; }
+    .choice b { display:block; font-size:15px; }
+    .choice span { display:block; margin-top:4px; color:var(--muted); font-size:12.5px; line-height:1.5; }
+    .primary { display:block; width:100%; min-height:46px; margin-top:16px; border:0; border-radius:8px; background:var(--navy); color:#fff; font:inherit; font-size:15px; font-weight:600; }
+    .field { margin-bottom:14px; }
+    .field-label { display:block; margin-bottom:7px; font-size:13.5px; font-weight:600; }
+    .seg { display:flex; gap:8px; }
+    .seg span { flex:1; display:flex; align-items:center; justify-content:center; min-height:40px; border:1px solid var(--line); border-radius:8px; background:#fff; font-size:14px; }
+    .seg span.on { border-color:var(--blue); background:#f2f7ff; color:var(--navy); font-weight:600; }
+    .phone { display:flex; gap:8px; }
+    .cc { flex:none; display:flex; align-items:center; gap:5px; min-height:44px; padding:0 11px; border:1px solid var(--line); border-radius:8px; background:#fff; font-size:14px; font-weight:600; }
+    .cc i { font-style:normal; color:var(--blue); font-size:10px; }
+    .input { flex:1; display:flex; align-items:center; min-height:44px; padding:0 12px; border:1px solid var(--line); border-radius:8px; background:#fff; font-size:14px; }
+    .hint { margin-top:6px; color:#7a8ca0; font-size:12px; line-height:1.5; }
+    .ann { margin-top:10px; padding:10px 12px; border-left:3px solid #f0a020; border-radius:4px; background:#fff8ea; color:#6a4d12; font-size:12.5px; line-height:1.6; }
+  </style>
+</head>
+<body>
+<div class="workspace">
+  <h1>全局语言 · 证件类型 · 区号联系方式</h1>
+  <p class="note">语言改为全局设置：首次进入按微信界面语言自动选择，手动切换后记住本机选择。语言只决定显示文字；入住流程由「证件类型」决定，手机号校验由「区号」决定。三个功能入口不再出现语言选择页。</p>
+  <div class="grid">
+
+    <section>
+      <p class="label">① 首页（新增语言切换）<small>品牌行右侧显示当前语言；首页文案随语言切换。</small></p>
+      <div class="device"><div class="screen home">
+        <div class="status">9:41</div><div class="nav">stayCube<div class="capsule"></div></div>
+        <div class="brand"><img src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"><i class="divider"></i><b>stayCube</b><span class="lang-chip">中文 <i>▼</i></span></div>
+        <main>
+          <h2>自助服务</h2>
+          <p class="intro">请选择需要办理的服务</p>
+          <div class="service">自助入住登记 <span class="arrow">›</span></div>
+          <div class="service">自助行李寄存 <span class="arrow">›</span></div>
+          <div class="service">预抵问卷 <span class="arrow">›</span></div>
+        </main>
+        <footer>Powered by stayCube</footer>
+      </div></div>
+      <div class="ann">首页标题、说明、入口名称、草稿恢复弹窗需补齐 8 种语言文案（目前只有中文）。</div>
+    </section>
+
+    <section>
+      <p class="label">② 语言选择面板<small>点击语言按钮弹出；选择后立即生效并保存在本机。</small></p>
+      <div class="device"><div class="screen home">
+        <div class="status">9:41</div><div class="nav">stayCube<div class="capsule"></div></div>
+        <div class="brand"><img src="../miniprogram/assets/sifang-blue.png" alt=""><i class="divider"></i><b>stayCube</b><span class="lang-chip">English <i>▼</i></span></div>
+        <main><h2>Self-service</h2><p class="intro">Please choose a service</p></main>
+        <div class="overlay"><div class="sheet">
+          <div class="sheet-head"><h3>选择语言 · Language</h3><span class="close">×</span></div>
+          <p>已根据微信语言自动选择，可随时更改。</p>
+          <div class="lang-row">简体中文</div>
+          <div class="lang-row on">English <span class="tick">✓</span></div>
+          <div class="lang-row">Deutsch</div>
+          <div class="lang-row">Français</div>
+          <div class="lang-row">Español</div>
+          <div class="lang-row">Italiano</div>
+          <div class="lang-row">日本語</div>
+          <div class="lang-row">한국어</div>
+        </div></div>
+      </div></div>
+      <div class="ann">自动识别规则：zh_CN/zh_TW/zh_HK → 简体中文；en/de/fr/es/it/ja/ko → 对应语言；其他 → English。手动选择优先于自动识别。</div>
+    </section>
+
+    <section>
+      <p class="label">③ 自助入住 · 新增证件类型（在公安登记/护照步骤之前）<small>默认不预选，旅客必须选择后才能继续。</small></p>
+      <div class="device"><div class="screen">
+        <div class="status">9:41</div><div class="nav">stayCube<div class="capsule"></div></div>
+        <div class="page-top"><span class="back">‹ 上一步</span><span class="lang-chip">中文 <i>▼</i></span></div>
+        <main style="padding-top:18px">
+          <div class="steps"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+          <h2>请选择您的证件类型</h2>
+          <p class="intro">证件类型决定下一步的登记方式，与界面语言无关。</p>
+          <div class="choice on"><i class="doc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.2 16.2c.6-1.6 1.8-2.4 3.3-2.4s2.7.8 3.3 2.4M14 10h4.5M14 13.5h3"/></svg><em>✓</em></i><div><b>我持中国大陆身份证</b></div></div>
+          <div class="choice"><i class="doc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2"/><circle cx="12" cy="10" r="3.3"/><path d="M8.7 10h6.6M12 6.7c-1 .9-1.5 2-1.5 3.3s.5 2.4 1.5 3.3c1-.9 1.5-2 1.5-3.3S13 7.6 12 6.7M9 17h6"/></svg><em>✓</em></i><div><b>我持护照或其他证件</b></div></div>
+          <button class="primary">下一步</button>
+        </main>
+      </div></div>
+      <div class="ann">需后端配合：提交时新增 <code>document_type</code>（mainland_id / passport），后台按此字段判断公安码或护照，不再按 locale 判断；Web 端未传此字段时沿用 locale 兼容。</div>
+    </section>
+
+    <section>
+      <p class="label">④ 行李寄存/预抵问卷 · 联系方式<small>所有语言都可选择手机号或邮箱；手机号带区号。</small></p>
+      <div class="device"><div class="screen">
+        <div class="status">9:41</div><div class="nav">stayCube<div class="capsule"></div></div>
+        <div class="page-top"><span class="back">‹ 返回</span><span class="lang-chip">English <i>▼</i></span></div>
+        <main style="padding-top:18px">
+          <h2>Contact details</h2>
+          <p class="intro">We will contact you about your luggage.</p>
+          <div class="field"><span class="field-label">Contact method</span><div class="seg"><span class="on">Phone</span><span>Email</span></div></div>
+          <div class="field"><span class="field-label">Phone number</span>
+            <div class="phone"><span class="cc">+86 <i>▼</i></span><span class="input">138 0013 8000</span></div>
+            <div class="hint">+86 requires an 11-digit mainland mobile number.</div>
+          </div>
+          <button class="primary">Next</button>
+        </main>
+      </div></div>
+      <div class="ann">区号默认 +86；选 +86 时校验 11 位大陆手机号，其他区号校验 6–15 位数字。提交的号码为 +区号格式。需后端配合：行李寄存去掉「中文不能选邮箱」的限制。</div>
+    </section>
+
+  </div>
+</div>
+</body>
+</html>

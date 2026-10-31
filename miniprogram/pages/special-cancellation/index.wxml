@@ -1,0 +1,193 @@
+<view class="page cancellation-page">
+  <view class="page-head">
+    <image class="brand-logo" src="/assets/sifang-blue.png" mode="heightFix" />
+    <text class="brand-divider"></text>
+    <text class="brand-product">stayCube</text>
+  </view>
+
+  <!-- 申请码 -->
+  <view wx:if="{{screen === 'access'}}" class="screen access-screen">
+    <text class="screen-title">申请特殊取消</text>
+    <text class="body-copy">请输入前台 staff 提供的六位申请码。</text>
+    <view class="field-block">
+      <text class="field-label">申请码</text>
+      <input class="text-input code-input" value="{{code}}" type="number" maxlength="6" bindinput="updateCode" bindconfirm="verifyCode" />
+    </view>
+    <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+    <view class="form-actions">
+      <button class="secondary-button form-action" bindtap="returnHome">返回</button>
+      <button class="primary-button form-action" bindtap="verifyCode" loading="{{checkingCode}}" disabled="{{checkingCode}}"><text class="button-label">{{checkingCode ? '验证中…' : '继续'}}</text><text class="button-arrow">→</text></button>
+    </view>
+  </view>
+
+  <!-- 填写申请 -->
+  <view wx:if="{{screen === 'form'}}" class="screen form-screen">
+    <text class="eyebrow">特殊取消申请 · {{item.application_no}}</text>
+    <text class="screen-title">申请特殊取消</text>
+    <text class="body-copy">申请通过之前，你的订单将按照原取消政策执行。填写内容会在继续下一步时保存。</text>
+
+    <view wx:if="{{step === 1}}" class="form-step">
+      <text wx:if="{{!item.booking_number}}" class="field-hint status-hint">尚未填写订单号。请填写真实订单号后继续；如无法找到，请联系前台 staff。</text>
+      <view class="form-section">
+        <view class="field-block first-field">
+          <text class="field-label">订单号 *</text>
+          <input class="text-input" value="{{item.booking_number}}" data-field="booking_number" bindinput="updateField" maxlength="80" />
+          <text class="field-hint">如有多笔订单，请分别填写申请。</text>
+        </view>
+        <view class="field-block">
+          <text class="field-label">联系方式 *</text>
+          <input class="text-input" value="{{item.guest_phone}}" data-field="guest_phone" bindinput="updateField" type="text" maxlength="60" />
+        </view>
+      </view>
+      <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+      <view class="form-actions">
+        <button class="secondary-button form-action" bindtap="returnHome">返回</button>
+        <button class="primary-button form-action {{!canContinueBasic || saving ? 'is-button-disabled' : ''}}" data-step="2" bindtap="advanceStep" loading="{{saving}}" disabled="{{!canContinueBasic || saving}}"><text class="button-label">继续</text><text class="button-arrow">→</text></button>
+      </view>
+    </view>
+
+    <view wx:if="{{step === 2}}" class="form-step">
+      <view class="form-section">
+        <view class="field-block first-field">
+          <text class="field-label">主要原因 *</text>
+          <picker mode="selector" range="{{reasonCategories}}" value="{{reasonCategoryIndex}}" bindchange="updateReasonCategory"><view class="picker-value"><text class="{{item.reason_category ? '' : 'placeholder'}}">{{item.reason_category || '请选择'}}</text><text class="picker-arrow">⌄</text></view></picker>
+        </view>
+        <view class="field-block">
+          <text class="field-label">具体情况 *</text>
+          <picker mode="selector" range="{{reasonSubcategories}}" value="{{reasonSubcategoryIndex}}" disabled="{{!item.reason_category}}" bindchange="updateReasonSubcategory"><view class="picker-value {{item.reason_category ? '' : 'is-disabled'}}"><text class="{{item.reason_subcategory ? '' : 'placeholder'}}">{{item.reason_subcategory || '请选择'}}</text><text class="picker-arrow">⌄</text></view></picker>
+        </view>
+        <block wx:if="{{item.reason_subcategory === '航班列车异常'}}">
+          <view class="field-block">
+            <text class="field-label">交通方式 *</text>
+            <picker mode="selector" range="{{transportModes}}" value="{{transportModeIndex}}" bindchange="updateTransportMode"><view class="picker-value"><text class="{{item.transport_mode ? '' : 'placeholder'}}">{{item.transport_mode || '请选择'}}</text><text class="picker-arrow">⌄</text></view></picker>
+          </view>
+          <view class="field-block">
+            <text class="field-label">班次 *</text>
+            <input class="text-input" value="{{item.transport_trip}}" data-field="transport_trip" bindinput="updateField" maxlength="40" />
+          </view>
+          <view class="field-block">
+            <text class="field-label">日期 *</text>
+            <picker mode="date" value="{{item.transport_date}}" bindchange="updateTransportDate"><view class="picker-value"><text class="{{item.transport_date ? '' : 'placeholder'}}">{{item.transport_date || '请选择'}}</text><text class="picker-arrow">⌄</text></view></picker>
+          </view>
+        </block>
+        <view class="field-block">
+          <text class="field-label">原因补充说明</text>
+          <textarea class="text-area" value="{{item.description}}" placeholder="此项非必填" data-field="description" bindinput="updateField" maxlength="2000" auto-height="{{false}}" />
+        </view>
+      </view>
+
+      <view class="form-section material-section">
+        <view class="material-header">
+          <view class="material-heading">
+            <text class="form-section-title">证明材料{{item.reason_category === '不可抗力' ? ' *' : ''}}</text>
+            <text class="field-hint">{{item.reason_subcategory === '航班列车异常' ? '请分别选择“班次异常”和“本人购买／乘坐”材料用途。' : '最多可上传 5 项。提交的凭证用于本次审核及后续争议判定。'}}</text>
+          </view>
+          <text class="material-count">{{materialCount}}/5</text>
+        </view>
+        <view wx:for="{{materials}}" wx:key="id" class="material-row">
+          <view class="material-upload">
+            <text class="material-name">{{item.attachment ? item.attachment.original_name : '第 ' + (index + 1) + ' 份证明'}}</text>
+            <button class="material-choose" data-index="{{index}}" bindtap="chooseMaterial" disabled="{{uploading || saving || submitting}}">{{item.attachment ? '重新选择' : '选择照片或 PDF'}}</button>
+          </view>
+          <view class="field-block">
+            <text class="field-label">材料用途</text>
+            <picker mode="selector" range="{{purposeLabels}}" value="{{item.purposeIndex}}" data-index="{{index}}" bindchange="updateMaterialPurpose"><view class="picker-value">{{purposeLabels[item.purposeIndex]}}<text class="picker-arrow">⌄</text></view></picker>
+          </view>
+          <textarea class="text-area material-description" value="{{item.description}}" placeholder="针对该证明的文字说明" data-index="{{index}}" bindinput="updateMaterialDescription" maxlength="500" />
+        </view>
+        <button wx:if="{{materials.length < 5}}" class="add-material" bindtap="addMaterialRow" disabled="{{uploading}}">＋ 新增材料</button>
+      </view>
+      <text wx:if="{{uploading}}" class="status-line">正在安全上传材料…</text>
+      <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+      <view class="form-actions">
+        <button class="secondary-button form-action" bindtap="backToBasic" disabled="{{uploading}}">上一步</button>
+        <button class="primary-button form-action {{!canContinueReason || saving || uploading ? 'is-button-disabled' : ''}}" data-step="3" bindtap="advanceStep" loading="{{saving}}" disabled="{{!canContinueReason || saving || uploading}}"><text class="button-label">继续</text><text class="button-arrow">→</text></button>
+      </view>
+    </view>
+
+    <view wx:if="{{step === 3}}" class="form-step">
+      <view class="form-section">
+        <text class="form-section-title">确认提交</text>
+        <text class="field-hint">请确认以下声明，并在下方手写签名。</text>
+        <checkbox-group class="declaration-list" bindchange="updateDeclarations">
+          <label wx:for="{{declarations}}" wx:key="key" class="notice-row"><checkbox value="{{item.key}}" checked="{{item.checked}}" color="#176BE8" /><text>{{item.text}}</text></label>
+        </checkbox-group>
+      </view>
+      <view class="form-section">
+        <text class="form-section-title">手写签名 *</text>
+        <view class="signature-wrap">
+          <canvas id="signature-canvas" type="2d" class="signature-canvas" disable-scroll="true" bindtouchstart="signatureStart" bindtouchmove="signatureMove" bindtouchend="signatureEnd"></canvas>
+          <text wx:if="{{!hasSignature}}" class="signature-placeholder">请在此处手写签名</text>
+        </view>
+        <button class="text-button" bindtap="clearSignature" disabled="{{!signatureReady}}">重新签名</button>
+      </view>
+      <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+      <view class="form-actions">
+        <button class="secondary-button form-action" data-step="2" bindtap="advanceStep" disabled="{{submitting}}">上一步</button>
+        <button class="primary-button form-action {{!canSubmit || submitting ? 'is-button-disabled' : ''}}" bindtap="submit" loading="{{submitting}}" disabled="{{!canSubmit || submitting || saving}}"><text class="button-label">{{submitting ? '正在提交…' : '提交申请'}}</text><text class="button-arrow">→</text></button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 申请进度 -->
+  <view wx:if="{{screen === 'progress'}}" class="screen progress-screen">
+    <text class="eyebrow">特殊取消申请 · {{item.application_no}}</text>
+    <view class="status-card">
+      <text class="status-caption">当前状态</text>
+      <text class="status-value">{{progress.statusLabel}}</text>
+      <text class="status-next">{{progress.nextAction}}</text>
+    </view>
+
+    <view wx:if="{{item.decision}}" class="form-section">
+      <text class="form-section-title">最近一次审核结果</text>
+      <text class="summary-strong">{{progress.decisionResult}}</text>
+      <text wx:if="{{progress.decisionNote}}" class="note-box">{{progress.decisionNote}}</text>
+    </view>
+
+    <view class="form-section">
+      <text class="form-section-title">申请信息</text>
+      <view class="summary-row"><text class="summary-label">订单号</text><text class="summary-value">{{item.booking_number || '—'}}</text></view>
+      <view class="summary-row"><text class="summary-label">申请原因</text><text class="summary-value">{{progress.reason}}</text></view>
+      <view class="summary-row"><text class="summary-label">原因补充说明</text><text class="summary-value">{{item.description || '—'}}</text></view>
+      <view class="summary-row"><text class="summary-label">最近提交时间</text><text class="summary-value">{{progress.submittedAt}}</text></view>
+    </view>
+
+    <view class="form-section">
+      <view class="material-header"><text class="form-section-title">已提交的证明材料</text><text class="material-count">{{item.guest_material_count}}/{{item.guest_material_limit}}</text></view>
+      <view wx:for="{{progress.attachments}}" wx:key="id" class="attachment-item">
+        <view class="attachment-top"><text class="attachment-name">{{item.name}}</text><text wx:if="{{item.isNew}}" class="new-badge">本轮新增</text></view>
+        <text class="attachment-purpose">{{item.purpose}}</text>
+        <text wx:if="{{item.description}}" class="attachment-description">{{item.description}}</text>
+      </view>
+      <text wx:if="{{!progress.attachments.length}}" class="field-hint">暂无证明材料。</text>
+    </view>
+
+    <view wx:if="{{progress.needMoreInfo}}" class="form-section">
+      <text class="form-section-title">补充资料</text>
+      <text wx:if="{{progress.atLimit}}" class="field-hint">材料已达上限，请联系前台 staff。</text>
+      <block wx:elif="{{progress.canSupplement}}">
+        <text class="body-copy">请根据管理员的审核意见补充证明材料。原申请内容与已提交材料保持不变，每份材料最多 5 项。</text>
+        <button class="add-material" bindtap="addSupplementMaterial" disabled="{{uploading || submitting}}">＋ 添加照片或 PDF</button>
+        <text class="field-hint">本轮已新增 {{progress.currentRoundCount}} 项；至少新增一份证明材料后才能提交。</text>
+        <button class="primary-button form-action supplement-submit {{uploading || submitting || !progress.currentRoundCount ? 'is-button-disabled' : ''}}" bindtap="submitSupplement" loading="{{submitting}}" disabled="{{uploading || submitting || !progress.currentRoundCount}}"><text class="button-label">{{submitting ? '正在提交补充资料…' : '提交补充资料'}}</text></button>
+      </block>
+      <text wx:else class="field-hint">补充期限已过，请联系前台 staff 继续处理。</text>
+      <text wx:if="{{uploading}}" class="status-line">正在安全上传材料…</text>
+    </view>
+
+    <view class="form-section">
+      <text class="form-section-title">处理进度</text>
+      <view wx:for="{{progress.events}}" wx:key="id" class="timeline-item">
+        <text class="timeline-time">{{item.time}}</text>
+        <text class="timeline-title">{{item.title}}</text>
+        <text wx:if="{{item.note}}" class="timeline-note">{{item.note}}</text>
+      </view>
+      <text wx:if="{{!progress.events.length}}" class="field-hint">暂无处理记录。</text>
+    </view>
+    <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+    <view class="form-actions"><button class="secondary-button form-action" bindtap="returnHome" disabled="{{uploading || submitting}}">返回首页</button></view>
+  </view>
+
+  <view class="page-foot">Powered by stayCube</view>
+  <canvas id="photo-processing-canvas" type="2d" class="photo-processing-canvas"></canvas>
+</view>

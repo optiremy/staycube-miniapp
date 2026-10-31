@@ -1,0 +1,40 @@
+.home-page { min-height: 100vh; box-sizing: border-box; padding: 28rpx 40rpx calc(52rpx + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+.home-page .page-head { height: 56rpx; display:flex; align-items:center; gap:14rpx; }
+.home-page .brand-logo { height:42rpx; width:106rpx; }
+.home-page .brand-divider { width:1rpx; height:30rpx; background:#d7e2ec; margin:0 2rpx; }
+.home-page .brand-product { margin-right:auto; color:#0b1f44; font-size:27rpx; font-weight:700; }
+.home-main { flex:1; display:flex; flex-direction:column; justify-content:flex-start; padding-top:100rpx; }
+.home-mark { width:96rpx; height:96rpx; border-radius:28rpx; background:#e9f1ff; display:flex; align-items:center; justify-content:center; margin-bottom:34rpx; }
+.home-mark-inner { position:relative; width:38rpx; height:38rpx; border:7rpx solid #176be8; border-radius:12rpx; }
+.home-mark-inner::after { content:''; position:absolute; left:6rpx; top:6rpx; width:12rpx; height:12rpx; border-radius:4rpx; background:#176be8; }
+.home-title { margin-top:0; color:#0b1f44; font-size:44rpx; line-height:1.3; font-weight:700; }
+.home-intro { margin-top:12rpx; color:#586b80; font-size:27rpx; line-height:1.6; }
+.service-list { display:flex; flex-direction:column; gap:20rpx; margin-top:28rpx; }
+.service-card { padding:0 22rpx; background:#fff; border:1rpx solid #d7e2ec; border-radius:16rpx; }
+.home-page .service-open { position:relative; min-height:112rpx; width:100%; padding:16rpx 0 !important; margin:0; border:0; background:transparent; text-align:left !important; display:flex !important; align-items:center !important; justify-content:flex-start !important; }
+.home-page .service-open::after { border:0; }
+.home-page .service-copy { position:absolute; left:0; top:50%; width:auto; max-width:calc(100% - 60rpx); display:flex; flex-direction:column; align-items:flex-start !important; justify-content:center; gap:7rpx; transform:translateY(-50%); text-align:left !important; }
+.home-page .service-title { color:#0b1f44; font-size:30rpx; line-height:1.4; font-weight:700; text-align:left !important; }
+.service-arrow { position:absolute; right:0; top:50%; transform:translateY(-50%); color:#176be8; font-size:48rpx; }
+.page-foot { margin-top:auto; color:#91a1b3; text-align:center; font-size:22rpx; }
+.home-indicator { position:fixed; left:50%; bottom:calc(12rpx + env(safe-area-inset-bottom)); width:240rpx; height:10rpx; margin-left:-120rpx; background:#111; border-radius:12rpx; }
+
+.draft-modal-mask { position:fixed; z-index:20; inset:0; display:flex; align-items:flex-end; background:rgba(11,31,68,.42); }
+.draft-modal { width:100%; box-sizing:border-box; padding:38rpx 36rpx calc(30rpx + env(safe-area-inset-bottom)); border-radius:28rpx 28rpx 0 0; background:#fff; box-shadow:0 -12rpx 48rpx rgba(11,31,68,.12); }
+.draft-modal-header { display:flex; align-items:flex-start; justify-content:space-between; gap:20rpx; }
+.draft-modal-heading { flex:1; min-width:0; display:flex; flex-direction:column; gap:12rpx; }
+.draft-modal-title { color:#0b1f44; font-size:36rpx; line-height:1.35; font-weight:700; }
+.draft-modal-intro { color:#586b80; font-size:25rpx; line-height:1.55; }
+.draft-modal-close { flex:none; width:64rpx; height:64rpx; margin:-8rpx -10rpx 0 0; padding:0; border:0; background:transparent; color:#718198; font-size:48rpx; line-height:64rpx; }
+.draft-modal-close::after, .draft-resume-button::after, .draft-delete-button::after, .draft-modal-later::after { border:0; }
+.draft-card { margin-top:28rpx; padding:24rpx; border:1rpx solid #d7e2ec; border-radius:18rpx; background:#f8fbff; }
+.draft-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:18rpx; }
+.draft-identity { min-width:0; display:flex; flex-direction:column; gap:10rpx; }
+.draft-name { color:#0b1f44; font-size:30rpx; line-height:1.4; font-weight:700; }
+.draft-meta { color:#586b80; font-size:23rpx; line-height:1.5; overflow-wrap:anywhere; }
+.draft-step-badge { flex:none; max-width:180rpx; padding:8rpx 14rpx; border-radius:999rpx; background:#e9f1ff; color:#063884; font-size:21rpx; line-height:1.35; text-align:center; }
+.draft-actions { display:flex; align-items:center; gap:14rpx; margin-top:22rpx; }
+.draft-resume-button { flex:1; height:84rpx; margin:0; border-radius:12rpx; background:#063884; color:#fff; font-size:27rpx; line-height:84rpx; font-weight:600; }
+.draft-button-arrow { margin-left:12rpx; font-size:30rpx; }
+.draft-delete-button { flex:none; height:84rpx; margin:0; padding:0 24rpx; border-radius:12rpx; background:#fff; color:#586b80; border:1rpx solid #d7e2ec; font-size:25rpx; line-height:82rpx; }
+.draft-modal-later { width:100%; height:76rpx; margin:18rpx 0 0; padding:0; background:transparent; color:#586b80; font-size:25rpx; line-height:76rpx; }

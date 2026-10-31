@@ -1,0 +1,62 @@
+<view class="page pre-arrival-page">
+  <view class="page-head">
+    <image class="brand-logo" src="/assets/sifang-blue.png" mode="heightFix" />
+    <text class="brand-divider"></text>
+    <text class="brand-product">stayCube</text>
+    <language-switcher id="lang-switcher" wx:if="{{screen === 'form'}}" locale="{{locale}}" bindchange="changeLocale" />
+  </view>
+
+  <view wx:if="{{screen === 'form'}}" class="screen pre-arrival-form-screen">
+    <text class="screen-title">{{text.title}}</text>
+    <text class="body-copy pre-arrival-intro">{{text.intro}}</text>
+    <view class="pre-arrival-form">
+      <view class="field-block"><text class="field-label">{{text.name}}</text><input class="text-input" maxlength="160" value="{{form.guestName}}" data-field="guestName" bindinput="updateForm" /></view>
+      <view class="field-block"><text class="field-label">{{text.contact}}</text>
+        <radio-group class="contact-options" bindchange="changeContactMethod">
+          <label class="contact-option"><radio value="phone" checked="{{form.contactMethod === 'phone'}}" color="#176BE8" /><text>{{text.phone}}</text></label>
+          <label class="contact-option"><radio value="email" checked="{{form.contactMethod === 'email'}}" color="#176BE8" /><text>{{text.email}}</text></label>
+        </radio-group>
+      </view>
+      <view wx:if="{{form.contactMethod === 'phone'}}" class="field-block"><text class="field-label">{{globalText.contact.phoneLabel}}</text>
+        <view class="phone-row">
+          <picker mode="selector" range="{{countryCodes}}" bindchange="updateCountryCode"><view class="country-code">{{form.countryCode}}<text class="country-code-arrow">▼</text></view></picker>
+          <input class="text-input phone-number-input" type="number" maxlength="{{form.countryCode === '+86' ? 11 : 15}}" value="{{form.contactValue}}" data-field="contactValue" bindinput="updateForm" />
+        </view>
+        <text wx:if="{{form.countryCode === '+86'}}" class="field-hint">{{globalText.phone.mainlandHint}}</text>
+      </view>
+      <view wx:else class="field-block"><text class="field-label">{{text.email}}</text><input class="text-input" type="text" maxlength="200" value="{{form.contactValue}}" data-field="contactValue" bindinput="updateForm" /></view>
+      <view class="field-block"><text class="field-label">{{text.arrival}}</text><picker mode="time" value="{{form.arrivalTime}}" data-field="arrivalTime" bindchange="updateForm"><view class="picker-value">{{form.arrivalTime}}<text class="picker-arrow">⌄</text></view></picker></view>
+      <view class="field-block"><text class="field-label">{{text.bed}}</text>
+        <radio-group class="bed-options" bindchange="changeBedPreference">
+          <label class="bed-option"><radio value="upper" checked="{{form.bedPreference === 'upper'}}" color="#176BE8" /><text>{{text.upper}}</text></label>
+          <label class="bed-option"><radio value="lower" checked="{{form.bedPreference === 'lower'}}" color="#176BE8" /><text>{{text.lower}}</text></label>
+          <label class="bed-option"><radio value="all" checked="{{form.bedPreference === 'all'}}" color="#176BE8" /><text>{{text.all}}</text></label>
+        </radio-group>
+        <text class="field-hint">{{text.bedHint}}</text>
+      </view>
+      <view class="field-block"><text class="field-label">{{text.note}}</text><textarea class="text-area" maxlength="2000" value="{{form.guestNote}}" data-field="guestNote" bindinput="updateForm" /></view>
+    </view>
+    <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+    <view class="form-actions"><button class="secondary-button form-action" bindtap="returnHome" disabled="{{submitting}}"><text class="button-label">{{text.back}}</text></button><button class="primary-button form-action {{submitting ? 'is-button-disabled' : ''}}" bindtap="submit" loading="{{submitting}}" disabled="{{submitting}}"><text class="button-label">{{submitting ? text.submitting : text.submit}}</text><text class="button-arrow">→</text></button></view>
+  </view>
+
+  <view wx:if="{{screen === 'result'}}" class="screen pre-arrival-result-screen">
+    <view class="success-symbol"><view class="success-check"></view></view>
+    <text class="screen-title">{{notice === 'early' ? text.earlyTitle : notice === 'late' ? text.lateTitle : text.success}}</text>
+    <text class="body-copy result-copy">{{notice === 'early' ? text.earlyText : notice === 'late' ? text.lateText : text.successText}}</text>
+    <view wx:if="{{notice === 'late'}}" class="late-contact-card">
+      <view><text class="field-label">{{text.phoneTitle}}</text><text class="contact-value">18700997742</text></view>
+      <view class="wecom-code"><text class="field-label">{{text.wecom}}</text><image src="/assets/pre-arrival-wecom-contact.png" mode="widthFix" /></view>
+    </view>
+    <view class="arrival-guide-card"><text class="section-heading-text">{{text.guideTitle}}</text><text class="guide-description">{{text.guideText}}</text><image wx:if="{{!guideImageFailed}}" class="arrival-guide-image" src="/assets/pre-arrival-daytime-guide.jpg" mode="widthFix" show-menu-by-longpress="{{true}}" bindtap="previewGuideImage" binderror="onGuideImageError" /><text wx:else class="guide-description">{{text.guideText}}</text><text wx:if="{{!guideImageFailed}}" class="guide-save-hint">{{text.guideSaveHint}}</text></view>
+    <view class="destination-card">
+      <text class="section-heading-text">{{text.mapTitle}}</text>
+      <text class="destination-message">{{text.mapPrompt}}</text>
+      <text class="destination-address">{{text.destinationAddress}}</text>
+      <button class="primary-button destination-button" bindtap="openMap">{{text.openMap}}</button>
+    </view>
+    <button class="secondary-button another-form-button" bindtap="newSubmission">{{text.another}}</button>
+  </view>
+
+  <view class="page-foot">Powered by stayCube</view>
+</view>

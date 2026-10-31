@@ -1,0 +1,126 @@
+// Edit the quoted text to change this language in the mini program.
+module.exports = {
+  "label": "Español",
+  "text": {
+    "eyebrow": "SELF CHECK-IN",
+    "languageTitle": "Elija un idioma",
+    "languageTitleEnglish": "PLEASE SELECT A REGISTRATION LANGUAGE",
+    "accessCodeTitle": "Introduzca el código de 6 dígitos que le proporcionó recepción\npara comenzar",
+    "accessCodeLabel": "Código de entrada autónoma",
+    "accessCodePlaceholder": "Introduzca el código de 6 dígitos",
+    "accessCodeChecking": "Comprobando...",
+    "enterFlowLabel": "Comenzar registro",
+    "accessCodeInvalidError": "Introduzca un código de 6 dígitos.",
+    "accessCodeUnavailableError": "El código no existe o ha caducado.",
+    "loadingContext": "Cargando el registro...",
+    "unavailableTitle": "Registro no disponible",
+    "unavailableMessage": "No se puede abrir este registro ahora. Contacte con recepción.",
+    "backToCode": "Volver al código",
+    "submittedTitle": "Registro enviado",
+    "submittedMessage": "Una vez que recepción haya revisado su registro, le enviará el código de acceso, los números de habitación y cama, y el número asignado a sus zapatillas.",
+    "submittedNotice": "Si tiene alguna pregunta, póngase en contacto con nosotros antes de las 22:30 del día de su llegada.",
+    "nameCorrectionHint": "Si tu nombre es incorrecto, contacta con recepción.",
+    "title": "Registro autónomo de Sifang Space",
+    "stepsAriaLabel": "Pasos del registro",
+    "stepTitles": [
+      "Información básica",
+      "Normas de alojamiento",
+      "Firma",
+      "Registro policial",
+      "Depósito"
+    ],
+    "basicSectionTitle": "1. Información básica",
+    "guestNameLabel": "Nombre completo",
+    "contactLabel": "Método de contacto",
+    "guestNoteLabel": "Nota",
+    "rulesSectionTitle": "2. Normas de alojamiento",
+    "previousRuleLabel": "Anterior",
+    "nextRuleLabel": "Siguiente",
+    "confirmedRuleLabel": "Confirmado",
+    "basicInfoError": "Complete la información básica.",
+    "rulesIncompleteError": "Lea y confirme todas las normas.",
+    "signatureSectionTitle": "3. Firma",
+    "rulesFinalConfirmLabel": "He leído y confirmado todas las normas",
+    "signatureLabel": "Firma manuscrita",
+    "clearSignatureLabel": "Borrar y volver a escribir",
+    "signatureHint": "Marque la confirmación antes de firmar.",
+    "signatureError": "Confirme todas las normas y complete su firma.",
+    "policeSectionTitle": "4. Código de registro policial",
+    "policeDescription": "Escanee el código QR con su teléfono y complete el registro según las instrucciones. La página generará un código de 6 dígitos; introdúzcalo abajo para que recepción lo verifique.",
+    "policeQrTitle": "Código QR de registro policial",
+    "policeQrInstruction": "Toque el código QR para abrir la vista previa y luego mantenga pulsada la imagen. Si aparece «Reconocer código QR en la imagen», selecciónelo. Si no, guarde la imagen desde el menú y selecciónela del álbum en Escanear de Alipay.",
+    "policeCodeLabel": "Código policial de 6 dígitos",
+    "policeCompleteLabel": "Confirmo que he completado el registro policial",
+    "policeCodeError": "El código debe tener 6 dígitos.",
+    "policeCompleteError": "Confirme que completó el registro policial.",
+    "depositSectionTitle": "5. Pago del depósito",
+    "depositDescription": "Escanee el código QR para pagar un depósito de 100 CNY por persona. Se devolverá al medio de pago original el mismo día, después de que el personal compruebe el registro.",
+    "depositQrTitle": "Código QR del depósito",
+    "depositQrInstruction": "Guarde la imagen y use Escanear de WeChat o Alipay para seleccionarla de su álbum y leer el código QR para completar el pago.",
+    "depositConfirmLabel": "Confirmo que pagué el depósito según las instrucciones",
+    "depositConfirmError": "Confirme el pago del depósito.",
+    "backLabel": "Volver",
+    "previousStepLabel": "Paso anterior",
+    "nextStepLabel": "Siguiente paso",
+    "submitLabel": "Enviar registro",
+    "submittingLabel": "Enviando...",
+    "loadingError": "No se puede cargar el registro.",
+    "submitError": "No se pudo enviar. Revise los datos e inténtelo de nuevo.",
+    "testCompletedTitle": "Prueba completada",
+    "testCompletedMessage": "Esta prueba solo sirve para revisar las pantallas y el flujo. No se envió ningún registro, no se subieron archivos ni se activó ninguna cerradura."
+  },
+  "foreignDocuments": {
+    "stepTitle": "Documentos de viaje",
+    "sectionTitle": "4. Fotos de documentos de viaje",
+    "description": "Tome y cargue las dos fotos de documentos obligatorias. La recepción completará el registro policial después de revisarlas.",
+    "passportLabel": "Página de datos personales del pasaporte",
+    "visaOrEntryLabel": "Página de visado / registro de entrada",
+    "photoHint": "Tome una foto clara o elija una del álbum. El nombre, número de pasaporte y fechas deben leerse con claridad.",
+    "replaceLabel": "Tomar / reemplazar foto",
+    "missingError": "Cargue las dos fotos de documentos obligatorias.",
+    "compressionError": "No se pudo comprimir esta foto. Tome otra foto clara e inténtelo de nuevo.",
+    "depositInstruction": "Haga una captura y después pague con WeChat Pay o elija el código QR del álbum en Alipay."
+  },
+  "depositProof": {
+    "title": "Subir comprobante de pago",
+    "empty": "No se ha elegido ninguna captura",
+    "upload": "Elegir captura",
+    "replace": "Cambiar captura",
+    "selected": "Captura de pago seleccionada",
+    "previewAlt": "Vista previa del pago",
+    "missingError": "Sube una captura del pago realizado antes de enviar.",
+    "compressionError": "No se pudo procesar la captura. Elige una imagen clara del pago."
+  },
+  "lookupErrors": {
+    "network": {
+      "title": "Conexión de red no disponible",
+      "message": "No se puede conectar al registro. Compruebe la red o cambie entre Wi-Fi y datos móviles y reintente.",
+      "retryLabel": "Reconectar"
+    },
+    "timeout": {
+      "title": "Respuesta de red lenta",
+      "message": "La solicitud agotó el tiempo de espera. Reintente.",
+      "retryLabel": "Reconectar"
+    },
+    "service": {
+      "title": "Servicio temporalmente ocupado",
+      "message": "Reintente más tarde o contacte con recepción.",
+      "retryLabel": "Reconectar"
+    },
+    "rules": {
+      "title": "Normas no disponibles",
+      "message": "Reintente o contacte con recepción.",
+      "retryLabel": "Recargar"
+    },
+    "expired": {
+      "title": "Este código ha caducado",
+      "message": "Este código ya no es válido. Contacta con recepción.",
+      "retryLabel": "Volver"
+    },
+    "code": {
+      "title": "Código no válido",
+      "message": "No hay un registro activo para este código. Compruébelo o contacte con recepción.",
+      "retryLabel": "Verificar otra vez"
+    }
+  }
+}

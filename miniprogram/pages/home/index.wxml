@@ -1,0 +1,50 @@
+<view class="page home-page">
+  <view class="page-head">
+    <image class="brand-logo" src="/assets/sifang-blue.png" mode="heightFix" />
+    <text class="brand-divider"></text>
+    <text class="brand-product">stayCube</text>
+    <language-switcher id="lang-switcher" locale="{{locale}}" bindchange="changeLocale" />
+  </view>
+
+  <view class="home-main">
+    <text class="home-title">{{copy.home.title}}</text>
+    <text class="home-intro">{{copy.home.intro}}</text>
+    <view class="service-list">
+      <view wx:for="{{services}}" wx:key="key" class="service-card">
+        <button class="service-open" data-path="{{item.path}}" bindtap="openService">
+          <view class="service-copy"><text class="service-title">{{item.title}}</text></view>
+          <text class="service-arrow">›</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{draftModalVisible}}" class="draft-modal-mask" catchtap="closeDraftModal">
+    <view class="draft-modal" catchtap="stopDraftModal">
+      <view class="draft-modal-header">
+        <view class="draft-modal-heading">
+          <text class="draft-modal-title">{{copy.draft.title}}</text>
+          <text class="draft-modal-intro">{{copy.draft.intro}}</text>
+        </view>
+        <button class="draft-modal-close" aria-label="{{copy.draft.later}}" bindtap="closeDraftModal">×</button>
+      </view>
+      <view wx:if="{{activeDraft}}" class="draft-card">
+          <view class="draft-card-top">
+            <view class="draft-identity">
+              <text class="draft-name">{{activeDraft.guestName}}</text>
+              <text class="draft-meta">{{copy.draft.checkinDate}}{{activeDraft.checkinDateLabel}}</text>
+              <text class="draft-meta">{{copy.draft.accessCode}}{{activeDraft.accessCode}}　{{copy.draft.lastUpdated}}{{activeDraft.lastUpdatedLabel}}</text>
+            </view>
+            <text class="draft-step-badge">{{activeDraft.stepLabel}}</text>
+          </view>
+          <view class="draft-actions">
+            <button class="draft-resume-button" data-id="{{activeDraft.recordId}}" bindtap="resumeDraft">{{copy.draft.resume}}<text class="draft-button-arrow">→</text></button>
+            <button class="draft-delete-button" data-id="{{activeDraft.recordId}}" bindtap="deleteDraft">{{copy.draft.remove}}</button>
+          </view>
+      </view>
+      <button class="draft-modal-later" bindtap="closeDraftModal">{{copy.draft.later}}</button>
+    </view>
+  </view>
+
+  <view class="page-foot">Powered by stayCube</view>
+</view>

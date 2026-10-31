@@ -1,0 +1,126 @@
+// Edit the quoted text to change this language in the mini program.
+module.exports = {
+  "label": "English",
+  "text": {
+    "eyebrow": "SELF CHECK-IN",
+    "languageTitle": "Choose a language",
+    "languageTitleEnglish": "PLEASE SELECT A REGISTRATION LANGUAGE",
+    "accessCodeTitle": "Enter the 6-digit self check-in code provided by the front desk\nto begin",
+    "accessCodeLabel": "Self check-in code",
+    "accessCodePlaceholder": "Enter the 6-digit code",
+    "accessCodeChecking": "Checking...",
+    "enterFlowLabel": "Start registration",
+    "accessCodeInvalidError": "Please enter a 6-digit self check-in code.",
+    "accessCodeUnavailableError": "This self check-in code does not exist or has expired.",
+    "loadingContext": "Loading self check-in registration...",
+    "unavailableTitle": "Registration unavailable",
+    "unavailableMessage": "This self check-in registration cannot be opened right now. Please contact the front desk.",
+    "backToCode": "Back to code entry",
+    "submittedTitle": "Self check-in registration submitted",
+    "submittedMessage": "After reviewing your registration, the front desk will send you your door access code, room and bed numbers, and slipper number.",
+    "submittedNotice": "If you have any questions, please contact us before 22:30 on your check-in date.",
+    "nameCorrectionHint": "If your name is incorrect, contact reception.",
+    "title": "Sifang Space self check-in",
+    "stepsAriaLabel": "Self check-in steps",
+    "stepTitles": [
+      "Basic information",
+      "Hostel rules",
+      "Signature",
+      "Police registration",
+      "Deposit payment"
+    ],
+    "basicSectionTitle": "1. Basic information",
+    "guestNameLabel": "Full name",
+    "contactLabel": "Contact method",
+    "guestNoteLabel": "Note",
+    "rulesSectionTitle": "2. Hostel rules",
+    "previousRuleLabel": "Previous",
+    "nextRuleLabel": "Next",
+    "confirmedRuleLabel": "Confirmed",
+    "basicInfoError": "Please complete the basic information.",
+    "rulesIncompleteError": "Please read and confirm every hostel rule.",
+    "signatureSectionTitle": "3. Signature",
+    "rulesFinalConfirmLabel": "I have read and confirmed all hostel rules",
+    "signatureLabel": "Handwritten signature",
+    "clearSignatureLabel": "Clear and rewrite",
+    "signatureHint": "Check the confirmation above before signing.",
+    "signatureError": "Please confirm all rules and complete your handwritten signature.",
+    "policeSectionTitle": "4. Police registration code",
+    "policeDescription": "Scan the QR code with your phone and complete the police registration as instructed. The registration page will generate a 6-digit code. Enter it below so the front desk can verify it.",
+    "policeQrTitle": "Police registration QR code",
+    "policeQrInstruction": "Tap the QR code to open the image preview, then press and hold the image. If “Scan QR Code in Image” appears, use it; otherwise save the image from the menu, then select it from your album in Alipay Scan.",
+    "policeCodeLabel": "6-digit police registration code",
+    "policeCompleteLabel": "I confirm that I completed police registration",
+    "policeCodeError": "The police registration code must be 6 digits.",
+    "policeCompleteError": "Please confirm that you completed police registration.",
+    "depositSectionTitle": "5. Deposit payment",
+    "depositDescription": "Scan the QR code to pay the 100 CNY per person deposit. It will be refunded to the original payment method after staff confirms your self check-in is correct on the same day.",
+    "depositQrTitle": "Deposit payment QR code",
+    "depositQrInstruction": "Please save the image, then use WeChat or Alipay Scan to choose it from your album and scan the QR code to complete payment.",
+    "depositConfirmLabel": "I confirm that I paid the deposit as instructed",
+    "depositConfirmError": "Please confirm that you paid the deposit as instructed.",
+    "backLabel": "Back",
+    "previousStepLabel": "Previous step",
+    "nextStepLabel": "Next step",
+    "submitLabel": "Submit self check-in",
+    "submittingLabel": "Submitting...",
+    "loadingError": "Unable to load the self check-in registration.",
+    "submitError": "Submission failed. Please check and try again.",
+    "testCompletedTitle": "Test flow complete",
+    "testCompletedMessage": "This test is for reviewing the screens and flow only. No check-in record was submitted, no files were uploaded, and no door lock was activated."
+  },
+  "foreignDocuments": {
+    "stepTitle": "Travel documents",
+    "sectionTitle": "4. Travel document photos",
+    "description": "Take and upload both required document photos. The front desk will complete police registration after review.",
+    "passportLabel": "Passport personal information page",
+    "visaOrEntryLabel": "Visa page / entry record",
+    "photoHint": "Take a clear photo or choose one from your album. Your name, passport number and dates must be readable.",
+    "replaceLabel": "Take / replace photo",
+    "missingError": "Please upload both required document photos.",
+    "compressionError": "This photo could not be compressed. Please take a new clear photo and try again.",
+    "depositInstruction": "Please take a screenshot, then select the QR code from your album in Alipay or WeChat to pay"
+  },
+  "depositProof": {
+    "title": "Upload your payment confirmation",
+    "empty": "No payment screenshot selected",
+    "upload": "Choose screenshot",
+    "replace": "Replace screenshot",
+    "selected": "Payment screenshot selected",
+    "previewAlt": "Payment screenshot preview",
+    "missingError": "Upload your payment success screenshot before submitting.",
+    "compressionError": "This screenshot could not be processed. Please choose a clear payment screenshot."
+  },
+  "lookupErrors": {
+    "network": {
+      "title": "Network connection unavailable",
+      "message": "Cannot connect to check-in. Check your connection or switch between Wi-Fi and mobile data, then retry.",
+      "retryLabel": "Reconnect"
+    },
+    "timeout": {
+      "title": "Network response is slow",
+      "message": "The check-in request timed out. Please retry.",
+      "retryLabel": "Reconnect"
+    },
+    "service": {
+      "title": "Check-in service is busy",
+      "message": "The service is temporarily unavailable. Retry later or contact reception.",
+      "retryLabel": "Reconnect"
+    },
+    "rules": {
+      "title": "Stay rules could not load",
+      "message": "The stay rules are unavailable. Retry or contact reception.",
+      "retryLabel": "Reload rules"
+    },
+    "expired": {
+      "title": "This check-in code has expired",
+      "message": "This check-in code is no longer valid. Please contact reception.",
+      "retryLabel": "Back"
+    },
+    "code": {
+      "title": "Invalid check-in code",
+      "message": "No active check-in matches this code. Check it and enter it again, or contact reception.",
+      "retryLabel": "Verify again"
+    }
+  }
+}

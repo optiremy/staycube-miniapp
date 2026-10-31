@@ -1,0 +1,63 @@
+.pre-arrival-page { min-height:100vh; box-sizing:border-box; padding:28rpx 40rpx calc(52rpx + env(safe-area-inset-bottom)); display:flex; flex-direction:column; }
+.pre-arrival-page .page-head { height:56rpx; display:flex; align-items:center; gap:14rpx; }
+.pre-arrival-page .brand-logo { height:42rpx; width:106rpx; }
+.pre-arrival-page .brand-divider { width:1rpx; height:30rpx; background:#d7e2ec; margin:0 2rpx; }
+.pre-arrival-page .brand-product { margin-right:auto; color:#0b1f44; font-size:27rpx; font-weight:700; }
+.pre-arrival-page .screen { flex:1; min-height:0; overflow:auto; padding-bottom:28rpx; }
+.pre-arrival-language-screen { padding-top:100rpx; }
+.pre-arrival-page .hero-mark { display:flex; height:210rpx; align-items:center; gap:30rpx; margin-bottom:10rpx; }
+.pre-arrival-page .hero-mark-icon { display:flex; width:96rpx; height:96rpx; flex:none; align-items:center; justify-content:center; border-radius:28rpx; background:#e9f1ff; }
+.pre-arrival-page .hero-mark-inner { position:relative; width:38rpx; height:38rpx; border:7rpx solid #176be8; border-radius:12rpx; }
+.pre-arrival-page .hero-mark-inner::after { content:''; position:absolute; left:6rpx; top:6rpx; width:12rpx; height:12rpx; border-radius:4rpx; background:#176be8; }
+.pre-arrival-page .hero-mark-copy { display:flex; flex-direction:column; }
+.pre-arrival-page .hero-mark-title { color:#0b1f44; font-size:32rpx; line-height:1.35; font-weight:700; }
+.pre-arrival-page .hero-mark-en { margin-top:8rpx; color:#77889b; font-size:18rpx; font-weight:700; letter-spacing:2rpx; }
+.pre-arrival-page .hero-title { display:block; margin-top:18rpx; color:#0b1f44; font-size:38rpx; line-height:1.4; font-weight:700; }
+.pre-arrival-page .hero-title-en { display:block; margin-top:6rpx; color:#77889b; font-size:19rpx; letter-spacing:2rpx; }
+.pre-arrival-page .language-grid { display:grid; grid-template-columns:1fr 1fr; gap:14rpx; margin-top:42rpx; }
+.pre-arrival-page .language-option { position:relative; min-height:84rpx; padding:0 20rpx; border:1rpx solid #d2deea; border-radius:14rpx; background:#fff; color:#29425d; font-size:25rpx; text-align:left; }
+.pre-arrival-page .language-option::after { border:0; }
+.pre-arrival-page .language-option .language-label { display:block; width:100%; min-width:0; padding-right:42rpx; white-space:normal; overflow-wrap:anywhere; line-height:1.25; }
+.pre-arrival-page .language-option .option-arrow { position:absolute; right:18rpx; color:#176be8; font-size:40rpx; }
+.pre-arrival-form-screen,.pre-arrival-result-screen { padding-top:38rpx; }
+.pre-arrival-page .screen-title { display:block; color:#0b1f44; font-size:38rpx; line-height:1.4; font-weight:700; }
+.pre-arrival-page .body-copy { display:block; color:#586b80; font-size:25rpx; line-height:1.65; }
+.pre-arrival-intro { margin-top:10rpx; }
+.pre-arrival-form { display:flex; flex-direction:column; gap:26rpx; margin-top:36rpx; }
+.pre-arrival-page .field-block { display:flex; flex-direction:column; gap:12rpx; }
+.pre-arrival-page .field-label { color:#29425d; font-size:25rpx; font-weight:650; }
+.pre-arrival-page .text-input,.pre-arrival-page .text-area,.pre-arrival-page .picker-value { width:100%; min-height:86rpx; box-sizing:border-box; padding:22rpx 20rpx; border:1rpx solid #d2deea; border-radius:12rpx; background:#fff; color:#0b1f44; font-size:27rpx; }
+.pre-arrival-page .text-area { min-height:150rpx; }
+.pre-arrival-page .picker-value { display:flex; align-items:center; justify-content:space-between; }
+.pre-arrival-page .picker-arrow { color:#718399; font-size:30rpx; }
+.pre-arrival-page .contact-options,.pre-arrival-page .bed-options { display:flex; flex-wrap:wrap; gap:20rpx; }
+.pre-arrival-page .contact-option,.pre-arrival-page .bed-option { display:flex; align-items:center; gap:8rpx; color:#29425d; font-size:24rpx; }
+.pre-arrival-page .field-hint { color:#78899c; font-size:22rpx; line-height:1.5; }
+.pre-arrival-page .inline-error { display:block; margin-top:18rpx; color:#b42318; font-size:24rpx; line-height:1.5; }
+.pre-arrival-page .form-actions { display:flex; gap:16rpx; margin-top:34rpx; }
+.pre-arrival-page .form-action { flex:1; min-width:0; height:auto; min-height:88rpx; margin:0; padding:16rpx 14rpx; border-radius:12rpx; font-size:25rpx; line-height:1.35; }
+.pre-arrival-page .primary-button,.pre-arrival-page .secondary-button { position:relative; }
+.pre-arrival-page .primary-button { border:0; background:#176be8; color:#fff; }
+.pre-arrival-page .secondary-button { border:1rpx solid #cdd9e5; background:#fff; color:#29425d; }
+.pre-arrival-page .button-arrow { position:absolute; right:18rpx; flex:none; }
+.pre-arrival-page .button-label { display:block; box-sizing:border-box; width:100%; min-width:0; padding:0 48rpx; white-space:normal; overflow-wrap:anywhere; line-height:1.3; text-align:center; }
+.pre-arrival-page .success-symbol { display:flex; width:94rpx; height:94rpx; align-items:center; justify-content:center; margin:0 0 28rpx; border-radius:50%; background:#e8f7ef; }
+.pre-arrival-page .success-check { width:28rpx; height:16rpx; transform:rotate(-45deg) translate(2rpx,-2rpx); border-left:6rpx solid #16864a; border-bottom:6rpx solid #16864a; }
+.result-copy { margin-top:14rpx; }
+.late-contact-card,.arrival-guide-card,.destination-card { display:flex; flex-direction:column; gap:14rpx; margin-top:26rpx; padding:22rpx; border:1rpx solid #d7e2ec; border-radius:16rpx; background:#fff; }
+.pre-arrival-page .contact-value { color:#176be8; font-size:28rpx; }
+.wecom-code image { display:block; width:220rpx; margin-top:10rpx; }
+.section-heading-text { color:#0b1f44; font-size:27rpx; font-weight:700; }
+.guide-description { color:#586b80; font-size:23rpx; line-height:1.6; }
+.arrival-guide-image { width:100%; border-radius:10rpx; }
+.guide-save-hint { color:#8797a8; font-size:20rpx; line-height:1.45; }
+.destination-message { color:#64758a; font-size:22rpx; line-height:1.5; }
+.destination-address { padding:14rpx; border-radius:10rpx; background:#f4f7fb; color:#29425d; font-size:23rpx; line-height:1.55; }
+.pre-arrival-page .destination-button,.pre-arrival-page .another-form-button { width:100%; min-height:84rpx; margin:10rpx 0 0; border-radius:12rpx; font-size:25rpx; }
+.pre-arrival-page .another-form-button { margin-top:26rpx; }
+.pre-arrival-page .page-foot { margin-top:18rpx; color:#91a1b3; text-align:center; font-size:22rpx; }
+.pre-arrival-page .home-indicator { position:fixed; left:50%; bottom:calc(12rpx + env(safe-area-inset-bottom)); width:240rpx; height:10rpx; margin-left:-120rpx; background:#111; border-radius:12rpx; }
+.phone-row { display:flex; gap:14rpx; align-items:center; }
+.country-code { box-sizing:border-box; display:flex; align-items:center; gap:10rpx; height:88rpx; padding:0 22rpx; border:1rpx solid #c9d5e1; border-radius:12rpx; background:#fff; color:#0b1f44; font-size:28rpx; font-weight:600; }
+.country-code-arrow { color:#176be8; font-size:18rpx; }
+.phone-number-input { flex:1; min-width:0; }

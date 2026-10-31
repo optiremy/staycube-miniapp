@@ -1,0 +1,173 @@
+<view class="page">
+  <view class="page-head">
+    <image class="brand-logo" src="/assets/sifang-blue.png" mode="heightFix" />
+    <text class="brand-divider"></text>
+    <text class="brand-product">stayCube</text>
+    <language-switcher id="lang-switcher" wx:if="{{screen !== 'submitted'}}" locale="{{locale}}" locked="{{screen === 'form' || screen === 'loading'}}" bindchange="changeLocale" />
+  </view>
+
+  <view wx:if="{{screen === 'code'}}" class="screen code-screen">
+    <text class="screen-title">{{text.accessCodeTitle}}</text>
+    <text class="body-copy">{{text.accessCodeIntro}}</text>
+    <view class="field-block code-field">
+      <text class="field-label">{{text.accessCodeLabel}}</text>
+      <input class="code-input" type="number" maxlength="6" focus="{{true}}" value="{{accessCode}}" placeholder="{{text.accessCodePlaceholder}}" placeholder-class="placeholder" bindinput="changeCode" />
+    </view>
+    <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+    <view class="code-actions">
+      <button class="secondary-button code-action-button" bindtap="returnHome">{{globalText.common.back}}</button>
+      <button class="primary-button code-action-button {{loading ? 'is-button-disabled' : ''}}" loading="{{loading}}" disabled="{{loading}}" bindtap="submitCode"><text class="button-label">{{loading ? text.accessCodeChecking : text.enterFlowLabel}}</text><text class="button-arrow">→</text></button>
+    </view>
+  </view>
+
+  <view wx:if="{{screen === 'loading'}}" class="screen loading-screen">
+    <view class="loader-mark"><view></view></view>
+    <text class="screen-title">{{text.loadingContext}}</text>
+  </view>
+
+  <view wx:if="{{screen === 'lookupError'}}" class="screen error-screen">
+    <view class="status-symbol status-warn">!</view>
+    <text class="screen-title">{{lookupErrorTitle}}</text>
+    <text class="body-copy">{{lookupErrorMessage}}</text>
+    <button class="primary-button" bindtap="retryLookup"><text class="button-label">{{lookupRetryLabel}}</text><text class="button-arrow">↻</text></button>
+    <button class="text-button" bindtap="returnToCode">{{text.backToCode}}</button>
+  </view>
+
+  <view wx:if="{{screen === 'form'}}" class="screen form-screen">
+    <view class="form-intro">
+      <view class="section-index">{{step < 9 ? '0' + (step + 1) : step + 1}} <text class="section-suffix"> / 05</text></view>
+      <text class="body-copy">{{text.intro}}</text>
+    </view>
+    <view class="step-track" aria-label="{{text.stepsAriaLabel}}">
+      <view wx:for="{{text.stepTitles}}" wx:key="index" class="step-track-item {{index <= step ? 'is-active' : ''}}">
+        <view class="step-dot">{{index < step ? '✓' : index + 1}}</view>
+        <text class="step-name">{{item}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{step === 0}}" class="step-content">
+      <view class="section-heading"><text>{{text.basicSectionTitle}}</text></view>
+      <view class="field-block"><text class="field-label">{{text.guestNameLabel}}</text><input class="text-input" value="{{form.guest_name}}" disabled /></view>
+      <view class="field-block"><text class="field-label">{{text.contactLabel}}</text>
+        <view class="phone-row">
+          <picker mode="selector" range="{{countryCodes}}" bindchange="updateCountryCode"><view class="country-code">{{form.country_code}}<text class="country-code-arrow">▼</text></view></picker>
+          <input class="text-input phone-number-input" value="{{form.contact}}" data-field="contact" bindinput="updateForm" type="number" maxlength="{{form.country_code === '+86' ? 11 : 15}}" />
+        </view>
+        <text wx:if="{{form.country_code === '+86'}}" class="hint-copy phone-hint">{{globalText.phone.mainlandHint}}</text>
+      </view>
+      <view class="field-block"><text class="field-label">{{text.guestNoteLabel}}</text><textarea class="text-area" value="{{form.guest_note}}" data-field="guest_note" auto-height maxlength="300" bindinput="updateForm" /></view>
+    </view>
+
+    <view wx:if="{{step === 1}}" class="step-content">
+      <view class="section-heading"><text>{{text.rulesSectionTitle}}</text></view>
+      <view class="rule-meta"><text>{{ruleIndex + 1}} / {{rules.items.length}}</text><text wx:if="{{readingSeconds > 0}}">{{readingSeconds}}s</text></view>
+      <view class="rule-paper">
+        <text class="rule-title">{{rules.items[ruleIndex].title}}</text>
+        <text class="rule-body">{{rules.items[ruleIndex].body}}</text>
+      </view>
+      <view class="rule-actions">
+        <button class="secondary-button {{ruleIndex === 0 ? 'is-button-disabled' : ''}}" disabled="{{ruleIndex === 0}}" bindtap="previousRule">{{text.previousRuleLabel}}</button>
+        <button class="primary-button compact-button {{readingSeconds > 0 ? 'is-button-disabled' : ''}}" disabled="{{readingSeconds > 0}}" bindtap="confirmRule"><text class="button-label">{{ruleActionLabel}}</text><text wx:if="{{readingSeconds === 0}}" class="button-arrow">→</text></button>
+      </view>
+    </view>
+
+    <view wx:if="{{step === 2}}" class="step-content">
+      <view class="section-heading"><text>{{text.signatureSectionTitle}}</text></view>
+      <view class="consent-row">
+        <checkbox-group bindchange="toggleRulesFinal"><checkbox class="consent-checkbox" value="confirmed" checked="{{rulesFinalConfirmed}}" color="#176BE8" /></checkbox-group>
+        <text>{{rules.confirmLabel}}</text>
+      </view>
+      <text class="signature-label">{{rules.signatureTitle}}</text>
+      <view class="signature-wrap {{!rulesFinalConfirmed ? 'is-disabled' : ''}}">
+        <canvas wx:if="{{rulesFinalConfirmed}}" id="signature-canvas" type="2d" class="signature-canvas" disable-scroll="true" bindtouchstart="signatureStart" bindtouchmove="signatureMove" bindtouchend="signatureEnd"></canvas>
+        <view wx:else class="signature-placeholder">{{rules.signatureHint}}</view>
+        <text class="signature-watermark">{{text.signatureLabel}}</text>
+      </view>
+    <button class="text-button clear-button {{!signatureReady ? 'is-button-disabled' : ''}}" disabled="{{!signatureReady}}" bindtap="clearSignature">{{rules.clearLabel}}</button>
+    </view>
+
+    <view wx:if="{{step === 3 && !docTypeConfirmed}}" class="step-content document-type-step">
+      <text class="document-type-title">{{globalText.documentType.title}}</text>
+      <text class="body-copy document-type-intro">{{globalText.documentType.intro}}</text>
+      <view class="document-choice {{documentType === 'mainland_id' ? 'is-selected' : ''}}" data-type="mainland_id" bindtap="selectDocumentType">
+        <view class="document-icon"><image class="document-icon-image" src="/assets/{{documentType === 'mainland_id' ? 'doc-id-card-active' : 'doc-id-card'}}.svg" mode="aspectFit" /><text wx:if="{{documentType === 'mainland_id'}}" class="document-check">✓</text></view>
+        <text class="document-choice-label">{{globalText.documentType.mainlandId}}</text>
+      </view>
+      <view class="document-choice {{documentType === 'passport' ? 'is-selected' : ''}}" data-type="passport" bindtap="selectDocumentType">
+        <view class="document-icon"><image class="document-icon-image" src="/assets/{{documentType === 'passport' ? 'doc-passport-active' : 'doc-passport'}}.svg" mode="aspectFit" /><text wx:if="{{documentType === 'passport'}}" class="document-check">✓</text></view>
+        <text class="document-choice-label">{{globalText.documentType.passport}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{step === 3 && docTypeConfirmed && documentType === 'mainland_id'}}" class="step-content">
+      <view class="section-heading"><text>{{text.policeSectionTitle}}</text></view>
+      <text class="body-copy section-copy">{{text.policeDescription}}</text>
+      <view class="qr-panel">
+        <text class="qr-title">{{text.policeQrTitle}}</text>
+        <image class="qr-image" src="/assets/police-registration-qr.png" mode="aspectFit" data-path="/assets/police-registration-qr.png" bindtap="previewQrImage" />
+        <text class="qr-instruction">{{text.policeQrInstruction}}</text>
+      </view>
+      <view class="field-block"><text class="field-label">{{text.policeCodeLabel}}</text><input class="code-input small-code" type="number" maxlength="6" value="{{form.police_code}}" bindinput="updatePoliceCode" /></view>
+      <view class="consent-row"><checkbox-group bindchange="togglePoliceComplete"><checkbox class="consent-checkbox" value="complete" checked="{{form.police_completed_confirmed}}" color="#176BE8" /></checkbox-group><text>{{text.policeCompleteLabel}}</text></view>
+    </view>
+
+    <view wx:if="{{step === 3 && docTypeConfirmed && documentType === 'passport'}}" class="step-content">
+      <view class="section-heading"><text>{{foreignCopy.sectionTitle}}</text></view>
+      <text class="body-copy section-copy">{{foreignCopy.description}}</text>
+      <view class="field-block photo-field"><text class="field-label">{{foreignCopy.passportLabel}}</text>
+        <view wx:if="{{passportPhoto}}" class="photo-preview" data-path="{{passportPhoto}}" bindtap="previewPhoto"><image class="preview-image" src="{{passportPhoto}}" mode="aspectFill" /></view>
+        <button class="secondary-button photo-button" data-kind="passport" bindtap="choosePhoto">{{foreignCopy.replaceLabel}}</button>
+      </view>
+      <view class="field-block photo-field"><text class="field-label">{{foreignCopy.visaOrEntryLabel}}</text>
+        <view wx:if="{{visaOrEntryPhoto}}" class="photo-preview" data-path="{{visaOrEntryPhoto}}" bindtap="previewPhoto"><image class="preview-image" src="{{visaOrEntryPhoto}}" mode="aspectFill" /></view>
+        <button class="secondary-button photo-button" data-kind="visaOrEntry" bindtap="choosePhoto">{{foreignCopy.replaceLabel}}</button>
+      </view>
+      <text class="hint-copy">{{foreignCopy.photoHint}}</text>
+    </view>
+
+    <view wx:if="{{step === 4}}" class="step-content">
+      <view class="section-heading"><text>{{text.depositSectionTitle}}</text></view>
+      <text class="body-copy section-copy">{{paymentChannel === 'wechat' ? paymentCopy.description : text.depositDescription}}</text>
+      <view wx:if="{{paymentChannel === 'wechat'}}" class="payment-choice">
+        <button class="primary-button" disabled="{{paymentBusy || paymentStatus === 'paid'}}" loading="{{paymentBusy}}" bindtap="payDeposit">{{paymentStatus === 'paid' ? paymentCopy.paid : paymentCopy.pay}}</button>
+        <text class="hint-copy">{{paymentCopy.note}}</text>
+        <button class="secondary-button photo-button" disabled="{{paymentBusy}}" bindtap="useOtherPayment">{{paymentCopy.other}}</button>
+      </view>
+      <view wx:if="{{paymentChannel === 'other'}}" class="payment-choice">
+        <button wx:if="{{paymentAvailable}}" class="secondary-button photo-button" bindtap="chooseWechatPayment">{{paymentCopy.wechat}}</button>
+      </view>
+      <view wx:if="{{paymentChannel === 'other'}}" class="qr-panel deposit-qr-panel">
+        <text class="qr-title">{{text.depositQrTitle}}</text>
+        <image class="deposit-qr-image" src="/assets/self-checkin-deposit.png" mode="aspectFit" data-path="/assets/self-checkin-deposit.png" bindtap="previewQrImage" />
+        <text class="qr-instruction">{{text.depositQrInstruction}}</text>
+        <text class="hint-copy">{{depositCopy.depositInstruction}}</text>
+      </view>
+      <view wx:if="{{paymentChannel === 'other'}}" class="field-block payment-field"><text class="field-label">{{depositCopy.title}}</text>
+        <view wx:if="{{depositProofPhoto}}" class="photo-preview payment-preview" data-path="{{depositProofPhoto}}" bindtap="previewPhoto"><image class="preview-image" src="{{depositProofPhoto}}" mode="aspectFill" /></view>
+        <text wx:else class="empty-upload">{{depositCopy.empty}}</text>
+        <button class="secondary-button photo-button" data-kind="depositProof" bindtap="choosePhoto">{{depositProofPhoto ? depositCopy.replace : depositCopy.upload}}</button>
+      </view>
+      <text wx:if="{{paymentChannel === 'other'}}" class="hint-copy">{{depositCopy.selected}}</text>
+    </view>
+
+    <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+    <view class="bottom-spacer"></view>
+    <view wx:if="{{step !== 1}}" class="form-footer">
+      <button wx:if="{{step === 0}}" class="secondary-button footer-back" bindtap="returnToCode">{{text.backLabel}}</button>
+      <button wx:else class="secondary-button footer-back" bindtap="goBack">{{text.previousStepLabel}}</button>
+      <button wx:if="{{step < 4}}" class="primary-button footer-next" bindtap="goNext"><text class="button-label">{{text.nextStepLabel}}</text><text class="button-arrow">→</text></button>
+      <button wx:else class="primary-button footer-next {{submitting ? 'is-button-disabled' : ''}}" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitCheckin"><text class="button-label">{{submitting ? text.submittingLabel : text.submitLabel}}</text><text class="button-arrow">→</text></button>
+    </view>
+  </view>
+
+  <view wx:if="{{screen === 'submitted'}}" class="screen submitted-screen">
+    <view class="status-pill"><view class="status-dot"></view>{{text.submittedTitle}}</view>
+    <text wx:if="{{locale === 'zh-CN'}}" class="body-copy submitted-message">前台将在确认信息后，通过微信将开门密码、<text class="keep-together">房间/床位</text>、拖鞋编号等信息发送给您。</text>
+    <text wx:else class="body-copy submitted-message">{{text.submittedMessage}}</text>
+    <text wx:if="{{locale === 'zh-CN'}}" class="body-copy small-copy submitted-notice">请留意微信消息。如有疑问，请在入住当日 22:30 前<text class="keep-together">联系我们</text>。</text>
+    <text wx:else class="body-copy small-copy submitted-notice">{{text.submittedNotice}}</text>
+  </view>
+
+  <view class="page-foot"><text>Powered by stayCube</text></view>
+  <canvas id="photo-processing-canvas" type="2d" class="photo-processing-canvas"></canvas>
+</view>

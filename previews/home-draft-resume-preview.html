@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>stayCube 首页 · 草稿恢复预览</title>
+  <style>
+    :root { color-scheme:light; --ink:#0b1f44; --muted:#586b80; --blue:#176be8; --line:#d7e2ec; --bg:#f7f9fc; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:#eef1f5; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .workspace { max-width:900px; margin:0 auto; padding:20px; }
+    h1 { margin:0; font-size:20px; }
+    .note { margin:7px 0 18px; color:#64758a; font-size:14px; line-height:1.6; }
+    .device { width:min(390px,100%); height:min(820px,calc(100vh - 125px)); min-height:620px; margin:0 auto; padding:8px; border-radius:43px; background:#25282c; box-shadow:0 20px 50px rgba(20,35,52,.24); }
+    .screen { display:flex; height:100%; flex-direction:column; overflow:auto; border-radius:35px; background:var(--bg); }
+    .status { height:30px; flex:none; padding:7px 18px; color:#111; font-size:12px; }
+    .nav { position:relative; height:47px; flex:none; display:flex; align-items:center; justify-content:center; font-size:14px; }
+    .capsule { position:absolute; right:9px; width:77px; height:31px; border:1px solid #d7d7d7; border-radius:18px; background:white; }
+    .brand { height:50px; flex:none; display:flex; align-items:center; gap:8px; padding:0 20px; }
+    .brand img { width:58px; height:auto; }
+    .divider { height:20px; width:1px; background:var(--line); }
+    .brand b { font-size:15px; }
+    main { flex:1; padding:44px 20px 25px; }
+    h2 { margin:0; font-size:27px; line-height:1.3; }
+    .intro { margin:8px 0 24px; color:var(--muted); font-size:16px; line-height:1.6; }
+    .section-title { display:flex; align-items:center; justify-content:space-between; margin:0 0 10px; font-size:15px; font-weight:700; }
+    .count { color:#6b7f95; font-size:13px; font-weight:500; }
+    .draft { margin-bottom:10px; padding:14px; border:1px solid #d2deea; border-radius:12px; background:#fff; }
+    .draft-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .draft-name { font-size:16px; font-weight:700; }
+    .draft-meta { margin-top:6px; color:#687b90; font-size:13px; line-height:1.5; }
+    .badge { padding:4px 8px; border-radius:12px; background:#eaf2ff; color:#176be8; font-size:11px; white-space:nowrap; }
+    .draft-actions { display:flex; align-items:center; gap:12px; margin-top:12px; }
+    button { min-height:44px; border:0; font:inherit; cursor:pointer; }
+    .continue { flex:1; border-radius:8px; background:var(--blue); color:#fff; font-size:14px; font-weight:650; }
+    .delete { padding:0 8px; background:transparent; color:#65798f; font-size:13px; }
+    .empty { margin:0 0 20px; padding:14px; border:1px dashed #c7d4e1; border-radius:10px; color:#718398; font-size:13px; line-height:1.6; }
+    .services-title { margin:22px 0 10px; font-size:15px; font-weight:700; }
+    .service { display:flex; min-height:56px; align-items:center; justify-content:space-between; margin-bottom:9px; padding:0 14px; border:1px solid var(--line); border-radius:10px; background:#fff; font-size:15px; font-weight:650; }
+    .arrow { color:var(--blue); font-size:24px; }
+    .overlay { position:absolute; inset:0; display:flex; align-items:flex-end; padding:12px 8px 18px; border-radius:35px; background:rgba(11,31,68,.38); }
+    .sheet { width:100%; max-height:78%; overflow:auto; padding:19px 15px 15px; border-radius:18px; background:#f7f9fc; box-shadow:0 12px 32px rgba(11,31,68,.2); }
+    .sheet-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:6px; }
+    .sheet h2 { font-size:20px; }
+    .sheet-intro { margin:7px 0 14px; color:#687b90; font-size:13px; line-height:1.55; }
+    .close { width:44px; min-height:44px; border-radius:22px; background:#e9eef4; color:#42566e; font-size:22px; }
+    .draft { margin-bottom:10px; }
+    footer { padding:10px 20px 22px; color:#91a1b3; text-align:center; font-size:12px; }
+    .home-indicator { width:82px; height:4px; margin:0 auto 6px; border-radius:4px; background:#171717; }
+    @media(max-width:520px) { .workspace { padding:12px 8px; } .device { width:min(390px,100%); height:calc(100vh - 82px); min-height:600px; } }
+  </style>
+</head>
+<body>
+  <div class="workspace">
+    <h1>自助服务首页 · 草稿恢复</h1>
+    <p class="note">重新进入时只提示这台设备上最近编辑的一份登记草稿。弹窗显示完整姓名和入住码；旧草稿首次继续时需输入原入住码。</p>
+    <div class="device"><div class="screen">
+      <div class="status">9:41</div>
+      <div class="nav">stayCube<div class="capsule"></div></div>
+      <div class="brand"><img src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"><i class="divider"></i><b>stayCube</b></div>
+      <main>
+        <h2>自助服务</h2>
+        <p class="intro">请选择需要办理的服务</p>
+        <div class="service">自助入住登记 <span class="arrow">›</span></div>
+        <div class="service">自助行李寄存 <span class="arrow">›</span></div>
+        <div class="service">预抵问卷 <span class="arrow">›</span></div>
+      </main>
+      <footer>Powered by stayCube</footer><div class="home-indicator"></div>
+      <div class="overlay">
+        <section class="sheet" aria-label="继续未完成的登记">
+          <div class="sheet-head"><div><h2>继续未完成的登记？</h2><p class="sheet-intro">发现一份最近编辑的自助入住登记草稿。点击继续后将自动恢复本机保存的登记进度。</p></div><button class="close" aria-label="暂不继续">×</button></div>
+          <article class="draft">
+            <div class="draft-top"><div><div class="draft-name">张女士</div><div class="draft-meta">入住日期：2026年10月23日<br>入住码：826314　上次填写：今天 14:26</div></div><span class="badge">第 5 步 · 押金</span></div>
+            <div class="draft-actions"><button class="continue">继续登记　→</button><button class="delete">删除</button></div>
+          </article>
+          <button class="delete" style="display:block;width:100%;margin-top:5px">暂不继续</button>
+        </section>
+      </div>
+    </div></div>
+  </div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 const config = require('../config')
 const { requestGuest, createRequestId } = require('./guest-transport')
+const backend = require('./backend')
 
 // 与 Web 端 specialCancellationApi 的旅客侧接口一致：申请码验证、保存草稿、上传材料、提交及补充材料。
 const BUCKET = 'special-cancellation-proofs'
@@ -77,6 +78,10 @@ async function rpc(name, data, fallback, timeout = 15000) {
 }
 
 function storageFunction(body, fallback) {
+  // 腾讯云模式：函数调用经 guest-relay（见 utils/backend.js）。
+  if (backend.isCloudbase()) {
+    return requestGuest('/functions/v1/special-cancellation-storage', body, 20000).then(data => data || {}, error => { throw friendlyError(error, fallback) })
+  }
   const base = config.supabaseUrl.replace(/\/$/, '')
   return new Promise((resolve, reject) => {
     wx.request({
@@ -105,15 +110,14 @@ function readFile(filePath) {
 }
 
 function putSignedUpload(path, token, data, contentType) {
-  const base = config.supabaseUrl.replace(/\/$/, '')
   const objectPath = path.split('/').map(encodeURIComponent).join('/')
   return new Promise((resolve, reject) => {
     wx.request({
-      url: `${base}/storage/v1/object/upload/sign/${BUCKET}/${objectPath}?token=${encodeURIComponent(token)}`,
+      url: backend.guestUrl(`/storage/v1/object/upload/sign/${BUCKET}/${objectPath}?token=${encodeURIComponent(token)}`),
       method: 'PUT',
       data,
       timeout: 60000,
-      header: { apikey: config.publishableKey, 'Content-Type': contentType, 'x-upsert': 'false', 'cache-control': '3600' },
+      header: backend.guestHeaders({ 'Content-Type': contentType, 'x-upsert': 'false', 'cache-control': '3600' }, { bearer: false }),
       success(response) {
         if (response.statusCode >= 200 && response.statusCode < 300) return resolve()
         reject(friendlyError({ kind: response.statusCode >= 500 ? 'service' : 'upload', statusCode: response.statusCode, data: response.data }, '上传失败，请检查网络和文件后重试。'))

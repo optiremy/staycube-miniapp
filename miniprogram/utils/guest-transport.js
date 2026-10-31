@@ -1,4 +1,5 @@
 const config = require('../config')
+const backend = require('./backend')
 
 const rpcAllowlist = new Set([
   'get_self_checkin_public_context_by_access_code', 'lookup_self_checkin_public_context_by_access_code', 'get_self_checkin_public_entry_context', 'get_self_checkin_public_context',
@@ -18,6 +19,7 @@ function operationForPath(path) {
   if (rpc && rpcAllowlist.has(rpc[1])) return `rpc:${rpc[1]}`
   const payment = String(path).match(/^\/functions\/v1\/self-checkin-payment\/(create|status|switch)$/)
   if (payment) return `function:self-checkin-payment:${payment[1]}`
+  if (path === '/functions/v1/special-cancellation-storage') return 'function:special-cancellation-storage'
   return null
 }
 
@@ -61,10 +63,14 @@ function requestOnce(url, data, timeout, header) {
 
 async function requestGuest(path, data, timeout = 12000) {
   const operation = operationForPath(path)
-  const base = config.supabaseUrl.replace(/\/$/, '')
-  const headers = { apikey: config.publishableKey, Authorization: `Bearer ${config.publishableKey}`, 'Content-Type': 'application/json' }
+  const headers = backend.guestHeaders({ 'Content-Type': 'application/json' })
+  if (backend.functionsViaRelayOnly(path)) {
+    const relay = relayUrl()
+    if (!operation || !relay) throw failure('request', 'FUNCTION_RELAY_UNAVAILABLE')
+    return requestOnce(relay, data, timeout, { 'Content-Type': 'application/json', 'x-guest-relay-operation': operation })
+  }
   try {
-    return await requestOnce(`${base}${path}`, data, timeout, headers)
+    return await requestOnce(backend.guestUrl(path), data, timeout, headers)
   } catch (error) {
     const fallback = relayUrl()
     if (!operation || !fallback || !['network', 'timeout', 'service'].includes(error.kind)) throw error
@@ -95,11 +101,10 @@ function uploadOnce(url, filePath, timeout, header) {
 }
 
 async function uploadGuestFile(bucket, path, filePath, contentType, timeout = 45000) {
-  const base = config.supabaseUrl.replace(/\/$/, '')
-  const headers = { apikey: config.publishableKey, Authorization: `Bearer ${config.publishableKey}`, 'x-upsert': 'false', 'cache-control': '3600', 'Content-Type': contentType }
+  const headers = backend.guestHeaders({ 'x-upsert': 'false', 'cache-control': '3600', 'Content-Type': contentType })
   const objectPath = `${bucket}/${path}`
   try {
-    await uploadOnce(`${base}/storage/v1/object/${objectPath}`, filePath, timeout, headers)
+    await uploadOnce(backend.guestUrl(`/storage/v1/object/${objectPath}`), filePath, timeout, headers)
     return path
   } catch (error) {
     const fallback = relayUrl()

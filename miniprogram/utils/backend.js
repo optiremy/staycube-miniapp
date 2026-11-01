@@ -1,9 +1,8 @@
 // 后端开关（与网页 stayCube 仓库 src/lib/backend.ts、src/lib/cloudbaseFunctions.ts 同一套规则）：
-// - config.backend 不填或为 'supabase'：与现在完全一样，直连 Supabase。
+// - config.backend 为 'supabase'：直连旧 Supabase；默认值由 config.js 指定。
 // - 'cloudbase'：数据接口 /rest/v1 → <网关>/v1/rdb/rest，存储 /storage/v1 → <网关>/v1/storages，
 //   网关为 https://<环境ID>.api.tcloudbasegateway.com，凭证是腾讯云公开钥匙（publishable key）。
-//   云函数（/functions/v1/<名>）：平台不接受公开钥匙调用云函数（实测 403），旅客的函数调用一律经
-//   Netlify guest-relay 中转，由服务端带 API Key 调 /v1/functions/<名>；这里只决定走中转。
+//   云函数（/functions/v1/<名>）需要已迁移到腾讯云的服务端中转；当前旧中转仍指向 Supabase，禁止调用。
 const config = require('../config')
 
 function backend() {
@@ -30,7 +29,10 @@ function guestUrl(path) {
 
 // 旅客请求头。Supabase 同时要 apikey 与 Authorization；腾讯云只认 Authorization。
 function guestHeaders(extra = {}, options = {}) {
-  if (isCloudbase()) return { Authorization: `Bearer ${config.cloudbasePublishableKey}`, ...extra }
+  if (isCloudbase()) {
+    if (!config.cloudbasePublishableKey) throw new Error('CLOUDBASE_PUBLISHABLE_KEY_MISSING')
+    return { Authorization: `Bearer ${config.cloudbasePublishableKey}`, ...extra }
+  }
   return options.bearer === false ? { apikey: config.publishableKey, ...extra } : { apikey: config.publishableKey, Authorization: `Bearer ${config.publishableKey}`, ...extra }
 }
 

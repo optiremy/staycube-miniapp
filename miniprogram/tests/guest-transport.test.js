@@ -1,6 +1,10 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
+const config = require('../config')
 const { requestGuest } = require('../utils/guest-transport')
+
+// 本文件验证旧 Supabase 模式的回退兼容性；正式默认模式由 backend-switch.test.js 覆盖。
+config.backend = 'supabase'
 
 test('allowlisted RPC retries through the fixed relay after direct network failure', async () => {
   const calls = []

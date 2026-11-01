@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict')
+const config = require('../config')
 const testMode = require('../utils/test-mode')
 const { preArrivalApi } = require('../utils/pre-arrival-api')
 const { luggageStorageApi } = require('../utils/luggage-storage-api')
@@ -9,6 +10,7 @@ async function run() {
   const requests = []
   const uploads = []
   const originalWx = global.wx
+  config.cloudbasePublishableKey = 'test-publishable'
   global.wx = {
     request(options) {
       requests.push(options)
@@ -46,10 +48,12 @@ async function run() {
     assert.equal((Array.isArray(submitted) ? submitted[0] : submitted).status, 'submitted')
     assert.equal(requests.length, 4)
     assert.equal(uploads.length, 4)
-    assert.ok(requests.every(({ url }) => url.startsWith('https://')))
-    assert.ok(uploads.every(({ url }) => url.startsWith('https://')))
+    const gateway = 'https://staycube-prod-d0g2d759v95954cd6.api.tcloudbasegateway.com/'
+    assert.ok(requests.every(({ url }) => url.startsWith(gateway)))
+    assert.ok(uploads.every(({ url }) => url.startsWith(gateway)))
   } finally {
     global.wx = originalWx
+    config.cloudbasePublishableKey = ''
   }
   console.log('production guest API integration assertions passed')
 }

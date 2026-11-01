@@ -1,8 +1,10 @@
 const assert = require('node:assert/strict')
+const config = require('../config')
 const { SelfCheckinApiError, selfCheckinApi } = require('../utils/self-checkin-api')
 
 async function run() {
   const originalWx = global.wx
+  config.cloudbasePublishableKey = 'test-publishable'
   let requestOptions
   let responseData
   const englishRules = {
@@ -54,6 +56,7 @@ async function run() {
     ))
   } finally {
     global.wx = originalWx
+    config.cloudbasePublishableKey = ''
   }
 
   console.log('self-check-in localized rules assertions passed')

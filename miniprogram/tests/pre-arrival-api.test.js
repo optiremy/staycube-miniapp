@@ -1,4 +1,5 @@
 const assert = require('assert')
+const config = require('../config')
 const testMode = require('../utils/test-mode')
 const { PreArrivalApiError, preArrivalApi } = require('../utils/pre-arrival-api')
 
@@ -16,11 +17,12 @@ const input = {
 async function run() {
   testMode.enabled = false
   const originalWx = global.wx
+  config.cloudbasePublishableKey = 'test-publishable'
   let request
   global.wx = { request(options) { request = options; options.success({ statusCode: 200, data: [{ id: 'test-record-id', status: 'submitted' }] }) } }
   const result = await preArrivalApi.submit(input)
   assert.deepStrictEqual(result, { id: 'test-record-id', status: 'submitted' })
-  assert.match(request.url, /\/rest\/v1\/rpc\/submit_pre_arrival_v2$/)
+  assert.match(request.url, /staycube-prod-d0g2d759v95954cd6\.api\.tcloudbasegateway\.com\/v1\/rdb\/rest\/rpc\/submit_pre_arrival_v2$/)
   assert.deepStrictEqual(request.data, {
     p_request_id: input.requestId,
     p_locale: 'zh-CN', p_guest_name: '张三', p_contact_method: 'phone', p_contact_value: '13800138000',
@@ -32,9 +34,10 @@ async function run() {
   global.wx = { request(options) { calls++; options.fail({ errMsg: 'request:fail timeout' }) } }
   try { await preArrivalApi.submit(input) } catch (error) { failed = error instanceof PreArrivalApiError && ['network', 'timeout'].includes(error.kind) }
   assert.strictEqual(failed, true)
-  assert.equal(calls, 2, 'network failure is retried once through the relay')
+  assert.equal(calls, 1, '腾讯云请求失败时不得转发到旧 Supabase 中转')
 
   global.wx = originalWx
+  config.cloudbasePublishableKey = ''
   testMode.enabled = true
   console.log('pre-arrival API contract tests passed')
 }

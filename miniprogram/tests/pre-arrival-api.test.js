@@ -17,6 +17,7 @@ const input = {
 async function run() {
   testMode.enabled = false
   const originalWx = global.wx
+  const originalKey = config.cloudbasePublishableKey
   config.cloudbasePublishableKey = 'test-publishable'
   let request
   global.wx = { request(options) { request = options; options.success({ statusCode: 200, data: [{ id: 'test-record-id', status: 'submitted' }] }) } }
@@ -34,10 +35,10 @@ async function run() {
   global.wx = { request(options) { calls++; options.fail({ errMsg: 'request:fail timeout' }) } }
   try { await preArrivalApi.submit(input) } catch (error) { failed = error instanceof PreArrivalApiError && ['network', 'timeout'].includes(error.kind) }
   assert.strictEqual(failed, true)
-  assert.equal(calls, 1, '腾讯云请求失败时不得转发到旧 Supabase 中转')
+  assert.equal(calls, 2, '网络故障时通过正式中转重试一次')
 
   global.wx = originalWx
-  config.cloudbasePublishableKey = ''
+  config.cloudbasePublishableKey = originalKey
   testMode.enabled = true
   console.log('pre-arrival API contract tests passed')
 }

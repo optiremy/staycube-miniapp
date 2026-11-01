@@ -2,7 +2,7 @@
 // - config.backend 为 'supabase'：直连旧 Supabase；默认值由 config.js 指定。
 // - 'cloudbase'：数据接口 /rest/v1 → <网关>/v1/rdb/rest，存储 /storage/v1 → <网关>/v1/storages，
 //   网关为 https://<环境ID>.api.tcloudbasegateway.com，凭证是腾讯云公开钥匙（publishable key）。
-//   云函数（/functions/v1/<名>）需要已迁移到腾讯云的服务端中转；当前旧中转仍指向 Supabase，禁止调用。
+//   云函数（/functions/v1/<名>）经现有 Netlify guest-relay 中转；生产中转按 DATA_BACKEND=cloudbase 路由。
 const config = require('../config')
 
 function backend() {

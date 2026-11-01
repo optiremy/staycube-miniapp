@@ -4,6 +4,7 @@ const { SelfCheckinApiError, selfCheckinApi } = require('../utils/self-checkin-a
 
 async function run() {
   const originalWx = global.wx
+  const originalKey = config.cloudbasePublishableKey
   config.cloudbasePublishableKey = 'test-publishable'
   let requestOptions
   let responseData
@@ -56,7 +57,7 @@ async function run() {
     ))
   } finally {
     global.wx = originalWx
-    config.cloudbasePublishableKey = ''
+    config.cloudbasePublishableKey = originalKey
   }
 
   console.log('self-check-in localized rules assertions passed')

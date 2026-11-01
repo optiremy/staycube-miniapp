@@ -5,6 +5,7 @@ const rpcAllowlist = new Set([
   'get_self_checkin_public_context_by_access_code', 'lookup_self_checkin_public_context_by_access_code', 'get_self_checkin_public_entry_context', 'get_self_checkin_public_context',
   'submit_self_checkin_record', 'submit_pre_arrival_v2', 'get_luggage_storage_public_context',
   'create_luggage_storage_public_draft_v2', 'submit_luggage_storage_record', 'get_luggage_storage_submission_status', 'get_self_checkin_submission_status',
+  'verify_special_cancellation_access_code', 'save_special_cancellation_guest', 'submit_special_cancellation_guest', 'submit_special_cancellation_supplement',
 ])
 
 function createRequestId() {
@@ -63,12 +64,15 @@ function requestOnce(url, data, timeout, header) {
 
 async function requestGuest(path, data, timeout = 12000) {
   const operation = operationForPath(path)
-  if (backend.functionsViaRelayOnly(path)) throw failure('service', 'CLOUDBASE_FUNCTION_RELAY_UNAVAILABLE')
   const headers = backend.guestHeaders({ 'Content-Type': 'application/json' })
+  if (backend.functionsViaRelayOnly(path)) {
+    const relay = relayUrl()
+    if (!operation || !relay) throw failure('request', 'FUNCTION_RELAY_UNAVAILABLE')
+    return requestOnce(relay, data, timeout, { 'Content-Type': 'application/json', 'x-guest-relay-operation': operation })
+  }
   try {
     return await requestOnce(backend.guestUrl(path), data, timeout, headers)
   } catch (error) {
-    if (backend.isCloudbase()) throw error
     const fallback = relayUrl()
     if (!operation || !fallback || !['network', 'timeout', 'service'].includes(error.kind)) throw error
     return requestOnce(fallback, data, timeout, { 'Content-Type': 'application/json', 'x-guest-relay-operation': operation })
@@ -104,7 +108,6 @@ async function uploadGuestFile(bucket, path, filePath, contentType, timeout = 45
     await uploadOnce(backend.guestUrl(`/storage/v1/object/${objectPath}`), filePath, timeout, headers)
     return path
   } catch (error) {
-    if (backend.isCloudbase()) throw error
     const fallback = relayUrl()
     if (!fallback || !['network', 'timeout', 'service'].includes(error.kind)) throw error
     await uploadOnce(fallback, filePath, timeout, {

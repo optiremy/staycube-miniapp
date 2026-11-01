@@ -10,7 +10,7 @@
 
 页面预览：`previews/special-cancellation-annotation-preview.html`、`previews/luggage-storage-annotation-preview.html`、`previews/pre-arrival-annotation-preview.html`。临时首页为所有版本的启动页；各入口均可复制对应的小程序页面路径。
 
-项目源码在 `miniprogram/`。默认后端为腾讯云正式环境 `staycube-prod-d0g2d759v95954cd6`，网关为 `https://staycube-prod-d0g2d759v95954cd6.api.tcloudbasegateway.com`。当前 `miniprogram/config.js` 中腾讯云公开钥匙尚未配置，数据请求会明确失败，不会回退写入 Supabase。现有 Netlify `guest-relay` 仍转发到 Supabase，因此腾讯云模式下已禁用该回退和云函数中转；自助入住付款及特殊取消证明材料上传需待腾讯云中转迁移后才能使用。旧 Supabase URL 和 publishable key 仅供显式切回旧模式，不参与腾讯云模式请求。`miniprogram/config.js` 不得放入服务端密钥。微信开发者工具保留 `urlCheck: true`；在小程序后台将腾讯云网关加入 request/uploadFile 合法域名。预抵问卷路线还需配置微信小程序平台的高德 Key，并将 `https://restapi.amap.com` 加入 request 合法域名。修改合法域名后，清除开发者工具缓存并重新编译。
+项目源码在 `miniprogram/`。默认后端为腾讯云正式环境 `staycube-prod-d0g2d759v95954cd6`，网关为 `https://staycube-prod-d0g2d759v95954cd6.api.tcloudbasegateway.com`。数据接口和存储直连腾讯云；允许回退的请求以及付款、特殊取消附件所需的云函数走现有 Netlify `guest-relay`，其正式环境配置为 `DATA_BACKEND=cloudbase`。旧 Supabase URL 和 publishable key 仅供显式切回旧模式，不参与腾讯云模式请求。`miniprogram/config.js` 不得放入服务端密钥。微信开发者工具保留 `urlCheck: true`；在小程序后台将腾讯云网关加入 request/uploadFile 合法域名，将 `https://sifang-guest-platform.netlify.app` 加入 request/uploadFile 合法域名。预抵问卷路线还需配置微信小程序平台的高德 Key，并将 `https://restapi.amap.com` 加入 request 合法域名。修改合法域名后，清除开发者工具缓存并重新编译。
 
 本地流程辅助逻辑测试：`node miniprogram/tests/self-checkin-flow.test.js`。本地开发与模拟器编译不代表真实微信、支付、员工审核或入住链路验收；本项目没有上传或发布。
 

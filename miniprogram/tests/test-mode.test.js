@@ -10,6 +10,7 @@ async function run() {
   const requests = []
   const uploads = []
   const originalWx = global.wx
+  const originalKey = config.cloudbasePublishableKey
   config.cloudbasePublishableKey = 'test-publishable'
   global.wx = {
     request(options) {
@@ -53,7 +54,7 @@ async function run() {
     assert.ok(uploads.every(({ url }) => url.startsWith(gateway)))
   } finally {
     global.wx = originalWx
-    config.cloudbasePublishableKey = ''
+    config.cloudbasePublishableKey = originalKey
   }
   console.log('production guest API integration assertions passed')
 }

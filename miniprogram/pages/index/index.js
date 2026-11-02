@@ -373,6 +373,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
     }, () => {
       if (this.data.step === 1) this.startRuleTimer()
       if (this.data.step === 2 && this.data.rulesFinalConfirmed) this.initSignatureCanvas()
+      if (this.data.step === 4 && this.data.paymentChannel === 'wechat' && !this.data.testMode) this.refreshPaymentStatus()
       this.persistDraftSnapshot()
     })
     if (rulesChanged) wx.showToast({ title: '入住须知已更新，请重新阅读并签名', icon: 'none' })
@@ -473,7 +474,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       rules: this.data.rules,
       confirmedRuleIds: this.data.confirmedRuleIds,
       rulesFinalConfirmed: this.data.rulesFinalConfirmed,
-      signaturePath: this._uploaded.signaturePath || (this._signatureHasInk ? 'pending-signature' : ''),
+      signaturePath: this._uploaded.signaturePath || (this.data.signatureLocalPath ? 'pending-signature' : '') || (this._signatureHasInk ? 'pending-signature' : ''),
       passportPath: this._uploaded.passportPath || (this.data.passportPhoto ? 'pending-passport' : ''),
       visaOrEntryPath: this._uploaded.visaOrEntryPath || (this.data.visaOrEntryPhoto ? 'pending-visa' : ''),
       depositProofPath: this._uploaded.depositProofPath || (this.data.depositProofPhoto ? 'pending-deposit-proof' : ''),
@@ -500,7 +501,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
     return messages[key] || text.submitError
   },
 
-  goNext() {
+  async goNext() {
     if (this.data.step === 3 && !this.data.docTypeConfirmed) {
       if (!this.data.documentType) {
         this.setData({ errorText: this.data.globalText.documentType.required })
@@ -514,6 +515,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       this.setData({ errorText: this.validationMessage(key) })
       return
     }
+    if (this.data.step === 2 && this._signatureHasInk && !this.data.signatureLocalPath) await this.persistSignatureDraft()
     this.setData({ errorText: '', step: Math.min(4, this.data.step + 1) }, () => {
       if (this.data.step === 1) this.startRuleTimer()
       if (this.data.step === 2 && this.data.rulesFinalConfirmed) this.initSignatureCanvas()
@@ -526,8 +528,10 @@ Page(share.withShare('pages/index/index', 'checkin', {
       this.setData({ docTypeConfirmed: false, errorText: '' }, () => this.persistDraftSnapshot())
       return
     }
+    if (this.data.step === 3 && this.data.rulesFinalConfirmed) this._restoreSignaturePath = this.data.signatureLocalPath
     this.setData({ errorText: '', step: Math.max(0, this.data.step - 1) }, () => {
       if (this.data.step === 1) this.startRuleTimer()
+      if (this.data.step === 2 && this.data.rulesFinalConfirmed) this.initSignatureCanvas()
       this.persistDraftSnapshot()
     })
   },
@@ -806,10 +810,14 @@ Page(share.withShare('pages/index/index', 'checkin', {
       if (context && context.signature_record_id) return
       this.setData({ submissionUncertain: false, errorText: '' })
     }
+    if (this.data.paymentChannel === 'wechat' && !this.data.testMode) await this.refreshPaymentStatus()
     for (let step = 0; step <= 4; step += 1) {
       const key = validateSelfCheckinStep(step, this.data.documentType, this.currentState())
       if (key) {
-        this.setData({ step, errorText: this.validationMessage(key), ...(step === 3 && key === 'documentType' ? { docTypeConfirmed: false } : {}) })
+        if (step === 2 && this.data.rulesFinalConfirmed) this._restoreSignaturePath = this.data.signatureLocalPath
+        this.setData({ step, errorText: this.validationMessage(key), ...(step === 3 && key === 'documentType' ? { docTypeConfirmed: false } : {}) }, () => {
+          if (step === 2 && this.data.rulesFinalConfirmed) this.initSignatureCanvas()
+        })
         if (step === 1) this.startRuleTimer()
         return
       }
@@ -825,7 +833,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       const id = this.data.context.id
       let signaturePath = this._uploaded.signaturePath || ''
       if (!signaturePath) {
-        const signatureFile = await this.canvasToTempFile()
+        const signatureFile = this.data.signatureLocalPath || await this.canvasToTempFile()
         signaturePath = await this.uploadIfNeeded('signaturePath', 'signature', id, signatureFile)
       }
       let passportPath

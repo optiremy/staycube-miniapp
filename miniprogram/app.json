@@ -6,6 +6,21 @@
     "pages/pre-arrival/index",
     "pages/special-cancellation/index"
   ],
+  "subPackages": [
+    {
+      "root": "guestbook",
+      "pages": [
+        "index/index",
+        "detail/index",
+        "compose/index",
+        "done/index",
+        "book/index",
+        "mine/index",
+        "entry/index",
+        "login/index"
+      ]
+    }
+  ],
   "window": {
     "navigationBarTitleText": "stayCube",
     "navigationBarBackgroundColor": "#F7F9FC",
@@ -13,14 +28,7 @@
     "backgroundColor": "#F7F9FC"
   },
   "style": "v2",
-  "requiredPrivateInfos": [
-    "getLocation"
-  ],
-  "permission": {
-    "scope.userLocation": {
-      "desc": "用于规划当前位置到肆方空间的到达路线"
-    }
-  },
+  "lazyCodeLoading": "requiredComponents",
   "usingComponents": {
     "language-switcher": "/components/language-switcher/index"
   }

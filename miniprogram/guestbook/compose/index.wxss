@@ -1,0 +1,12 @@
+@import "../common.wxss";
+.seg { margin:28rpx 0 32rpx; }
+.editor { position:relative; min-height:400rpx; padding:40rpx 36rpx 64rpx; border-radius:36rpx; border:1rpx solid var(--line); background:var(--card); box-sizing:border-box; }
+.editor-input { width:100%; min-height:300rpx; font-size:32rpx; line-height:1.85; color:var(--text); }
+.editor-ph { color:var(--faint); }
+.editor-count { position:absolute; right:32rpx; bottom:24rpx; font-family:"SF Mono", Menlo, monospace; font-size:22rpx; color:var(--faint); }
+.hues { display:flex; gap:20rpx; flex-wrap:wrap; }
+.hue { width:68rpx; height:68rpx; border-radius:50%; border:2rpx solid var(--line); display:flex; align-items:center; justify-content:center; box-sizing:border-box; }
+.hue-on { border-width:4rpx; }
+.hue-dot { width:44rpx; height:44rpx; border-radius:50%; }
+.photo { width:140rpx; height:140rpx; border-radius:20rpx; overflow:hidden; }
+.photo image { width:100%; height:100%; }

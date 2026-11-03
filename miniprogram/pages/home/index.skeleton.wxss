@@ -1,13 +1,3 @@
-/*
-此文件为开发者工具生成，生成时间: 2026/10/21 14:06:25
-
-在 /Users/zhangyang/WeChatProjects/staycube-miniapp/miniprogram/pages/home/index.wxss 中引入样式
-```
-@import "./index.skeleton.wxss";
-```
-
-更多详细信息可以参考文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/skeleton.html
-*/
 .sk-transparent {
     color: transparent !important;
   }

@@ -1,0 +1,24 @@
+@import "../common.wxss";
+.stats { display:flex; gap:40rpx; margin-top:24rpx; }
+.stat-num { display:block; font-family:"SF Mono", Menlo, monospace; font-size:36rpx; font-weight:600; }
+.stat-label { display:block; font-size:22rpx; color:var(--faint); }
+.topic { display:flex; justify-content:space-between; align-items:center; gap:20rpx; margin-top:32rpx; padding:28rpx 32rpx; border-radius:32rpx; border:1rpx solid var(--accent); background:var(--accent-soft); }
+.topic-label { display:block; font-size:24rpx; color:var(--sub); }
+.topic-text { display:block; margin-top:6rpx; font-size:30rpx; font-weight:600; }
+.topic-go { flex:none; font-size:24rpx; color:var(--accent); }
+.book-entry { display:flex; justify-content:space-between; align-items:center; margin-top:24rpx; padding:26rpx 28rpx; border-radius:28rpx; border:1rpx solid var(--line); background:var(--card); font-size:28rpx; font-weight:600; }
+.book-go { font-size:24rpx; font-weight:400; color:var(--accent); }
+.toolbar { margin-top:28rpx; }
+.sortbar { display:flex; gap:36rpx; margin-top:24rpx; font-size:26rpx; color:var(--faint); }
+.sort-on { color:var(--text); font-weight:600; padding-bottom:8rpx; border-bottom:4rpx solid var(--accent); }
+.masonry { display:flex; gap:20rpx; margin-top:28rpx; }
+.col { flex:1; min-width:0; }
+.list { margin-top:16rpx; }
+.list-item { display:flex; gap:24rpx; padding:26rpx 8rpx; border-bottom:1rpx solid var(--line); }
+.list-dot { flex:none; width:16rpx; height:16rpx; margin-top:16rpx; border-radius:50%; }
+.list-body { flex:1; min-width:0; }
+.list-text { display:block; font-size:30rpx; line-height:1.6; }
+.list-meta { display:flex; justify-content:space-between; margin-top:10rpx; font-size:22rpx; color:var(--faint); }
+.fab-wrap { position:fixed; left:0; right:0; bottom:calc(56rpx + env(safe-area-inset-bottom)); display:flex; justify-content:center; }
+.fab { margin:0; padding:0 52rpx; height:96rpx; line-height:96rpx; border-radius:48rpx; border:1rpx solid var(--accent); background:var(--card); color:var(--text); font-size:30rpx; font-weight:500; box-shadow:0 0 52rpx -12rpx var(--accent); }
+.fab::after { border:0; }

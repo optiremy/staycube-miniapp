@@ -1,0 +1,14 @@
+<view class="gb-page" style="{{pageStyle}}">
+  <text class="gb-eyebrow">{{book.room}} 号房{{book.bed ? ' · ' + book.bed : ''}}</text>
+  <text class="gb-title">床位留言本</text>
+  <view class="entries">
+    <view wx:for="{{book.entries}}" wx:key="index" class="entry">
+      <view class="entry-dot" style="background:{{item.hue}};box-shadow:0 0 16rpx {{item.hue}}"></view>
+      <view class="entry-when"><text class="entry-date">{{item.date}}</text><text wx:if="{{item.mine}}" class="entry-mine">我的</text><text class="entry-by">{{item.author}}</text></view>
+      <view class="entry-box" style="border-color:{{item.hue}}"><text class="note-text">{{item.content}}</text>
+        <view wx:if="{{item.photos}}" class="entry-pics"><view wx:for="{{item.photoList}}" wx:for-item="p" wx:key="index" class="entry-pic"></view></view>
+      </view>
+    </view>
+  </view>
+  <view class="gb-bottom"><button class="gb-primary" bindtap="write">写今天的留言</button></view>
+</view>

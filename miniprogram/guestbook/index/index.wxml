@@ -1,0 +1,48 @@
+<view class="gb-page" style="{{pageStyle}}">
+  <view class="gb-head">
+    <text class="gb-eyebrow">肆方空间 · 西安</text>
+    <text class="gb-title">旅客留言</text>
+    <text class="gb-sub">住过这里的旅客留下的话。</text>
+    <view class="stats">
+      <view><text class="stat-num">{{stats.notes}}</text><text class="stat-label">条留言</text></view>
+      <view><text class="stat-num">{{stats.today}}</text><text class="stat-label">条今日新增</text></view>
+      <view><text class="stat-num">{{stats.responses}}</text><text class="stat-label">次回应</text></view>
+    </view>
+  </view>
+
+  <view class="topic" bindtap="compose" wx:if="{{staying && topic}}"><view><text class="topic-label">今日话题</text><text class="topic-text">{{topic.text}}</text></view><text class="topic-go">写留言 ›</text></view>
+  <view class="book-entry" wx:if="{{staying}}" bindtap="openBook"><text>床位留言本</text><text class="book-go">翻看 ›</text></view>
+
+  <view class="gb-seg toolbar">
+    <view class="gb-seg-item {{mode === 'card' ? 'gb-seg-on' : ''}}" data-mode="card" bindtap="setMode">卡片</view>
+    <view class="gb-seg-item {{mode === 'list' ? 'gb-seg-on' : ''}}" data-mode="list" bindtap="setMode">列表</view>
+  </view>
+  <view class="sortbar">
+    <text class="{{sort === 'latest' ? 'sort-on' : ''}}" data-sort="latest" bindtap="setSort">最新</text>
+    <text class="{{sort === 'top' ? 'sort-on' : ''}}" data-sort="top" bindtap="setSort">回应最多</text>
+  </view>
+
+  <view wx:if="{{mode === 'card'}}" class="masonry">
+    <view class="col">
+      <view wx:for="{{left}}" wx:key="id" class="note" style="{{item.style}}" data-id="{{item.id}}" bindtap="openNote">
+        <text class="note-text">{{item.content}}</text>
+        <view class="note-foot"><view class="note-count" style="color:{{item.hue}}"><view class="note-dot" style="background:{{item.hue}}"></view>{{item.total}}</view><text>{{item.date}}</text></view>
+      </view>
+    </view>
+    <view class="col">
+      <view wx:for="{{right}}" wx:key="id" class="note" style="{{item.style}}" data-id="{{item.id}}" bindtap="openNote">
+        <text class="note-text">{{item.content}}</text>
+        <view class="note-foot"><view class="note-count" style="color:{{item.hue}}"><view class="note-dot" style="background:{{item.hue}}"></view>{{item.total}}</view><text>{{item.date}}</text></view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="list">
+    <view wx:for="{{list}}" wx:key="id" class="list-item" data-id="{{item.id}}" bindtap="openNote">
+      <view class="list-dot" style="background:{{item.hue}}"></view>
+      <view class="list-body"><text class="list-text">{{item.content}}</text><view class="list-meta"><text>{{item.author}}</text><text style="color:{{item.hue}}">{{item.total}} 次回应</text></view></view>
+    </view>
+  </view>
+
+  <view wx:if="{{staying}}" class="fab-wrap"><button class="fab" bindtap="compose">＋ 写留言</button></view>
+</view>

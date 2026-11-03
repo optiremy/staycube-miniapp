@@ -1,0 +1,8 @@
+@import "../common.wxss";
+.where { margin-top:40rpx; }
+.where-title { display:block; font-size:28rpx; font-weight:600; }
+.where-text { display:block; margin-top:8rpx; font-size:24rpx; color:var(--sub); }
+.option { position:relative; margin-top:24rpx; border-color:var(--accent); }
+.option-title { font-size:30rpx; font-weight:600; }
+.option-arrow { position:absolute; right:28rpx; top:50%; transform:translateY(-55%); font-size:44rpx; color:var(--accent); }
+.known { margin-top:48rpx; }

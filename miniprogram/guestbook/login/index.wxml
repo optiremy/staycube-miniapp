@@ -1,0 +1,7 @@
+<view class="gb-page" style="{{pageStyle}}">
+  <text wx:if="{{welcome}}" class="hit">已识别欢迎图 · {{welcome.maskedName}} · {{welcome.room}} 号房 {{welcome.bed}}</text>
+  <block wx:if="{{taken}}"><text class="gb-title">这张欢迎图已在其他微信上使用</text><text class="gb-sub">如需更换微信，请联系前台。</text></block>
+  <block wx:else><text class="gb-title">使用微信登录</text>
+  <view class="agree" bindtap="toggleAgree"><view class="agree-box {{agreed ? 'agree-on' : ''}}"></view><text>已阅读并同意《肆方空间留言板使用说明》和《隐私保护指引》</text></view>
+  <view class="gb-bottom"><button class="gb-primary" loading="{{loading}}" bindtap="login">使用微信登录</button></view></block>
+</view>

@@ -3,14 +3,34 @@ const copyData = require('../../data/self-checkin-copy')
 const globalCopy = require('../../data/global-copy')
 const appLocale = require('../../utils/app-locale')
 const share = require('../../utils/share')
+const guestbookSession = require('../../utils/guestbook-session')
+const guestbookTheme = require('../../utils/guestbook-theme')
+const guestbookApi = require('../../utils/guestbook-api')
 
-function buildServices(home) {
-  return [
+// 按入住前后排序；在住时行李寄存最常用，排在第一位。
+function buildServices(home, staying) {
+  const services = [
+    { key: 'pre-arrival', title: home.preArrival, path: '/pages/pre-arrival/index' },
     { key: 'self-checkin', title: home.checkin, path: '/pages/index/index' },
     { key: 'luggage-storage', title: home.luggage, path: '/pages/luggage-storage/index' },
-    { key: 'pre-arrival', title: home.preArrival, path: '/pages/pre-arrival/index' },
     { key: 'special-cancellation', title: home.specialCancellation, path: '/pages/special-cancellation/index' },
   ]
+  if (!staying) return services
+  return [services[2], services[0], services[1], services[3]]
+}
+
+function buildGuestbook(board, session) {
+  const slot = guestbookTheme.slotOf()
+  const view = { state: session.state, tone: ['dusk', 'night'].includes(slot) ? 'night' : 'day' }
+  if (session.state !== 'staying') return view
+  return {
+    ...view,
+    bed: session.bed,
+    roomLabel: board.room.replace('{n}', session.room),
+    nightParts: board.night.split('{n}'),
+    nights: session.nights,
+    slipper: session.slipper,
+  }
 }
 
 function formatCheckinDate(locale, value, copy) {
@@ -26,20 +46,31 @@ Page(share.withShare('pages/home/index', null, {
   data: {
     locale: initialLocale,
     copy: globalCopy[initialLocale],
-    services: buildServices(globalCopy[initialLocale].home),
+    services: buildServices(globalCopy[initialLocale].home, false),
+    guestbook: { state: 'guest', tone: 'night' },
     drafts: [],
     draftModalVisible: false,
   },
 
+  // 草稿弹窗只在首次打开首页和小程序回到前台（App.onShow）时自动弹出；
+  // 从其他页面返回首页时保持旅客上次的选择，不再重复打扰。
   onShow() {
     this.applyLocale(appLocale.getLocale())
-    this.refreshDraftModal()
+    guestbookApi.refreshState().then(() => this.applyLocale(this.data.locale)).catch(() => {})
+    this.refreshDraftModal(this._draftPrompted === true)
+    this._draftPrompted = true
   },
 
+  // 留言板状态随时可能变化（登录、退房、时段），每次显示首页都重新计算。
   applyLocale(locale) {
     const copy = globalCopy[locale] || globalCopy['zh-CN']
-    if (locale === this.data.locale && this.data.services.length) return
-    this.setData({ locale, copy, services: buildServices(copy.home) })
+    const session = guestbookSession.read()
+    this.setData({
+      locale,
+      copy,
+      services: buildServices(copy.home, session.state === 'staying'),
+      guestbook: buildGuestbook(copy.board, session),
+    })
   },
 
   changeLocale(event) {
@@ -60,19 +91,25 @@ Page(share.withShare('pages/home/index', null, {
       const otherDay = locale === 'zh-CN' ? `${updated.getMonth() + 1}月${updated.getDate()}日 ${time}` : `${String(updated.getMonth() + 1).padStart(2, '0')}-${String(updated.getDate()).padStart(2, '0')} ${time}`
       return {
         ...draft,
+        guestName: draft.guestName || copy.nameMissing,
         checkinDateLabel: formatCheckinDate(locale, draft.checkinDate, copy),
         stepLabel: text.stepTitles[draft.step] || text.stepTitles[0],
         lastUpdatedLabel: sameDay ? `${copy.today} ${time}` : otherDay,
       }
     })
     const visible = keepVisibility === true ? this.data.draftModalVisible && drafts.length > 0 : drafts.length > 0
-    this.setData({ drafts, activeDraft: drafts[0] || null, draftModalVisible: visible })
+    this.setData({ drafts: drafts.slice(0, 3), activeDraft: drafts[0] || null, draftModalVisible: visible })
   },
 
   openService(event) {
     const path = event.currentTarget.dataset.path
     if (!path) return
     wx.navigateTo({ url: path })
+  },
+
+  openGuestbook(event) {
+    const page = event.currentTarget.dataset.page || 'index'
+    wx.navigateTo({ url: `/guestbook/${page}/index` })
   },
 
   resumeDraft(event) {
@@ -99,7 +136,7 @@ Page(share.withShare('pages/home/index', null, {
       success: (result) => {
         if (!result.confirm) return
         selfCheckinDrafts.removeDraft(recordId)
-        this.refreshDraftModal()
+        this.refreshDraftModal(true)
       },
     })
   },

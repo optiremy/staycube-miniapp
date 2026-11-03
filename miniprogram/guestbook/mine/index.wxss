@@ -1,0 +1,2 @@
+@import "../common.wxss";
+.mine-list { margin-top:36rpx; }

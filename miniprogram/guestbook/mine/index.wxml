@@ -1,0 +1,9 @@
+<view class="gb-page" style="{{pageStyle}}">
+  <text class="gb-title">我的留言</text>
+  <view class="mine-list">
+    <view wx:for="{{list}}" wx:key="id" class="note" style="{{item.style}}">
+      <text class="note-text">{{item.content}}</text>
+      <view class="note-foot"><text>{{item.status === 'pending' ? '审核中' : item.status === 'rejected' ? (item.rejectReason ? '未通过 · ' + item.rejectReason : '未通过') : (item.kind === 'entry' ? '床位留言本' : item.total + ' 次回应')}}</text><text>{{item.date}}</text></view>
+    </view>
+  </view>
+</view>

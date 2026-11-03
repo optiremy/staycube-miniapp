@@ -1,0 +1,8 @@
+<view class="gb-page" style="{{pageStyle}}">
+  <block wx:if="{{!checking}}">
+  <text class="gb-title">首次使用留言板</text>
+  <text class="gb-sub">请在微信聊天中长按欢迎图，选择“识别图中的小程序码”。</text>
+  <view class="gb-card where"><text class="where-title">欢迎图在哪里</text><text class="where-text">在自助入住指引或前台发来的微信消息中</text></view>
+  <view class="gb-card option" bindtap="scan"><text class="option-title">扫描或从相册选择欢迎图</text><text class="option-arrow">›</text></view>
+</block>
+</view>

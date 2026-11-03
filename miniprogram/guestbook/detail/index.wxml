@@ -1,0 +1,13 @@
+<view class="gb-page" style="{{pageStyle}}">
+  <view wx:if="{{note}}" class="note big" style="{{note.style}}">
+    <text class="note-text">{{note.content}}</text>
+    <view class="note-foot"><text>{{note.author}}</text><text>{{note.date}}</text></view>
+  </view>
+  <view class="reactions">
+    <view wx:for="{{reactions}}" wx:key="key" class="reaction {{item.on ? 'reaction-on' : ''}} {{canReact ? '' : 'reaction-off'}}" data-key="{{item.key}}" bindtap="react">
+      <text class="reaction-label">{{item.label}}</text><text class="reaction-count">{{item.count}}</text>
+    </view>
+  </view>
+  <view wx:if="{{isGuest}}" class="lock"><text class="lock-title">其他留言仅入住旅客可见</text></view>
+  <button wx:else class="share" open-type="share">分享</button>
+</view>

@@ -84,6 +84,15 @@ async function run() {
   page.choosePhoto({ currentTarget: { dataset: { kind: 'unexpected' } } })
   assert.equal(chooseCalls.length, callCount)
 
+  page.signatureContext = { beginPath() {}, moveTo() {} }
+  page._signatureSize = { width: 100, height: 100 }
+  page.data.rulesFinalConfirmed = true
+  page._uploaded.signaturePath = 'old-signature'
+  page._uploadIds.signature = 1
+  page.signatureStart({ changedTouches: [{ x: 1, y: 2 }] })
+  assert.equal(page._uploaded.signaturePath, '')
+  assert.notEqual(page._uploadIds.signature, 1)
+
   delete global.wx
   delete global.Page
   console.log('self-checkin photo upload tests passed')

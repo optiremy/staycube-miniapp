@@ -19,7 +19,7 @@
 | 入住码查询失败提示，`lookupError...` | 相应语言文件 → `lookupErrors` |
 | 入住须知逐条正文、签名须知，`rules.xxx` | 由现有服务端返回；本地文案文件无法修改 |
 | 页面固定品牌字样、图标排列、控件顺序 | `miniprogram/pages/index/index.wxml`，按 `screen === 'language'`、`step === 0` 等区块定位 |
-| 字号、颜色、边距、圆角、按钮尺寸 | `miniprogram/pages/index/index.wxss`，按页面分区查找；全局底色在 `miniprogram/app.wxss` |
+| 字号、颜色、边距、圆角、按钮尺寸 | `miniprogram/pages/index/index.wxss`，按类名查找；全局底色在 `miniprogram/app.wxss` |
 | Logo、公安登记二维码、押金二维码图片 | `miniprogram/assets/` |
 
 常用样式入口：`.page` 控制左右留白，`.hero-title` 和 `.screen-title` 控制标题，`.primary-button` 控制蓝色按钮，`.field-label` 控制字段名称，`.step-track` 控制登记进度，`.page-foot` 控制页脚。样式尺寸使用 `rpx`；在 375px 逻辑宽的设计基准下，`2rpx` 约为 `1px`。

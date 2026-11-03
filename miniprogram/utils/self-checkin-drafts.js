@@ -61,7 +61,7 @@ function listDrafts() {
         recordId,
         locale: draft.locale,
         accessCode: /^\d{6}$/.test(String(draft.accessCode || '')) ? String(draft.accessCode) : '',
-        guestName: String(form.guest_name || '').trim() || '未填写姓名',
+        guestName: String(form.guest_name || '').trim(),
         checkinDate: draft.checkinDate || '',
         step: Math.max(0, Math.min(4, Number(draft.step) || 0)),
         updatedAt: draft.updatedAt,

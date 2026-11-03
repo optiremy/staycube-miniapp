@@ -5,10 +5,9 @@
     <text class="brand-product">stayCube</text>
   </view>
 
-  <!-- 申请码 -->
   <view wx:if="{{screen === 'access'}}" class="screen access-screen">
     <text class="screen-title">申请特殊取消</text>
-    <text class="body-copy">请输入前台 staff 提供的六位申请码。</text>
+    <text class="body-copy">请输入前台 提供的六位申请码。</text>
     <view class="field-block">
       <text class="field-label">申请码</text>
       <input class="text-input code-input" value="{{code}}" type="number" maxlength="6" bindinput="updateCode" bindconfirm="verifyCode" />
@@ -20,14 +19,13 @@
     </view>
   </view>
 
-  <!-- 填写申请 -->
   <view wx:if="{{screen === 'form'}}" class="screen form-screen">
     <text class="eyebrow">特殊取消申请 · {{item.application_no}}</text>
     <text class="screen-title">申请特殊取消</text>
-    <text class="body-copy">申请通过之前，你的订单将按照原取消政策执行。填写内容会在继续下一步时保存。</text>
+    <text class="body-copy">申请通过之前，你的订单将按照原取消政策执行。</text>
 
     <view wx:if="{{step === 1}}" class="form-step">
-      <text wx:if="{{!item.booking_number}}" class="field-hint status-hint">尚未填写订单号。请填写真实订单号后继续；如无法找到，请联系前台 staff。</text>
+      <text wx:if="{{!item.booking_number}}" class="field-hint status-hint">尚未填写订单号。请填写真实订单号后继续；如无法找到，请联系前台。</text>
       <view class="form-section">
         <view class="field-block first-field">
           <text class="field-label">订单号 *</text>
@@ -97,7 +95,8 @@
         </view>
         <button wx:if="{{materials.length < 5}}" class="add-material" bindtap="addMaterialRow" disabled="{{uploading}}">＋ 新增材料</button>
       </view>
-      <text wx:if="{{uploading}}" class="status-line">正在安全上传材料…</text>
+      <text wx:if="{{uploading}}" class="status-line">正在上传材料…</text>
+      <text wx:if="{{materialHint && !uploading}}" class="field-hint status-hint">{{materialHint}}</text>
       <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
       <view class="form-actions">
         <button class="secondary-button form-action" bindtap="backToBasic" disabled="{{uploading}}">上一步</button>
@@ -121,6 +120,7 @@
         </view>
         <button class="text-button" bindtap="clearSignature" disabled="{{!signatureReady}}">重新签名</button>
       </view>
+      <text wx:if="{{submitHint && !submitting}}" class="field-hint status-hint">{{submitHint}}</text>
       <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
       <view class="form-actions">
         <button class="secondary-button form-action" data-step="2" bindtap="advanceStep" disabled="{{submitting}}">上一步</button>
@@ -129,13 +129,11 @@
     </view>
   </view>
 
-  <!-- 申请进度 -->
   <view wx:if="{{screen === 'progress'}}" class="screen progress-screen">
     <text class="eyebrow">特殊取消申请 · {{item.application_no}}</text>
     <view class="status-card">
       <text class="status-caption">当前状态</text>
       <text class="status-value">{{progress.statusLabel}}</text>
-      <text class="status-next">{{progress.nextAction}}</text>
     </view>
 
     <view wx:if="{{item.decision}}" class="form-section">
@@ -164,15 +162,15 @@
 
     <view wx:if="{{progress.needMoreInfo}}" class="form-section">
       <text class="form-section-title">补充资料</text>
-      <text wx:if="{{progress.atLimit}}" class="field-hint">材料已达上限，请联系前台 staff。</text>
+      <text wx:if="{{progress.atLimit}}" class="field-hint">材料已达上限，请联系前台。</text>
       <block wx:elif="{{progress.canSupplement}}">
-        <text class="body-copy">请根据管理员的审核意见补充证明材料。原申请内容与已提交材料保持不变，每份材料最多 5 项。</text>
+        <text class="body-copy">请根据管理员的审核意见补充证明材料。每份材料最多 5 项。</text>
         <button class="add-material" bindtap="addSupplementMaterial" disabled="{{uploading || submitting}}">＋ 添加照片或 PDF</button>
         <text class="field-hint">本轮已新增 {{progress.currentRoundCount}} 项；至少新增一份证明材料后才能提交。</text>
         <button class="primary-button form-action supplement-submit {{uploading || submitting || !progress.currentRoundCount ? 'is-button-disabled' : ''}}" bindtap="submitSupplement" loading="{{submitting}}" disabled="{{uploading || submitting || !progress.currentRoundCount}}"><text class="button-label">{{submitting ? '正在提交补充资料…' : '提交补充资料'}}</text></button>
       </block>
-      <text wx:else class="field-hint">补充期限已过，请联系前台 staff 继续处理。</text>
-      <text wx:if="{{uploading}}" class="status-line">正在安全上传材料…</text>
+      <text wx:else class="field-hint">补充期限已过，请联系前台 继续处理。</text>
+      <text wx:if="{{uploading}}" class="status-line">正在上传材料…</text>
     </view>
 
     <view class="form-section">

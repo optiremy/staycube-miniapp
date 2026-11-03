@@ -31,6 +31,28 @@ function shanghaiToday() {
   return new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10)
 }
 
+function shanghaiNow() {
+  const local = new Date(Date.now() + 8 * 60 * 60 * 1000)
+  return { date: local.toISOString().slice(0, 10), minutes: local.getUTCHours() * 60 + local.getUTCMinutes() }
+}
+
+function defaultClaim() {
+  const now = shanghaiNow()
+  const next = Math.floor(now.minutes / 15) + 1
+  if (next > 90) {
+    const tomorrow = new Date(Date.now() + 8 * 60 * 60 * 1000 + 86400000).toISOString().slice(0, 10)
+    return { date: tomorrow, index: 0 }
+  }
+  return { date: now.date, index: Math.max(0, next - 40) }
+}
+
+function claimTimeIsPast(form) {
+  const now = shanghaiNow()
+  if (form.claim_date !== now.date) return false
+  const [hour, minute] = String(form.claim_time).split(':').map(Number)
+  return hour * 60 + minute <= now.minutes
+}
+
 Page(share.withShare('pages/luggage-storage/index', 'luggage', {
   data: {
     screen: 'form',
@@ -61,7 +83,8 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
     this._photoStoragePath = ''
     this._submitTask = false
     const today = shanghaiToday()
-    this.setData({ today, 'form.claim_date': today })
+    const claim = defaultClaim()
+    this.setData({ today, 'form.claim_date': claim.date, 'form.claim_time': claimTimeOptions[claim.index], claimTimeIndex: claim.index })
     this.applyLocale(appLocale.getLocale())
     this.loadPublicContext()
   },
@@ -80,7 +103,7 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
         errorText: '',
       })
     } catch (error) {
-      this.setData({ errorText: this.messageFor(error, '行李寄存信息暂时无法读取，请检查网络后重试。') })
+      this.setData({ errorText: this.messageFor(error, this.data.errorCopy.service) })
     } finally {
       this.setData({ loading: false })
     }
@@ -126,6 +149,7 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
       this.setData({ errorText: text.timeError })
       return
     }
+    if (claimTimeIsPast(form)) { this.setData({ errorText: text.pastTimeError }); return }
     this.setData({ formStep: 1, errorText: '' })
   },
 
@@ -246,11 +270,13 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
     const contextToday = this._context && this._context.today ? this._context.today : ''
     if (form.claim_date < (today || contextToday)) return text.dateError
     if (!claimTimeOptions.includes(form.claim_time)) return text.timeError
+    if (claimTimeIsPast(form)) return text.pastTimeError
     if (!photoPath) return text.photoRequiredError
     return this.contactError()
   },
 
   messageFor(error, fallback) {
+    if (error && error.kind === 'date') return error.message
     if (error instanceof Error && ['image-too-large', 'image-processing-failed'].includes(error.message)) return this.data.errorCopy.photo
     if (error instanceof LuggageStorageApiError && error.kind === 'uncertain') return this.data.errorCopy.uncertain
     if (error instanceof LuggageStorageApiError && error.kind === 'network') return this.data.errorCopy.network
@@ -258,7 +284,6 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
     if (error instanceof LuggageStorageApiError && error.kind === 'limited') return this.data.errorCopy.limited
     if (error instanceof LuggageStorageApiError && error.kind === 'upload') return this.data.errorCopy.upload
     if (error instanceof LuggageStorageApiError && error.kind === 'service') return this.data.errorCopy.service
-    if (error instanceof Error && error.message && !error.message.includes('timeout')) return error.message
     return fallback
   },
 
@@ -273,7 +298,8 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
     this.setData({ submitting: true, errorText: '' })
     try {
       if (!this._context) this._context = await luggageStorageApi.getPublicContext()
-      if (this.data.form.claim_date < this._context.today) throw new Error(this.data.text.dateError)
+      if (this.data.form.claim_date < this._context.today) throw Object.assign(new Error(this.data.text.dateError), { kind: 'date' })
+      if (claimTimeIsPast(this.data.form)) throw Object.assign(new Error(this.data.text.pastTimeError), { kind: 'date' })
       if (!this._draft) this._draft = await luggageStorageApi.createDraft(this._draftRequestId)
       if (!this._photoStoragePath) this._photoStoragePath = await luggageStorageApi.uploadPhoto(this._draft.id, this.data.photoPath, this._photoUploadId)
       const form = this.data.form
@@ -293,6 +319,8 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
       await luggageStorageApi.submit(this._draft.token, payload)
       this.setData({ screen: 'success', submitting: false, errorText: '' })
     } catch (error) {
+      // 照片上传超时可能已落盘；重试换新路径，避免同名文件冲突导致一直失败。
+      if (!this._photoStoragePath) this._photoUploadId = Date.now()
       this.setData({ errorText: this.messageFor(error, this.data.errorCopy.service) })
     } finally {
       this._submitTask = false

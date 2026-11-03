@@ -13,15 +13,13 @@
 </head>
 <body>
   <main class="workspace">
-    <header class="toolbar"><div><h1>预抵问卷页面预览</h1><p>按顶部按钮切换页面；页面文案和交互以小程序实际界面为准。</p></div><nav class="switcher"><button class="active" data-view="language">语言选择</button><button data-view="form">填写问卷</button><button data-view="result">提交与导航</button></nav></header>
+    <header class="toolbar"><div><h1>预抵问卷页面预览</h1></div><nav class="switcher"><button class="active" data-view="language">语言选择</button><button data-view="form">填写问卷</button><button data-view="result">提交与导航</button></nav></header>
     <div class="layout">
-      <aside class="note"><strong>流程说明</strong>旅客从首页进入后选择语言，填写预订姓名、联系方式、预计到达时间和床位偏好后提交。问卷进入员工工作台待处理列表，旅客可在结果页查看对应提示并打开目的地地图。</aside>
       <section class="phone"><div class="screen"><div class="brand"><img src="../miniprogram/assets/sifang-blue.png" alt="肆方空间"><i></i><b>stayCube</b></div>
         <article class="view active" data-screen="language"><div class="hero"><span class="icon">⌖</span><div><strong>预抵问卷</strong><small>PRE-ARRIVAL QUESTIONNAIRE</small></div></div><h2 class="title">请选择问卷语言</h2><span class="muted">CHOOSE A LANGUAGE</span><div class="langs"><div class="lang">中文　›</div><div class="lang">English　›</div><div class="lang">Deutsch　›</div><div class="lang">Français　›</div><div class="lang">Español　›</div><div class="lang">Italiano　›</div><div class="lang">日本語　›</div><div class="lang">한국어　›</div></div></article>
         <article class="view" data-screen="form"><h2 class="title">预抵问卷</h2><p class="intro">请填写预计到达信息，方便我们安排接待。</p><label class="label">预订姓名</label><div class="fieldbox"></div><label class="label">手机号</label><div class="fieldbox"></div><label class="label">预计到达时间</label><div class="fieldbox">18:00　⌄</div><label class="label">床位偏好</label><div class="choices"><div class="choice">○ 上铺</div><div class="choice">○ 下铺</div><div class="choice">◉ 都可以</div></div><small class="muted">我们会尽量按偏好安排，不能保证床位。</small><label class="label">备注（选填）</label><div class="fieldbox" style="height:64px"></div><div class="actions"><div class="action">返回</div><div class="action primary"><span class="action-label">提交问卷</span><span class="action-arrow">→</span></div></div></article>
         <article class="view" data-screen="result"><span class="badge">✓ 已收到你的预抵信息</span><h2 class="title">前台会根据你的预计到达时间安排接待。</h2><section class="card"><strong>到达指引（长按图片保存）</strong><p>从体育场站 D 口出站后，按图示前往 A 座并乘电梯至 17 层。</p><img src="../miniprogram/assets/pre-arrival-daytime-guide.jpg" alt="到达指引"><small class="guide-save-hint">长按图片可保存</small></section><section class="card"><strong>导航到旅宿</strong><p>点击按钮打开地图，继续选择手机上可用的地图应用导航。</p><div class="address">西安市碑林区长安北路21号长安大厦A座</div><div class="map-button">到这里去　↗</div></section></article>
       </div></section>
-      <aside class="note"><strong>视觉约束</strong>延续自助入住和行李寄存的留白、标题层级与品牌蓝。实际页面使用原生控件，支持滚动及手机安全区；地点打开失败时仍显示图文到达指引。</aside>
     </div>
   </main>
   <script>document.querySelectorAll('.switcher button').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.switcher button').forEach(item=>item.classList.toggle('active',item===button));document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.dataset.screen===button.dataset.view))}))</script>

@@ -60,7 +60,7 @@
       <view wx:if="{{photoPath}}" class="photo-selected">
         <image class="photo-thumbnail" src="{{photoPath}}" mode="aspectFill" data-path="{{photoPath}}" bindtap="previewPhoto" />
         <view class="photo-file-copy"><text>{{text.selectedPhoto}}</text><text class="photo-file-name">{{photoName}}</text></view>
-        <button class="photo-remove" bindtap="removePhoto" disabled="{{submitting}}">删除</button>
+        <button class="photo-remove" bindtap="removePhoto" disabled="{{submitting}}">{{text.removePhoto}}</button>
       </view>
       <button wx:else class="photo-choose-button" bindtap="choosePhoto" loading="{{photoProcessing}}" disabled="{{photoProcessing || submitting}}">＋ {{text.choosePhoto}}</button>
     </view>

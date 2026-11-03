@@ -32,7 +32,7 @@ async function run() {
   assert.match(markup, /class="deposit-qr-image"[^>]*data-path="\/assets\/self-checkin-deposit\.png" bindtap="previewQrImage"/, 'deposit QR tap opens the image preview')
   assert.match(markup, /value="{{form.guest_name}}" disabled/, 'guest name must be read-only')
   assert.doesNotMatch(markup, /submittedEditEnabled|submittedEditOpen|submittedEditPanel|修改登记信息/, 'submitted success page must not offer editing')
-  assert.doesNotMatch(markup, /nameCorrectionHint/, 'submitted page does not show an extra correction note')
+  assert.match(markup, /value="{{form.guest_name}}" disabled \/><text class="hint-copy">{{form.guest_name \? text.nameCorrectionHint : text.nameMissingError}}<\/text>/, 'read-only guest name explains how to correct or supply it')
   assert.equal(typeof selfCheckinApi.updatePublicContactAndPolice, 'undefined', 'mini program must not expose the post-submit edit API')
   assert.doesNotMatch(readFileSync(require.resolve('../utils/guest-transport'), 'utf8'), /update_self_checkin_public_contact_and_police/, 'the edit RPC must be removed from guest relay allowlist')
   assert.doesNotMatch(markup, /show-menu-by-longpress|openQrShareMenu|saveQrImage/, 'QR interactions do not use the old share handler or a page save button')

@@ -46,6 +46,8 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
     canContinueBasic: false,
     canContinueReason: false,
     canSubmit: false,
+    materialHint: '',
+    submitHint: '',
     progress: null,
     saving: false,
     uploading: false,
@@ -60,6 +62,10 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
     this._signatureData = ''
     this._supplementUpload = { id: createRequestId(), fileKey: '' }
   },
+
+  onHide() { this.saveDraft().catch(() => {}) },
+
+  onUnload() { this.saveDraft().catch(() => {}) },
 
   returnHome() {
     if (this.data.submitting || this.data.uploading) return
@@ -109,7 +115,6 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
     const currentRound = item.attachments.filter(attachment => attachment.supplement_round === item.supplement_round)
     return {
       statusLabel: copy.statusLabels[item.status] || item.status,
-      nextAction: copy.nextActions[item.status] || '',
       decisionResult: item.decision ? (item.decision.result || copy.statusLabels[item.status] || '') : '',
       decisionNote: item.decision ? item.decision.note || '' : '',
       reason: [item.reason_category, item.reason_subcategory].filter(Boolean).join(' / ') || '—',
@@ -146,10 +151,26 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
     const attachments = item.attachments
     const isTransport = item.reason_subcategory === '航班列车异常'
     const basicReady = Boolean(item.booking_number.trim() && item.guest_phone.trim())
-    const transportReady = !isTransport || Boolean(item.transport_mode && item.transport_trip.trim() && item.transport_date
-      && attachments.some(attachment => attachment.proof_purposes.includes('disruption'))
-      && attachments.some(attachment => attachment.proof_purposes.includes('passenger')))
+    const transportFieldsReady = Boolean(item.transport_mode && item.transport_trip.trim() && item.transport_date)
+    const hasDisruption = attachments.some(attachment => attachment.proof_purposes.includes('disruption'))
+    const hasPassenger = attachments.some(attachment => attachment.proof_purposes.includes('passenger'))
+    const transportReady = !isTransport || (transportFieldsReady && hasDisruption && hasPassenger)
+    const declarationsReady = copy.declarations.every((_, index) => item.declarations[`d${index}`] === true)
+    const needsAttachment = item.reason_category === '不可抗力' && attachments.length === 0
+    // 列出提交前还缺的内容，避免提交按钮不可点却没有说明。
+    const materialMissing = []
+    if (isTransport && !transportFieldsReady) materialMissing.push('交通方式、班次和日期')
+    if (isTransport && !hasDisruption) materialMissing.push('用途为“班次异常”的材料')
+    if (isTransport && !hasPassenger) materialMissing.push('用途为“本人购买／乘坐”的材料')
+    if (!isTransport && needsAttachment) materialMissing.push('至少一份证明材料')
+    const submitMissing = []
+    if (!basicReady) submitMissing.push('订单号和联系方式')
+    if (materialMissing.length) submitMissing.push('上一步的申请原因与证明材料')
+    if (!declarationsReady) submitMissing.push('勾选全部声明')
+    if (!this._signatureData) submitMissing.push('手写签名')
     this.setData({
+      materialHint: materialMissing.length ? `提交前还需补充：${materialMissing.join('、')}。` : '',
+      submitHint: submitMissing.length ? `提交前请完成：${submitMissing.join('、')}。` : '',
       reasonCategoryIndex: copy.reasonCategories.indexOf(item.reason_category),
       reasonSubcategories: subcategories,
       reasonSubcategoryIndex: subcategories.indexOf(item.reason_subcategory),
@@ -157,10 +178,7 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
       materialCount: materials.filter(row => row.attachment).length,
       canContinueBasic: basicReady,
       canContinueReason: Boolean(item.reason_category && item.reason_subcategory),
-      canSubmit: basicReady && Boolean(this._signatureData)
-        && copy.declarations.every((_, index) => item.declarations[`d${index}`] === true)
-        && !(item.reason_category === '不可抗力' && attachments.length === 0)
-        && transportReady,
+      canSubmit: basicReady && Boolean(this._signatureData) && declarationsReady && !needsAttachment && transportReady,
     })
   },
 
@@ -232,8 +250,17 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
     const index = Number(event.currentTarget.dataset.index)
     const purposeIndex = Number(event.detail.value)
     const purpose = copy.purposes[purposeIndex]
-    if (!purpose || !this.data.materials[index]) return
-    this.setData({ [`materials[${index}].purpose`]: purpose.value, [`materials[${index}].purposeIndex`]: purposeIndex })
+    const row = this.data.materials[index]
+    if (!purpose || !row) return
+    const patch = { [`materials[${index}].purpose`]: purpose.value, [`materials[${index}].purposeIndex`]: purposeIndex }
+    if (!row.attachment) {
+      this.setData(patch)
+      return
+    }
+    // 已上传的材料同步更新用途，随草稿保存，提交条件随之重新计算。
+    const attachment = { ...row.attachment, proof_purposes: [purpose.value] }
+    patch[`materials[${index}].attachment`] = attachment
+    this.update({ attachments: this.data.item.attachments.map(entry => entry.id === attachment.id ? attachment : entry) }, patch)
   },
 
   updateMaterialDescription(event) {
@@ -322,7 +349,9 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
         proof_purposes: [row.purpose], description: row.description, is_sensitive: item.reason_subcategory === '突发疾病 / 住院',
       }, file, uploadId)
       const attachments = [...this.data.item.attachments.filter(entry => !row.attachment || entry.id !== row.attachment.id), attachment]
-      this.setData({ 'item.attachments': attachments, [`materials[${index}].attachment`]: attachment }, () => this.refreshDerived())
+      // 重新选择时，被替换的旧材料随草稿一起从申请中移除。
+      if (row.attachment) this.update({ attachments }, { [`materials[${index}].attachment`]: attachment })
+      else this.setData({ 'item.attachments': attachments, [`materials[${index}].attachment`]: attachment }, () => this.refreshDerived())
     } catch (error) {
       this.setData({ errorText: error.message || '上传失败，请检查网络和文件后重试。' })
     } finally {
@@ -406,7 +435,7 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
       const result = await specialCancellationApi.submit(item.id, this._accessCode, {
         ...current, ...this._pending,
         guest_phone: current.guest_phone.trim(), booking_number: current.booking_number.trim(),
-        signature_data: this._signatureData, attachments: current.attachments,
+        signature_data: this._signatureData, attachments: undefined,
         review_events: undefined, decision: undefined,
       })
       this._pending = {}
@@ -424,7 +453,7 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
   async addSupplementMaterial() {
     const item = this.data.item
     if (!item || item.status !== 'need_more_info' || !item.guest_can_supplement || this._busy) return
-    if (item.guest_material_count >= item.guest_material_limit) { this.setData({ errorText: '材料已达上限，请联系前台 staff。' }); return }
+    if (item.guest_material_count >= item.guest_material_limit) { this.setData({ errorText: '材料已达上限，请联系前台。' }); return }
     const source = await this.pickFile()
     if (!source) return
     this._busy = true

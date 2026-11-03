@@ -30,7 +30,7 @@
     <text class="screen-title">{{lookupErrorTitle}}</text>
     <text class="body-copy">{{lookupErrorMessage}}</text>
     <button class="primary-button" bindtap="retryLookup"><text class="button-label">{{lookupRetryLabel}}</text><text class="button-arrow">↻</text></button>
-    <button class="text-button" bindtap="returnToCode">{{text.backToCode}}</button>
+    <button wx:if="{{lookupErrorKind !== 'expired' && lookupErrorKind !== 'code'}}" class="text-button" bindtap="returnToCode">{{text.backToCode}}</button>
   </view>
 
   <view wx:if="{{screen === 'form'}}" class="screen form-screen">
@@ -47,7 +47,7 @@
 
     <view wx:if="{{step === 0}}" class="step-content">
       <view class="section-heading"><text>{{text.basicSectionTitle}}</text></view>
-      <view class="field-block"><text class="field-label">{{text.guestNameLabel}}</text><input class="text-input" value="{{form.guest_name}}" disabled /></view>
+      <view class="field-block"><text class="field-label">{{text.guestNameLabel}}</text><input class="text-input" value="{{form.guest_name}}" disabled /><text class="hint-copy">{{form.guest_name ? text.nameCorrectionHint : text.nameMissingError}}</text></view>
       <view class="field-block"><text class="field-label">{{text.contactLabel}}</text>
         <view class="phone-row">
           <picker mode="selector" range="{{countryCodes}}" bindchange="updateCountryCode"><view class="country-code">{{form.country_code}}<text class="country-code-arrow">▼</text></view></picker>
@@ -66,7 +66,7 @@
         <text class="rule-body">{{rules.items[ruleIndex].body}}</text>
       </view>
       <view class="rule-actions">
-        <button class="secondary-button {{ruleIndex === 0 ? 'is-button-disabled' : ''}}" disabled="{{ruleIndex === 0}}" bindtap="previousRule">{{text.previousRuleLabel}}</button>
+        <button class="secondary-button" bindtap="previousRule">{{ruleIndex === 0 ? text.previousStepLabel : text.previousRuleLabel}}</button>
         <button class="primary-button compact-button {{readingSeconds > 0 ? 'is-button-disabled' : ''}}" disabled="{{readingSeconds > 0}}" bindtap="confirmRule"><text class="button-label">{{ruleActionLabel}}</text><text wx:if="{{readingSeconds === 0}}" class="button-arrow">→</text></button>
       </view>
     </view>
@@ -88,7 +88,6 @@
 
     <view wx:if="{{step === 3 && !docTypeConfirmed}}" class="step-content document-type-step">
       <text class="document-type-title">{{globalText.documentType.title}}</text>
-      <text class="body-copy document-type-intro">{{globalText.documentType.intro}}</text>
       <view class="document-choice {{documentType === 'mainland_id' ? 'is-selected' : ''}}" data-type="mainland_id" bindtap="selectDocumentType">
         <view class="document-icon"><image class="document-icon-image" src="/assets/{{documentType === 'mainland_id' ? 'doc-id-card-active' : 'doc-id-card'}}.svg" mode="aspectFit" /><text wx:if="{{documentType === 'mainland_id'}}" class="document-check">✓</text></view>
         <text class="document-choice-label">{{globalText.documentType.mainlandId}}</text>
@@ -130,7 +129,7 @@
       <text class="body-copy section-copy">{{paymentChannel === 'wechat' ? paymentCopy.description : text.depositDescription}}</text>
       <view wx:if="{{paymentChannel === 'wechat'}}" class="payment-choice">
         <button class="primary-button" disabled="{{paymentBusy || paymentStatus === 'paid'}}" loading="{{paymentBusy}}" bindtap="payDeposit">{{paymentStatus === 'paid' ? paymentCopy.paid : paymentCopy.pay}}</button>
-        <text class="hint-copy">{{paymentCopy.note}}</text>
+        <button wx:if="{{paymentStatus === 'pending' || paymentStatus === 'uncertain'}}" class="secondary-button photo-button" disabled="{{paymentBusy}}" bindtap="checkPaymentStatus">{{paymentCopy.status}}</button>
         <button class="secondary-button photo-button" disabled="{{paymentBusy}}" bindtap="useOtherPayment">{{paymentCopy.other}}</button>
       </view>
       <view wx:if="{{paymentChannel === 'other'}}" class="payment-choice">

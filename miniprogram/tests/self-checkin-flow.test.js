@@ -27,6 +27,7 @@ for (const phone of ['1380013800', '138001380000', '13800a38000']) {
   assert.equal(validateSelfCheckinStep(0, 'mainland_id', { ...state, form: { ...state.form, contact: phone } }), 'contactPhone')
 }
 assert.equal(validateSelfCheckinStep(0, 'mainland_id', { ...state, form: { ...state.form, contact: '13800138000' } }), '')
+assert.equal(validateSelfCheckinStep(0, 'mainland_id', { ...state, form: { ...state.form, guest_name: ' ', contact: '13800138000' } }), 'guestNameMissing')
 assert.equal(validateSelfCheckinStep(0, 'passport', { ...state, form: { ...state.form, contact: '+1 202 555 0100' } }), '')
 assert.equal(validateSelfCheckinStep(3, 'passport', { ...state, passportPath: '' }), 'foreignDocuments')
 assert.equal(validateSelfCheckinStep(4, 'mainland_id', { ...state, paymentChannel: 'wechat', paymentStatus: 'pending' }), 'depositPayment')

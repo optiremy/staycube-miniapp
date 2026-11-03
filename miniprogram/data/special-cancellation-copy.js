@@ -19,15 +19,11 @@ module.exports = {
   ],
   statusLabels: {
     awaiting_guest: '等待填写', pending_review: '待审核', need_more_info: '待补充材料', pending_call: '待电话沟通',
-    approved: '已批准，待执行', rejected: '未批准，待告知', withdrawn: '已撤回', closed: '已结束',
-  },
-  nextActions: {
-    awaiting_guest: '等待申请人提交', pending_review: '核对材料并审核', need_more_info: '跟进补充材料', pending_call: '联系申请人核实',
-    approved: '执行取消并记录结果', rejected: '告知审核结论', withdrawn: '查看撤回记录', closed: '查看处理记录',
+    approved: '已批准', rejected: '未批准', withdrawn: '已撤回', closed: '已结束',
   },
   eventLabels: {
     created: '创建申请', submitted: '提交申请', resubmitted: '提交补充资料', staff_note: '补充说明',
     approved: '审核通过', rejected: '审核未通过', need_more_info: '要求补充资料', closed: '完成后续处理',
   },
-  actorLabels: { guest: '旅客', staff: '前台staff', admin: '管理员', system: '系统' },
+  actorLabels: { guest: '旅客', staff: '前台', admin: '管理员', system: '系统' },
 }

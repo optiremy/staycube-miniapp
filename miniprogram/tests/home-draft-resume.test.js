@@ -89,6 +89,8 @@ async function run() {
 
     homePage.closeDraftModal()
     assert.equal(homePage.data.draftModalVisible, false, 'dismissal closes the current prompt')
+    homePage.onShow()
+    assert.equal(homePage.data.draftModalVisible, false, 'returning from another page keeps the dismissed prompt closed')
 
     let refreshes = 0
     homePage.route = 'pages/home/index'

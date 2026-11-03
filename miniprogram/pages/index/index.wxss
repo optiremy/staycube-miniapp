@@ -1,10 +1,4 @@
-/*
- * 自助入住页面样式。常见微调：
- * 文字大小查 font-size；左右留白查 .page 的 padding；按钮查 .primary-button；
- * 各步骤样式按下方中文分区查找。375px 逻辑宽下，2rpx 约等于 1px。
- */
 
-/* 页面整体与品牌栏 */
 .page {
   box-sizing: border-box;
   min-height: 100vh;
@@ -47,7 +41,6 @@
   padding-top: 58rpx;
 }
 
-/* 语言选择页 */
 .language-screen {
   padding-top: 90rpx;
 }
@@ -205,7 +198,6 @@
   font-weight: 400;
 }
 
-/* 入住码页与通用按钮 */
 .code-screen {
   padding-top: 112rpx;
 }
@@ -339,7 +331,6 @@
   line-height: 1.5;
 }
 
-/* 加载、错误与测试结果 */
 .loading-screen, .error-screen {
   align-items: center;
   justify-content: center;
@@ -386,7 +377,6 @@
   opacity: .48;
 }
 
-/* 五步登记：进度与基础信息 */
 .form-screen {
   padding-top: 40rpx;
 }
@@ -489,7 +479,6 @@
   line-height: 1.5;
 }
 
-/* 入住须知 */
 .rule-meta {
   margin-top: 24rpx;
   display: flex;
@@ -585,7 +574,6 @@
   transform: scale(.86);
 }
 
-/* 签名 */
 .signature-label {
   color: #42566e;
   font-size: 24rpx;
@@ -642,7 +630,6 @@
   font-size: 24rpx;
 }
 
-/* 公安登记与证件照片 */
 .qr-panel {
   margin-top: 10rpx;
   padding: 26rpx;
@@ -719,7 +706,6 @@
   line-height: 1.55;
 }
 
-/* 押金凭证 */
 .payment-choice {
   margin: 16rpx 0 24rpx;
 }
@@ -769,7 +755,6 @@
   height: 320rpx;
 }
 
-/* 表单底部操作 */
 .form-footer {
   position: sticky;
   bottom: 0;
@@ -796,7 +781,6 @@
   height: 20rpx;
 }
 
-/* 正式提交结果页 */
 .submitted-screen {
   align-items: center;
   justify-content: center;
@@ -874,7 +858,6 @@
   font-size: 23rpx;
 }
 
-/* 页脚 */
 .page-foot {
   display: flex;
   justify-content: center;
@@ -894,16 +877,13 @@
 }
 
 
-/* 区号手机号 */
 .phone-row { display:flex; gap:14rpx; align-items:center; }
 .country-code { box-sizing:border-box; display:flex; align-items:center; gap:10rpx; height:88rpx; padding:0 22rpx; border:1rpx solid #c9d5e1; border-radius:12rpx; background:#fff; color:#0b1f44; font-size:27rpx; font-weight:600; }
 .country-code-arrow { color:#176be8; font-size:18rpx; }
 .phone-number-input { flex:1; min-width:0; }
 .phone-hint { margin-top:10rpx; }
 
-/* 证件类型选择 */
-.document-type-title { display:block; color:#0b1f44; font-size:38rpx; line-height:1.35; font-weight:700; }
-.document-type-intro { margin-top:12rpx; margin-bottom:28rpx; }
+.document-type-title { display:block; margin-bottom:28rpx; color:#0b1f44; font-size:38rpx; line-height:1.35; font-weight:700; }
 .document-choice { display:flex; align-items:center; gap:24rpx; margin-bottom:20rpx; padding:26rpx 24rpx; border:1rpx solid #d7e2ec; border-radius:18rpx; background:#fff; }
 .document-choice.is-selected { border-color:#176be8; background:#f2f7ff; }
 .document-icon { position:relative; flex:none; width:88rpx; height:88rpx; border-radius:24rpx; background:#eef3f8; display:flex; align-items:center; justify-content:center; }

@@ -134,9 +134,7 @@
   <div class="workspace">
     <header class="toolbar">
       <div>
-        <p class="eyebrow">stayCube · 本地预览</p>
         <h1>自助入住登记页面</h1>
-        <p class="toolbar-note">切换页面逐屏批注；打印时会按每页一屏排版。</p>
       </div>
       <div class="toolbar-actions">
         <button class="utility-button" type="button" onclick="window.print()">打印 / 导出 PDF</button>
@@ -156,7 +154,6 @@
     </nav>
 
     <div class="preview-layout">
-      <aside class="side-note"><strong>批注提示</strong>页面按小程序手机视口排版。可直接截图或使用上方“打印 / 导出 PDF”生成逐页稿，批注后把截图或 PDF 发回即可。</aside>
       <main id="preview-pages">
         <article class="preview-page active" data-index="0" aria-label="语言选择页面">
           <div class="device"><div class="device-screen">
@@ -268,7 +265,6 @@
               <div class="step-content"><h2 class="section-title">5. 押金缴纳记录</h2>
                 <p class="section-description">押金 ¥100。选择支付方式后完成付款。</p>
                 <div class="action primary" style="margin-bottom:8px">微信支付 ¥100</div>
-                <p class="note-text">付款后由系统核实到账，无需上传截图。退款仍由员工手动办理。</p>
                 <div class="action" style="margin-top:12px;color:var(--blue)">使用其他方式支付</div>
                 <p class="note-text">选择其他方式后展示收款二维码，并上传支付成功截图，由员工确认。</p>
                 <div class="two-actions nav-bottom"><div class="action">上一步</div><div class="action primary">提交自助入住登记 <span class="arrow">→</span></div></div>
@@ -310,9 +306,7 @@
           </div></div>
         </article>
       </main>
-      <aside class="side-note"><strong>当前页面 <span id="current-title">语言选择</span></strong>预览只呈现页面结构和文案。实际小程序仍需在微信开发者工具或真机中确认滚动、安全区、输入键盘和二维码显示。</aside>
     </div>
-    <div class="screen-meta"><span id="current-page">1 / 9</span>　·　使用 ← / → 键切换页面</div>
   </div>
   <script>
     const pages = [...document.querySelectorAll('.preview-page')]
@@ -324,8 +318,6 @@
       pages.forEach((page, i) => page.classList.toggle('active', i === current))
       pages[current].querySelector('.screen-scroll').scrollTop = 0
       buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === current)))
-      document.getElementById('current-page').textContent = `${current + 1} / ${pages.length}`
-      document.getElementById('current-title').textContent = titles[current]
     }
     buttons.forEach((button) => button.addEventListener('click', () => showPage(Number(button.dataset.index))))
     document.addEventListener('keydown', (event) => {

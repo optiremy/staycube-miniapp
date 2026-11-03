@@ -32,7 +32,7 @@ const locales = {
     photoTypeError: '请上传 JPG、PNG、WebP、HEIC 或 HEIF 图片。',
     photoSizeError: '图片压缩后不能超过 1MB。',
     dateError: '取回日期不能早于今天。',
-    timeError: '取回时间只能选择 10:00 - 22:30。',
+    removePhoto: '删除', pastTimeError: '取回时间必须晚于当前时间。', timeError: '取回时间只能选择 10:00 - 22:30。',
   },
   'en-US': {
     eyebrow: 'LUGGAGE STORAGE',
@@ -65,7 +65,7 @@ const locales = {
     photoTypeError: 'Please upload a JPG, PNG, WebP, HEIC, or HEIF image.',
     photoSizeError: 'The compressed image must be no larger than 1MB.',
     dateError: 'The claim date cannot be earlier than today.',
-    timeError: 'The claim time must be between 10:00 and 22:30.',
+    removePhoto: 'Remove', pastTimeError: 'Choose a claim time later than now.', timeError: 'The claim time must be between 10:00 and 22:30.',
   },
   'de-DE': {
     eyebrow: 'GEPÄCKAUFBEWAHRUNG',
@@ -73,7 +73,7 @@ const locales = {
     languageIntro: 'Bitte füllen Sie die Gepäckaufbewahrung in Ihrer bevorzugten Sprache aus.',
     title: 'Selbstbedienungs-Gepäckaufbewahrung',
     intro: 'Geben Sie Ihre Abholdaten ein und laden Sie ein Foto Ihres Gepäcks hoch.',
-    nameLabel: 'Name', contactTypeLabel: 'Kontaktmöglichkeit', contactLabel: 'Kontaktmöglichkeit', emailLabel: 'E-Mail', emailPlaceholder: 'name@example.com', claimDateLabel: 'Abholdatum', claimTimeLabel: 'Abholzeit', claimDateHint: '3 Tage kostenlos, danach 5 CNY pro Gepäckstück und Tag.', claimHoursLabel: 'Ich weiß, dass Gepäck täglich von 10:00 bis 22:30 Uhr abgeholt werden kann.', unclaimedPolicyLabel: 'Ich weiß, dass Gepäck, das am angegebenen Datum nicht abgeholt wird, in die Aufzugshalle gestellt wird. Für eine Verlängerung kontaktiere ich die Rezeption über WeChat.', noValuablesLabel: 'Ich weiß, dass keine Wertsachen angenommen werden.', photoLabel: 'Gepäckfoto', choosePhoto: 'Gepäckfoto hinzufügen', selectedPhoto: 'Ausgewählt', privacyLabel: 'Ich bestätige, dass diese Anmeldung nur zur Identifizierung des Gepäcks und zur Kontaktaufnahme verwendet wird.', submitLabel: 'Senden', submittingLabel: 'Wird gesendet...', completedTitle: 'Gepäckaufbewahrung gesendet', completedMessage: 'Stellen Sie Ihr Gepäck in den vorgesehenen Bereich. Wenn Sie das Abholdatum ändern müssen, wenden Sie sich an die Rezeption.', backLabel: 'Andere Sprache wählen', nextLabel: 'Weiter', previousLabel: 'Zurück', editLabel: 'Aufbewahrung abschließen', feeTitle: 'Aufbewahrungsgebühr', noticesTitle: 'Hinweise zur Aufbewahrung', missingFieldsError: 'Bitte füllen Sie das Formular aus und bestätigen Sie die Hinweise.', photoRequiredError: 'Bitte laden Sie ein Gepäckfoto hoch.', photoTypeError: 'Bitte laden Sie ein JPG-, PNG-, WebP-, HEIC- oder HEIF-Bild hoch.', photoSizeError: 'Das komprimierte Bild darf höchstens 1 MB groß sein.', dateError: 'Das Abholdatum darf nicht vor heute liegen.', timeError: 'Die Abholzeit muss zwischen 10:00 und 22:30 Uhr liegen.',
+    nameLabel: 'Name', contactTypeLabel: 'Kontaktmöglichkeit', contactLabel: 'Kontaktmöglichkeit', emailLabel: 'E-Mail', emailPlaceholder: 'name@example.com', claimDateLabel: 'Abholdatum', claimTimeLabel: 'Abholzeit', claimDateHint: '3 Tage kostenlos, danach 5 CNY pro Gepäckstück und Tag.', claimHoursLabel: 'Ich weiß, dass Gepäck täglich von 10:00 bis 22:30 Uhr abgeholt werden kann.', unclaimedPolicyLabel: 'Ich weiß, dass Gepäck, das am angegebenen Datum nicht abgeholt wird, in die Aufzugshalle gestellt wird. Für eine Verlängerung kontaktiere ich die Rezeption über WeChat.', noValuablesLabel: 'Ich weiß, dass keine Wertsachen angenommen werden.', photoLabel: 'Gepäckfoto', choosePhoto: 'Gepäckfoto hinzufügen', selectedPhoto: 'Ausgewählt', privacyLabel: 'Ich bestätige, dass diese Anmeldung nur zur Identifizierung des Gepäcks und zur Kontaktaufnahme verwendet wird.', submitLabel: 'Senden', submittingLabel: 'Wird gesendet...', completedTitle: 'Gepäckaufbewahrung gesendet', completedMessage: 'Stellen Sie Ihr Gepäck in den vorgesehenen Bereich. Wenn Sie das Abholdatum ändern müssen, wenden Sie sich an die Rezeption.', backLabel: 'Andere Sprache wählen', nextLabel: 'Weiter', previousLabel: 'Zurück', editLabel: 'Aufbewahrung abschließen', feeTitle: 'Aufbewahrungsgebühr', noticesTitle: 'Hinweise zur Aufbewahrung', missingFieldsError: 'Bitte füllen Sie das Formular aus und bestätigen Sie die Hinweise.', photoRequiredError: 'Bitte laden Sie ein Gepäckfoto hoch.', photoTypeError: 'Bitte laden Sie ein JPG-, PNG-, WebP-, HEIC- oder HEIF-Bild hoch.', photoSizeError: 'Das komprimierte Bild darf höchstens 1 MB groß sein.', dateError: 'Das Abholdatum darf nicht vor heute liegen.', removePhoto: 'Entfernen', pastTimeError: 'Die Abholzeit muss nach der aktuellen Uhrzeit liegen.', timeError: 'Die Abholzeit muss zwischen 10:00 und 22:30 Uhr liegen.',
   },
   'fr-FR': {
     eyebrow: 'CONSIGNE BAGAGES',
@@ -106,7 +106,7 @@ const locales = {
     photoTypeError: 'Veuillez ajouter une image JPG, PNG, WebP, HEIC ou HEIF.',
     photoSizeError: 'L’image compressée ne doit pas dépasser 1MB.',
     dateError: 'La date de retrait ne peut pas être antérieure à aujourd’hui.',
-    timeError: 'L’heure de retrait doit être entre 10:00 et 22:30.',
+    removePhoto: 'Supprimer', pastTimeError: 'Choisissez une heure de retrait postérieure à maintenant.', timeError: 'L’heure de retrait doit être entre 10:00 et 22:30.',
   },
   'es-ES': {
     eyebrow: 'GUARDAEQUIPAJE',
@@ -139,7 +139,7 @@ const locales = {
     photoTypeError: 'Suba una imagen JPG, PNG, WebP, HEIC o HEIF.',
     photoSizeError: 'La imagen comprimida no puede superar 1MB.',
     dateError: 'La fecha de recogida no puede ser anterior a hoy.',
-    timeError: 'La hora de recogida debe estar entre 10:00 y 22:30.',
+    removePhoto: 'Eliminar', pastTimeError: 'La hora de recogida debe ser posterior a la actual.', timeError: 'La hora de recogida debe estar entre 10:00 y 22:30.',
   },
   'it-IT': {
     eyebrow: 'DEPOSITO BAGAGLI',
@@ -172,7 +172,7 @@ const locales = {
     photoTypeError: 'Carica una immagine JPG, PNG, WebP, HEIC o HEIF.',
     photoSizeError: 'L’immagine compressa non deve superare 1MB.',
     dateError: 'La data di ritiro non può essere precedente a oggi.',
-    timeError: 'L’orario di ritiro deve essere tra le 10:00 e le 22:30.',
+    removePhoto: 'Rimuovi', pastTimeError: 'L’orario di ritiro deve essere successivo a quello attuale.', timeError: 'L’orario di ritiro deve essere tra le 10:00 e le 22:30.',
   },
   'ja-JP': {
     eyebrow: 'LUGGAGE STORAGE',
@@ -205,7 +205,7 @@ const locales = {
     photoTypeError: 'JPG、PNG、WebP、HEIC、HEIF画像をアップロードしてください。',
     photoSizeError: '圧縮後の画像は1MB以内にしてください。',
     dateError: '受け取り日は今日より前にできません。',
-    timeError: '受け取り時間は10:00 - 22:30の間で選択してください。',
+    removePhoto: '削除', pastTimeError: '受取時刻は現在より後を選んでください。', timeError: '受け取り時間は10:00 - 22:30の間で選択してください。',
   },
   'ko-KR': {
     eyebrow: 'LUGGAGE STORAGE',
@@ -238,7 +238,7 @@ const locales = {
     photoTypeError: 'JPG, PNG, WebP, HEIC 또는 HEIF 이미지를 업로드해 주세요.',
     photoSizeError: '압축된 이미지는 1MB 이하여야 합니다.',
     dateError: '찾는 날짜는 오늘보다 이전일 수 없습니다.',
-    timeError: '찾는 시간은 10:00 - 22:30 사이여야 합니다.',
+    removePhoto: '삭제', pastTimeError: '수령 시간은 현재 시간보다 늦어야 합니다.', timeError: '찾는 시간은 10:00 - 22:30 사이여야 합니다.',
   },
 }
 

@@ -1,4 +1,5 @@
 const copyData = require('../../data/self-checkin-copy')
+const guestbookApi = require('../../utils/guestbook-api')
 const paymentCopies = require('../../data/self-checkin-payment-copy')
 const appConfig = require('../../config')
 const testModeConfig = require('../../utils/test-mode')
@@ -246,7 +247,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       }
       if (!reconciliation) {
         if (this._draftTargetId && context.id !== this._draftTargetId) {
-          this.setData({ loading: false, screen: 'code', errorText: '入住码与所选登记草稿不匹配，请核对后重试。' })
+          this.setData({ loading: false, screen: 'code', errorText: this.data.text.draftMismatch })
           return null
         }
         this._uploaded = {}
@@ -281,7 +282,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
         })
         const draft = selfCheckinDrafts.getDraft(context.id)
         if (draft) await this.offerDraftResume(context, draft, accessCode)
-        else if (this._draftTargetId) wx.showToast({ title: '未找到这份草稿，请重新填写', icon: 'none' })
+        else if (this._draftTargetId) this.setData({ errorText: this.data.text.draftNotFound })
       }
       return context
     } catch (error) {
@@ -297,6 +298,11 @@ Page(share.withShare('pages/index/index', 'checkin', {
 
   retryLookup() {
     if (this.lookupTask) return
+    // 入住码失效或不存在时，重新查询同一个码没有意义，回到输入页。
+    if (['expired', 'code'].includes(this.data.lookupErrorKind)) {
+      this.returnToCode()
+      return
+    }
     this.loadContext(this.data.accessCode, false)
   },
 
@@ -314,12 +320,12 @@ Page(share.withShare('pages/index/index', 'checkin', {
       }
       const state = draft.state || {}
       const savedName = String(state.form && state.form.guest_name || '').trim()
-      const guestName = savedName || '这位旅客'
+      const guestName = savedName || this.data.text.draftGuestFallback
       wx.showModal({
-        title: '发现未完成的登记',
-        content: `检测到 ${guestName} 的登记草稿（入住码 ${String(accessCode)}）。是否继续上次填写？`,
-        confirmText: '继续登记',
-        cancelText: '重新开始',
+        title: this.data.text.draftResumeTitle,
+        content: this.data.text.draftResumeContent.replace('{name}', guestName).replace('{code}', String(accessCode)),
+        confirmText: this.data.text.draftResumeConfirm,
+        cancelText: this.data.text.draftResumeRestart,
         success: (result) => {
           if (result.confirm) resume()
           else {
@@ -376,7 +382,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       if (this.data.step === 4 && this.data.paymentChannel === 'wechat' && !this.data.testMode) this.refreshPaymentStatus()
       this.persistDraftSnapshot()
     })
-    if (rulesChanged) wx.showToast({ title: '入住须知已更新，请重新阅读并签名', icon: 'none' })
+    if (rulesChanged) this.setData({ errorText: this.data.text.rulesChanged })
   },
 
   queueDraftSave() {
@@ -423,7 +429,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
     })
     if (!saved && !this._draftSaveFailed) {
       this._draftSaveFailed = true
-      wx.showToast({ title: '本机存储不足，登记草稿无法保存', icon: 'none' })
+      this.setData({ errorText: this.data.text.draftSaveFailed })
     } else if (saved) this._draftSaveFailed = false
   },
 
@@ -488,6 +494,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
     const { text, foreignCopy, depositCopy, globalText, form } = this.data
     const messages = {
       basicInfo: text.basicInfoError,
+      guestNameMissing: text.nameMissingError,
       contactPhone: form.country_code === '+86' ? globalText.phone.invalidMainland : globalText.phone.invalid,
       documentType: globalText.documentType.required,
       rules: text.rulesIncompleteError,
@@ -496,7 +503,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       policeComplete: text.policeCompleteError,
       foreignDocuments: foreignCopy && foreignCopy.missingError,
       depositProof: depositCopy && depositCopy.missingError,
-      depositPayment: this.data.paymentCopy.required,
+      depositPayment: ['pending', 'uncertain'].includes(this.data.paymentStatus) ? this.data.paymentCopy.pending : this.data.paymentCopy.required,
     }
     return messages[key] || text.submitError
   },
@@ -562,7 +569,11 @@ Page(share.withShare('pages/index/index', 'checkin', {
   },
 
   previousRule() {
-    if (this.data.ruleIndex === 0) return
+    if (this.data.ruleIndex === 0) {
+      this.stopRuleTimer()
+      this.goBack()
+      return
+    }
     this.setData({ ruleIndex: this.data.ruleIndex - 1 }, () => this.startRuleTimer())
   },
 
@@ -584,6 +595,8 @@ Page(share.withShare('pages/index/index', 'checkin', {
 
   toggleRulesFinal(event) {
     const checked = Array.isArray(event.detail.value) && event.detail.value.includes('confirmed')
+    this._uploaded.signaturePath = ''
+    this._uploadIds.signature = Date.now()
     this._signatureHasInk = false
     this._signatureSize = null
     if (this.data.signatureLocalPath && this.data.context) selfCheckinDrafts.removeDraftFile(this.data.signatureLocalPath, this.data.context.id)
@@ -637,6 +650,10 @@ Page(share.withShare('pages/index/index', 'checkin', {
     if (!this.signatureContext || !this.data.rulesFinalConfirmed) return
     const point = this.touchPoint(event)
     if (!point) return
+    if (this._uploaded.signaturePath) {
+      this._uploaded.signaturePath = ''
+      this._uploadIds.signature = Date.now()
+    }
     this.signatureContext.beginPath()
     this.signatureContext.moveTo(point.x, point.y)
     this._signatureHasInk = true
@@ -699,7 +716,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       success: async (result) => {
         this.setData({ photoProcessing: true })
         try {
-          wx.showLoading({ title: this.data.text.loadingContext, mask: true })
+          wx.showLoading({ title: this.data.text.processingPhoto, mask: true })
           const canvas = await this.getPhotoCanvas()
           const path = await compressImageToLimit(result.tempFilePaths[0], imageMaxBytes, { canvas, maxLongEdge: 2600, minLongEdge: 1200 })
           const fileKind = kind === 'visaOrEntry' ? 'visa-or-entry' : kind === 'depositProof' ? 'deposit' : kind
@@ -739,9 +756,15 @@ Page(share.withShare('pages/index/index', 'checkin', {
   async uploadIfNeeded(name, bucketKind, recordId, sourcePath) {
     if (this._uploaded[name]) return this._uploaded[name]
     let path
-    if (bucketKind === 'signature') path = await selfCheckinApi.uploadGuestSignature(recordId, sourcePath, this._uploadIds.signature)
-    else if (bucketKind === 'passport' || bucketKind === 'visa-or-entry') path = await selfCheckinApi.uploadGuestForeignDocument(recordId, bucketKind, sourcePath, this._uploadIds[bucketKind])
-    else path = await selfCheckinApi.uploadGuestDepositProof(recordId, sourcePath, this._uploadIds.deposit)
+    try {
+      if (bucketKind === 'signature') path = await selfCheckinApi.uploadGuestSignature(recordId, sourcePath, this._uploadIds.signature)
+      else if (bucketKind === 'passport' || bucketKind === 'visa-or-entry') path = await selfCheckinApi.uploadGuestForeignDocument(recordId, bucketKind, sourcePath, this._uploadIds[bucketKind])
+      else path = await selfCheckinApi.uploadGuestDepositProof(recordId, sourcePath, this._uploadIds.deposit)
+    } catch (error) {
+      // 超时的上传可能已落盘；重试换新路径，避免同名文件冲突导致一直失败。
+      this._uploadIds[bucketKind] = Date.now()
+      throw error
+    }
     this._uploaded[name] = path
     this.persistDraftSnapshot()
     return path
@@ -771,11 +794,23 @@ Page(share.withShare('pages/index/index', 'checkin', {
         return
       }
       this.setData({ paymentStatus: 'pending' })
-      try { await paymentApi.requestPayment(order.requestPayment) } catch {}
+      let cancelled = false
+      try { await paymentApi.requestPayment(order.requestPayment) } catch (error) {
+        cancelled = /cancel/i.test(String(error && error.errMsg || ''))
+      }
       await this.refreshPaymentStatus()
-      if (this.data.paymentStatus !== 'paid') this.setData({ errorText: this.data.paymentCopy.pending })
+      if (this.data.paymentStatus !== 'paid') this.setData({ errorText: cancelled ? this.data.paymentCopy.cancelled : this.data.paymentCopy.pending })
     } catch {
       this.setData({ errorText: this.data.paymentCopy.payError })
+    } finally { this.setData({ paymentBusy: false }) }
+  },
+
+  async checkPaymentStatus() {
+    if (this.data.paymentBusy || this.data.testMode) return
+    this.setData({ paymentBusy: true, errorText: '' })
+    try {
+      await this.refreshPaymentStatus()
+      if (this.data.paymentStatus !== 'paid') this.setData({ errorText: this.data.paymentCopy.pending })
     } finally { this.setData({ paymentBusy: false }) }
   },
 
@@ -860,16 +895,11 @@ Page(share.withShare('pages/index/index', 'checkin', {
         context: { ...this.data.context, signature_record_id: result.signature_record_id || this.data.context.signature_record_id },
         })
       selfCheckinDrafts.removeDraft(id)
+      guestbookApi.linkSelfCheckin(this.data.context.token).catch(() => {})
     } catch (error) {
       const uncertain = error instanceof SelfCheckinApiError && ['network', 'timeout'].includes(error.kind)
       const limited = error instanceof SelfCheckinApiError && error.kind === 'limited'
-      const limitedCopy = {
-        'zh-CN': '请求较多，请稍后再试。', 'en-US': 'Too many requests. Please try again shortly.',
-        'de-DE': 'Zu viele Anfragen. Bitte versuchen Sie es später erneut.', 'fr-FR': 'Trop de demandes. Veuillez réessayer dans quelques instants.',
-        'es-ES': 'Demasiadas solicitudes. Inténtalo de nuevo en unos momentos.', 'it-IT': 'Troppe richieste. Riprova tra poco.',
-        'ja-JP': 'リクエストが多すぎます。少し時間をおいて再試行してください。', 'ko-KR': '요청이 많습니다. 잠시 후 다시 시도하세요.',
-      }
-      this.setData({ submitting: false, submissionUncertain: uncertain, errorText: limited ? (limitedCopy[this.data.locale] || limitedCopy['zh-CN']) : this.data.text.submitError })
+      this.setData({ submitting: false, submissionUncertain: uncertain, errorText: limited ? this.data.text.submitLimited : this.data.text.submitError })
       if (uncertain) {
         const context = await this.loadContext(this.data.accessCode, true)
         if (context && context.signature_record_id) return

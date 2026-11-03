@@ -40,7 +40,8 @@ function isSixDigitCode(value) {
 // 证件类型（而非界面语言）决定公安登记或护照上传。
 function validateSelfCheckinStep(step, documentType, state) {
   const form = state.form || {}
-  if (step === 0 && (!String(form.guest_name || '').trim() || !String(form.contact || '').trim())) return 'basicInfo'
+  if (step === 0 && !String(form.guest_name || '').trim()) return 'guestNameMissing'
+  if (step === 0 && !String(form.contact || '').trim()) return 'basicInfo'
   if (step === 0 && !isValidPhone(phoneOf(form).countryCode, phoneOf(form).number)) return 'contactPhone'
   if (step === 1 && (!state.rules || !state.rules.items.every((rule) => (state.confirmedRuleIds || []).includes(rule.id)))) return 'rules'
   if (step === 2 && (!state.rulesFinalConfirmed || !state.signaturePath)) return 'signature'

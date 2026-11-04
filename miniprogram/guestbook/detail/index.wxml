@@ -9,5 +9,6 @@
       <text class="reaction-label">{{item.label}}</text><text class="reaction-count">{{item.count}}</text>
     </view>
   </view>
-  <button class="share" open-type="share">{{t.share}}</button>
+  <button class="share" loading="{{sharing}}" bindtap="shareImage">{{t.share}}</button>
+  <canvas type="2d" id="shareCanvas" class="share-canvas"></canvas>
 </view>

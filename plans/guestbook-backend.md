@@ -159,3 +159,10 @@
 - **床位簿颜色：** 每条可选卡片颜色（与留言墙相同的 7 种，默认紫色）；已有条目保持紫色。
 
 迁移：`stayCube-guestbook/cloudbase/compat/20261104120000_cloudbase_guestbook_public_access.sql`；生产执行：`cloudbase/scripts/apply-guestbook-public-access.sh`（需单独授权）。
+
+## 12. 2026-11-04 决定：留言分享图
+
+- 登录旅客可以为已通过审核的留言生成分享图（发光磁贴样式，1080 × 1304），由微信菜单发给朋友、发朋友圈或保存到相册。
+- 分享图不放小程序码，不写“旅客留言墙”；左下角 logo，右下角署名和数码日期。
+- 需要在小程序后台把云开发网关加入 downloadFile 合法域名，并在隐私保护指引中声明相册写入。
+

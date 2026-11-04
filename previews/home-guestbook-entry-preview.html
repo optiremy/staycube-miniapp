@@ -70,6 +70,9 @@
 .ent span{position:absolute;right:10px;top:50%;transform:translateY(-55%);font-size:20px;color:#7cc4ff}
 
 .board{min-height:176px}
+.board .hint{margin:8px 0 0;font-size:13px}
+.board .scan{position:absolute;right:14px;bottom:14px;width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#7cc4ff;background:rgba(124,196,255,.14);border:1px solid rgba(124,196,255,.4)}
+.staycard,.grid2{margin-top:20px!important}
 .staycard{position:relative;display:flex;align-items:stretch;margin-top:12px;height:84px;border-radius:12px;overflow:hidden;
   background:radial-gradient(90% 120% at 100% 0%,#22407c 0%,transparent 60%),linear-gradient(180deg,#0f1a33,#0a1120);color:#e7edf7;
   -webkit-mask:radial-gradient(circle 7px at 92px 0,#0000 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 7px at 92px 100%,#0000 98%,#000) bottom/100% 51% no-repeat;
@@ -83,6 +86,20 @@
 .sc-night{display:flex;align-items:baseline;gap:8px}.sc-night small{font-size:12px;color:#9aa8bd}.sc-night b{font:800 24px/1 -apple-system,"SF Pro Display","PingFang SC",sans-serif;text-shadow:0 0 16px rgba(124,196,255,.4)}
 .sc-slip{display:flex;align-items:center;gap:6px;padding:5px 6px 5px 10px;border-radius:16px;border:1px solid rgba(124,196,255,.35);background:rgba(255,255,255,.05);font-size:12px;color:#9aa8bd}
 .sc-slip b{min-width:24px;padding:2px 6px;border-radius:10px;background:#7cc4ff;color:#06101f;box-shadow:0 0 10px -2px #7cc4ff;font:700 13px/1.2 ui-monospace,"SF Mono",Menlo,monospace;text-align:center}
+
+/* 入口磁贴与自助服务卡片 */
+.staycard{margin:0 0 20px!important}
+.main.top-first .board.svc-card{margin-top:20px;min-height:0}
+.board.stay-card{min-height:0}
+.board.svc-card::before{display:none}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.tiles-2{grid-template-columns:1fr 1fr}
+.tile{position:relative;min-height:78px;padding:11px 10px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}
+.board.day .tile,.board.day .srow{background:rgba(255,255,255,.75);border-color:#d7e2ec}
+.tile img{width:24px;height:24px}.tile span{position:absolute;right:9px;top:8px;font-size:20px;color:#7cc4ff}.board.day .tile span,.board.day .srow span{color:var(--blue)}
+.tile b{font-size:14px;line-height:1.35;font-weight:700}
+.slist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.srow{position:relative;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 30px 0 12px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.srow img{width:22px;height:22px;flex:none}.srow b{font-size:14.5px;font-weight:700}.srow span{position:absolute;right:11px;top:50%;transform:translateY(-55%);font-size:20px;color:#7cc4ff}
 .view{display:none}.view.active{display:flex}
 .notes{max-width:760px;margin:0 auto 30px;padding:0 16px;font-size:13px;color:#586b80;line-height:1.75}.notes h3{font-size:14px;color:var(--ink);margin:14px 0 4px}.notes ul{margin:0;padding-left:18px}
 </style>
@@ -91,7 +108,7 @@
 <header class="toolbar">
   <p class="eyebrow">STAYCUBE · PREVIEW</p>
   <h1>首页 · 留言板入口</h1>
-  <p>留言板全宽卡片置顶；去掉“自助服务”标题；服务入口两列排在下方，按入住前后排序。</p>
+  <p>在住时票根置顶；留言板三个入口带图标并排；服务入口收进“自助服务”卡片，从上到下排列并带图标。</p>
   <div class="tabs" id="tabs">
     <button data-v="now">现状</button>
     <button data-v="night" aria-pressed="true">新首页 · 夜晚</button>
@@ -115,39 +132,30 @@
     </div></div>
 
     <div class="view" id="v-night" style="flex-direction:column"><div class="main top-first">
-      <div class="board"><div class="top"><h3>旅客留言板</h3><span>›</span></div></div>
-      <div class="grid2"><div class="svc">预抵问卷</div><div class="svc">自助入住登记</div><div class="svc">自助行李寄存</div><div class="svc">特殊取消申请</div></div>
+      <div class="board stay-card"><h3 class="stay-title">旅客留言板</h3><div class="tiles tiles-3"><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNSA0aDE0YTEgMSAwIDAgMSAxIDF2OWwtNiA2SDVhMSAxIDAgMCAxLTEtMVY1YTEgMSAwIDAgMSAxLTF6Ii8+PHBhdGggZD0iTTE0IDIwdi01YTEgMSAwIDAgMSAxLTFoNSIvPjxwYXRoIGQ9Ik04IDloOE04IDEyLjVoNSIvPjwvc3ZnPg=="><span>›</span><b>旅宿留言墙</b></div><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI2IiB5PSIzLjUiIHdpZHRoPSIxMyIgaGVpZ2h0PSIxNyIgcng9IjEuNSIvPjxwYXRoIGQ9Ik00IDdoNE00IDEyaDRNNCAxN2g0Ii8+PHBhdGggZD0iTTExIDguNWg1TTExIDEyaDUiLz48L3N2Zz4="><span>›</span><b>床位留言簿</b></div><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjguNSIgcj0iMy44Ii8+PHBhdGggZD0iTTQuNSAyMGMxLjQtMy42IDQuMi01LjQgNy41LTUuNHM2LjEgMS44IDcuNSA1LjQiLz48L3N2Zz4="><span>›</span><b>我的留言</b></div></div></div>
+      <div class="board svc-card "><h3>自助服务</h3><div class="slist"><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2NjNGZmIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI0LjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNiIgcng9IjIiLz48cGF0aCBkPSJNOSAzaDZ2M0g5eiIvPjxwYXRoIGQ9Ik04LjUgMTFsMS41IDEuNSAyLjUtMi41TTE0IDExLjVoMk04LjUgMTZoNyIvPjwvc3ZnPg=="><b>预抵问卷</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2NjNGZmIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSI4IiBjeT0iMTIiIHI9IjMuNSIvPjxwYXRoIGQ9Ik0xMS41IDEySDIwTTE3IDEydjNNMjAgMTJ2Mi41Ii8+PC9zdmc+"><b>自助入住登记</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2NjNGZmIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI3IiB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHJ4PSIyIi8+PHBhdGggZD0iTTkgN1Y0LjVhMSAxIDAgMCAxIDEtMWg0YTEgMSAwIDAgMSAxIDFWNyIvPjxwYXRoIGQ9Ik05IDd2MTJNMTUgN3YxMiIvPjxwYXRoIGQ9Ik04IDIxaDFNMTUgMjFoMSIvPjwvc3ZnPg=="><b>自助行李寄存</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2NjNGZmIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI0IiB5PSI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMTUiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOS41aDE2TTguNSAzdjRNMTUuNSAzdjQiLz48cGF0aCBkPSJtMTAgMTMgNCA0TTE0IDEzbC00IDQiLz48L3N2Zz4="><b>特殊取消申请</b><span>›</span></div></div></div>
     </div></div>
 
     <div class="view" id="v-day" style="flex-direction:column"><div class="main top-first">
-      <div class="board day"><div class="top"><h3>旅客留言板</h3><span>›</span></div></div>
-      <div class="grid2"><div class="svc">预抵问卷</div><div class="svc">自助入住登记</div><div class="svc">自助行李寄存</div><div class="svc">特殊取消申请</div></div>
+      <div class="board day stay-card"><h3 class="stay-title">旅客留言板</h3><div class="tiles tiles-3"><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNSA0aDE0YTEgMSAwIDAgMSAxIDF2OWwtNiA2SDVhMSAxIDAgMCAxLTEtMVY1YTEgMSAwIDAgMSAxLTF6Ii8+PHBhdGggZD0iTTE0IDIwdi01YTEgMSAwIDAgMSAxLTFoNSIvPjxwYXRoIGQ9Ik04IDloOE04IDEyLjVoNSIvPjwvc3ZnPg=="><span>›</span><b>旅宿留言墙</b></div><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI2IiB5PSIzLjUiIHdpZHRoPSIxMyIgaGVpZ2h0PSIxNyIgcng9IjEuNSIvPjxwYXRoIGQ9Ik00IDdoNE00IDEyaDRNNCAxN2g0Ii8+PHBhdGggZD0iTTExIDguNWg1TTExIDEyaDUiLz48L3N2Zz4="><span>›</span><b>床位留言簿</b></div><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjguNSIgcj0iMy44Ii8+PHBhdGggZD0iTTQuNSAyMGMxLjQtMy42IDQuMi01LjQgNy41LTUuNHM2LjEgMS44IDcuNSA1LjQiLz48L3N2Zz4="><span>›</span><b>我的留言</b></div></div></div>
+      <div class="board svc-card day"><h3>自助服务</h3><div class="slist"><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI0LjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNiIgcng9IjIiLz48cGF0aCBkPSJNOSAzaDZ2M0g5eiIvPjxwYXRoIGQ9Ik04LjUgMTFsMS41IDEuNSAyLjUtMi41TTE0IDExLjVoMk04LjUgMTZoNyIvPjwvc3ZnPg=="><b>预抵问卷</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSI4IiBjeT0iMTIiIHI9IjMuNSIvPjxwYXRoIGQ9Ik0xMS41IDEySDIwTTE3IDEydjNNMjAgMTJ2Mi41Ii8+PC9zdmc+"><b>自助入住登记</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI3IiB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHJ4PSIyIi8+PHBhdGggZD0iTTkgN1Y0LjVhMSAxIDAgMCAxIDEtMWg0YTEgMSAwIDAgMSAxIDFWNyIvPjxwYXRoIGQ9Ik05IDd2MTJNMTUgN3YxMiIvPjxwYXRoIGQ9Ik04IDIxaDFNMTUgMjFoMSIvPjwvc3ZnPg=="><b>自助行李寄存</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI0IiB5PSI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMTUiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOS41aDE2TTguNSAzdjRNMTUuNSAzdjQiLz48cGF0aCBkPSJtMTAgMTMgNCA0TTE0IDEzbC00IDQiLz48L3N2Zz4="><b>特殊取消申请</b><span>›</span></div></div></div>
     </div></div>
 
     <div class="view" id="v-stay" style="flex-direction:column"><div class="main top-first">
-      <div class="board stay-card"><h3 class="stay-title">旅客留言板</h3>
-        <div class="entries">
-          <div class="ent main"><b>留言板</b><span>›</span></div>
-          <div class="ent"><b>床位留言本</b><small>3B</small><span>›</span></div>
-          <div class="ent"><b>我的留言</b><span>›</span></div>
-        </div></div>
       <div class="staycard">
         <div class="sc-bed"><b>第<em>2</em>晚</b></div>
         <div class="sc-info">
-          <div class="sc-night"><small>3 号房</small><b>3B</b></div>
+          <div class="sc-night"><b>临潼 A</b></div>
           <div class="sc-slip"><span>拖鞋</span><b>12</b></div>
         </div>
       </div>
-      <div class="grid2"><div class="svc">自助行李寄存</div><div class="svc">预抵问卷</div><div class="svc">自助入住登记</div><div class="svc">特殊取消申请</div></div>
+      <div class="board day stay-card"><h3 class="stay-title">旅客留言板</h3><div class="tiles tiles-3"><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNSA0aDE0YTEgMSAwIDAgMSAxIDF2OWwtNiA2SDVhMSAxIDAgMCAxLTEtMVY1YTEgMSAwIDAgMSAxLTF6Ii8+PHBhdGggZD0iTTE0IDIwdi01YTEgMSAwIDAgMSAxLTFoNSIvPjxwYXRoIGQ9Ik04IDloOE04IDEyLjVoNSIvPjwvc3ZnPg=="><span>›</span><b>旅宿留言墙</b></div><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI2IiB5PSIzLjUiIHdpZHRoPSIxMyIgaGVpZ2h0PSIxNyIgcng9IjEuNSIvPjxwYXRoIGQ9Ik00IDdoNE00IDEyaDRNNCAxN2g0Ii8+PHBhdGggZD0iTTExIDguNWg1TTExIDEyaDUiLz48L3N2Zz4="><span>›</span><b>床位留言簿</b></div><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjguNSIgcj0iMy44Ii8+PHBhdGggZD0iTTQuNSAyMGMxLjQtMy42IDQuMi01LjQgNy41LTUuNHM2LjEgMS44IDcuNSA1LjQiLz48L3N2Zz4="><span>›</span><b>我的留言</b></div></div></div>
+      <div class="board svc-card day"><h3>自助服务</h3><div class="slist"><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI3IiB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHJ4PSIyIi8+PHBhdGggZD0iTTkgN1Y0LjVhMSAxIDAgMCAxIDEtMWg0YTEgMSAwIDAgMSAxIDFWNyIvPjxwYXRoIGQ9Ik05IDd2MTJNMTUgN3YxMiIvPjxwYXRoIGQ9Ik04IDIxaDFNMTUgMjFoMSIvPjwvc3ZnPg=="><b>自助行李寄存</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI0LjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNiIgcng9IjIiLz48cGF0aCBkPSJNOSAzaDZ2M0g5eiIvPjxwYXRoIGQ9Ik04LjUgMTFsMS41IDEuNSAyLjUtMi41TTE0IDExLjVoMk04LjUgMTZoNyIvPjwvc3ZnPg=="><b>预抵问卷</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSI4IiBjeT0iMTIiIHI9IjMuNSIvPjxwYXRoIGQ9Ik0xMS41IDEySDIwTTE3IDEydjNNMjAgMTJ2Mi41Ii8+PC9zdmc+"><b>自助入住登记</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI0IiB5PSI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMTUiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOS41aDE2TTguNSAzdjRNMTUuNSAzdjQiLz48cGF0aCBkPSJtMTAgMTMgNCA0TTE0IDEzbC00IDQiLz48L3N2Zz4="><b>特殊取消申请</b><span>›</span></div></div></div>
     </div></div>
 
     <div class="view" id="v-left" style="flex-direction:column"><div class="main top-first">
-      <div class="board stay-card"><h3 class="stay-title">旅客留言板</h3>
-        <div class="entries">
-          <div class="ent main"><b>留言板</b><span>›</span></div>
-          <div class="ent" style="grid-column:span 2"><b>我的留言</b><span>›</span></div>
-        </div></div>
-      <div class="grid2"><div class="svc">预抵问卷</div><div class="svc">自助入住登记</div><div class="svc">自助行李寄存</div><div class="svc">特殊取消申请</div></div>
+      <div class="board day stay-card"><h3 class="stay-title">旅客留言板</h3><div class="tiles tiles-2"><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNSA0aDE0YTEgMSAwIDAgMSAxIDF2OWwtNiA2SDVhMSAxIDAgMCAxLTEtMVY1YTEgMSAwIDAgMSAxLTF6Ii8+PHBhdGggZD0iTTE0IDIwdi01YTEgMSAwIDAgMSAxLTFoNSIvPjxwYXRoIGQ9Ik04IDloOE04IDEyLjVoNSIvPjwvc3ZnPg=="><span>›</span><b>旅宿留言墙</b></div><div class="tile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjguNSIgcj0iMy44Ii8+PHBhdGggZD0iTTQuNSAyMGMxLjQtMy42IDQuMi01LjQgNy41LTUuNHM2LjEgMS44IDcuNSA1LjQiLz48L3N2Zz4="><span>›</span><b>我的留言</b></div></div></div>
+      <div class="board svc-card day"><h3>自助服务</h3><div class="slist"><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI0LjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNiIgcng9IjIiLz48cGF0aCBkPSJNOSAzaDZ2M0g5eiIvPjxwYXRoIGQ9Ik04LjUgMTFsMS41IDEuNSAyLjUtMi41TTE0IDExLjVoMk04LjUgMTZoNyIvPjwvc3ZnPg=="><b>预抵问卷</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSI4IiBjeT0iMTIiIHI9IjMuNSIvPjxwYXRoIGQ9Ik0xMS41IDEySDIwTTE3IDEydjNNMjAgMTJ2Mi41Ii8+PC9zdmc+"><b>自助入住登记</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI1IiB5PSI3IiB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHJ4PSIyIi8+PHBhdGggZD0iTTkgN1Y0LjVhMSAxIDAgMCAxIDEtMWg0YTEgMSAwIDAgMSAxIDFWNyIvPjxwYXRoIGQ9Ik05IDd2MTJNMTUgN3YxMiIvPjxwYXRoIGQ9Ik04IDIxaDFNMTUgMjFoMSIvPjwvc3ZnPg=="><b>自助行李寄存</b><span>›</span></div><div class="srow"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc2YmU4IiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSI0IiB5PSI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMTUiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOS41aDE2TTguNSAzdjRNMTUuNSAzdjQiLz48cGF0aCBkPSJtMTAgMTMgNCA0TTE0IDEzbC00IDQiLz48L3N2Zz4="><b>特殊取消申请</b><span>›</span></div></div></div>
     </div></div>
 
     <div class="foot">Powered by stayCube</div>
@@ -158,12 +166,13 @@
   <h3>说明</h3>
   <ul>
     <li>留言板卡片全宽置顶，配色随时段（夜晚深色、白天浅色）；卡片上沿与品牌栏间距 20px（40rpx）。</li>
-    <li>去掉“自助服务 / 请选择需要办理的服务”标题与说明。</li>
-    <li>服务入口改为两列，文字左对齐、箭头靠右，间距 10px（20rpx），顺序：预抵问卷、自助入住登记、自助行李寄存、特殊取消申请。</li>
-    <li>在住且已登录留言板时，卡片显示床位和入住天数，内含三个独立入口：留言板（主入口，通栏）、床位留言本、我的留言；服务顺序把自助行李寄存放在第一位。</li>
-  <li>未登录、未关联或从未入住的旅客：显示通用卡片（夜晚 / 白天）。</li>
-    <li>已离店：留言板（只读）和我的留言两个入口，不显示床位留言本。</li>
-  <li>在住时，留言板卡片下方显示入住票卡：左侧票根为“第 N 晚”（数字大号），虚线分隔；右侧房间号、床位号与拖鞋编号；与留言板卡片相同的夜间底色和星点，配色随时段。只在已关联且在住时显示；未登录、未关联、已离店时都不显示。</li>
+    <li>服务入口收进“自助服务”大卡片（与旅客留言板同样的大卡片套小卡片），从上到下排列，每项前有图标：行李箱、问卷、钥匙、日历。</li>
+    <li>服务顺序：预抵问卷、自助入住登记、自助行李寄存、特殊取消申请；在住时自助行李寄存排第一。</li>
+    <li>已登录时留言板卡片内三个入口并排，图标：折角便利贴（旅宿留言墙）、线圈本（床位留言簿）、头像（我的留言）。</li>
+  <li>未登录、未关联或从未入住的旅客：同样显示三个入口；旅宿留言墙直接进入，床位留言簿和我的留言先登录。</li>
+    <li>已离店：只有旅宿留言墙和我的留言两个入口，两列并排。</li>
+    <li>配色改为四时段，见 home-time-slots-preview.html。</li>
+  <li>在住时，入住票卡置顶，在留言板卡片上方：左侧票根为“第 N 晚”（数字大号），虚线分隔；右侧房间号、床位号与拖鞋编号；与留言板卡片相同的夜间底色和星点，配色随时段。只在已关联且在住时显示；未登录、未关联、已离店时都不显示。</li>
   </ul>
 </section>
 

@@ -6,6 +6,7 @@ const share = require('../../utils/share')
 const guestbookSession = require('../../utils/guestbook-session')
 const guestbookTheme = require('../../utils/guestbook-theme')
 const guestbookApi = require('../../utils/guestbook-api')
+const { formatBed } = require('../../utils/guestbook-i18n')
 
 // 按入住前后排序；在住时行李寄存最常用，排在第一位。
 function buildServices(home, staying) {
@@ -19,14 +20,17 @@ function buildServices(home, staying) {
   return [services[2], services[0], services[1], services[3]]
 }
 
-function buildGuestbook(board, session) {
-  const slot = guestbookTheme.slotOf()
-  const view = { state: session.state, tone: ['dusk', 'night'].includes(slot) ? 'night' : 'day' }
+// 房床写法与自助入住一致：房间名 + 空格 + 床位字母（单间只有房间名）；非中文显示房间拼音
+
+// 图标文件后缀：早晨、中午用深蓝，傍晚、夜晚用浅蓝
+const ICON_TONES = { dawn: 'day', noon: 'day', dusk: 'night', night: 'night' }
+
+function buildGuestbook(board, session, locale, slot) {
+  const view = { state: session.state, tone: ICON_TONES[slot] }
   if (session.state !== 'staying') return view
   return {
     ...view,
-    bed: session.bed,
-    roomLabel: board.room.replace('{n}', session.room),
+    bedLabel: formatBed(session.room, session.bed, locale),
     nightParts: board.night.split('{n}'),
     nights: session.nights,
     slipper: session.slipper,
@@ -41,13 +45,16 @@ function formatCheckinDate(locale, value, copy) {
 }
 
 const initialLocale = 'zh-CN'
+const initialSlot = guestbookTheme.slotOf()
 
 Page(share.withShare('pages/home/index', null, {
   data: {
     locale: initialLocale,
     copy: globalCopy[initialLocale],
     services: buildServices(globalCopy[initialLocale].home, false),
-    guestbook: { state: 'guest', tone: 'night' },
+    guestbook: { state: 'guest', tone: ICON_TONES[initialSlot] },
+    pageStyle: guestbookTheme.pageStyle(initialSlot),
+    dark: guestbookTheme.SLOTS[initialSlot].dark,
     drafts: [],
     draftModalVisible: false,
   },
@@ -56,7 +63,7 @@ Page(share.withShare('pages/home/index', null, {
   // 从其他页面返回首页时保持旅客上次的选择，不再重复打扰。
   onShow() {
     this.applyLocale(appLocale.getLocale())
-    guestbookApi.refreshState().then(() => this.applyLocale(this.data.locale)).catch(() => {})
+    guestbookApi.detect().then(() => this.applyLocale(this.data.locale)).catch(() => {})
     this.refreshDraftModal(this._draftPrompted === true)
     this._draftPrompted = true
   },
@@ -65,11 +72,15 @@ Page(share.withShare('pages/home/index', null, {
   applyLocale(locale) {
     const copy = globalCopy[locale] || globalCopy['zh-CN']
     const session = guestbookSession.read()
+    const slot = guestbookTheme.slotOf()
+    guestbookTheme.applyNavigationBar(slot)
     this.setData({
       locale,
+      pageStyle: guestbookTheme.pageStyle(slot),
+      dark: guestbookTheme.SLOTS[slot].dark,
       copy,
       services: buildServices(copy.home, session.state === 'staying'),
-      guestbook: buildGuestbook(copy.board, session),
+      guestbook: buildGuestbook(copy.board, session, locale, slot),
     })
   },
 
@@ -109,7 +120,9 @@ Page(share.withShare('pages/home/index', null, {
 
   openGuestbook(event) {
     const page = event.currentTarget.dataset.page || 'index'
-    wx.navigateTo({ url: `/guestbook/${page}/index` })
+    // 留言墙对所有人开放；床位留言簿和我的留言需要先登录
+    if (page !== 'index' && guestbookSession.read().state === 'guest') { wx.navigateTo({ url: `/guestbook/login/index?next=${page}` }); return }
+    wx.navigateTo({ url: page === 'book' ? '/guestbook/index/index?view=book' : `/guestbook/${page}/index` })
   },
 
   resumeDraft(event) {

@@ -4,7 +4,6 @@
   <view class="lang-sheet" catchtap="stop">
     <view class="lang-sheet-head">
       <text class="lang-sheet-title">{{copy.title}}</text>
-      <button class="lang-sheet-close" bindtap="closeSheet">×</button>
     </view>
     <button wx:for="{{options}}" wx:key="locale" class="lang-row {{item.locale === locale ? 'is-current' : ''}}" data-locale="{{item.locale}}" bindtap="choose">
       <text>{{item.label}}</text><text wx:if="{{item.locale === locale}}" class="lang-row-tick">✓</text>

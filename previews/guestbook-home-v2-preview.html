@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>stayCube 留言板主页 v2 预览</title>
+<style>
+:root{--ink:#0b1f44;--blue:#176be8}
+*{box-sizing:border-box}body{margin:0;background:#eef2f6;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+.toolbar{position:sticky;top:0;z-index:5;padding:10px 18px 8px;background:rgba(238,242,246,.96);border-bottom:1px solid #dfe6ed}
+.eyebrow{margin:0;color:#71849a;font-size:13px;letter-spacing:2px}.toolbar h1{margin:3px 0;font-size:21px}.toolbar p{margin:0;color:#667b91;font-size:14px}
+.tabs{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.tabs button{min-height:35px;padding:0 12px;border:1px solid #cbd9e7;border-radius:12px;background:#fff;color:#29425d;font:inherit;cursor:pointer}.tabs button[aria-pressed=true]{border-color:var(--blue);background:#eaf2ff;color:var(--blue);font-weight:700}
+.content{display:flex;justify-content:center;padding:14px 12px 24px}
+.device{width:391px;height:812px;padding:8px;border-radius:50px;background:#25282c;box-shadow:0 22px 60px #13233a25}
+.screen{position:relative;height:100%;overflow:hidden;border-radius:41px;color:#e7edf7;background:radial-gradient(120% 60% at 50% -10%,#14234a 0%,transparent 60%),linear-gradient(180deg,#0c1426,#070b16 55%)}
+.island{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:30px;background:#000;border-radius:0 0 20px 20px;z-index:9}
+.status{position:absolute;top:0;left:0;right:0;height:45px;padding:12px 26px 0;display:flex;justify-content:space-between;font-size:13px;z-index:8;background:linear-gradient(#0c1426 60%,transparent)}
+.nav{position:absolute;top:45px;left:0;right:0;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;z-index:8;background:linear-gradient(#0c1426 50%,rgba(12,20,38,0))}
+.nav .home{position:absolute;left:16px;font-size:18px}.nav .pill{position:absolute;right:10px;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:5px 12px;font-size:11px;letter-spacing:3px;font-weight:400}
+
+/* 磁贴画布：可上下左右拖动 */
+.viewport{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none}
+.viewport:active{cursor:grabbing}
+.canvas{position:absolute;display:grid;grid-template-columns:repeat(7,150px);gap:12px;padding:12px;will-change:transform}
+.tile{position:relative;width:150px;height:150px;border-radius:18px;overflow:hidden;cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,var(--a)),rgba(255,255,255,.02));
+  border:1px solid rgba(var(--h),var(--b));box-shadow:0 0 var(--g) -4px rgba(var(--h),.55)}
+.tile p{margin:0;padding:14px 13px 0;font-size:13.5px;line-height:1.6;color:#e7edf7;height:100%;
+  -webkit-mask-image:linear-gradient(180deg,#000 62%,transparent 92%);mask-image:linear-gradient(180deg,#000 62%,transparent 92%)}
+.tile.photo .img{position:absolute;inset:0;background-size:cover;background-position:center}
+.tile:active{transform:scale(.97)}
+
+/* 床位留言簿：时间线 */
+.timeline{position:absolute;inset:0;overflow-y:auto;padding:100px 20px 110px 40px;display:none}
+.timeline::-webkit-scrollbar{display:none}
+.timeline::before{content:"";position:absolute;left:26px;top:108px;bottom:120px;width:1px;background:rgba(255,255,255,.1)}
+.entry{position:relative;margin-bottom:22px}
+.entry::before{content:"";position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;background:#b69cff;box-shadow:0 0 8px #b69cff}
+.entry .when{display:flex;justify-content:space-between;font-size:12px;color:#9aa8bd}.entry .when b{color:#e7edf7;font-weight:600}
+.entry .box{margin-top:8px;padding:14px;border-radius:14px;border:1px solid rgba(182,156,255,.3);background:rgba(255,255,255,.04);font-size:14px;line-height:1.75}
+.entry .pic{height:120px;margin-top:10px;border-radius:10px;background-size:cover}
+.screen.book .viewport{display:none}.screen.book .timeline{display:block}
+
+/* 底部功能栏 */
+.dock{position:absolute;left:50%;transform:translateX(-50%);bottom:22px;height:66px;padding:0 8px;display:flex;align-items:center;justify-content:center;border-radius:22px;
+  background:rgba(12,20,38,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(124,196,255,.22);box-shadow:0 10px 30px -10px rgba(0,0,0,.6);z-index:8}
+.dock button{min-width:140px;height:50px;padding:0 8px;border:0;border-radius:14px;background:transparent;color:#9aa8bd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font:inherit}
+.dock button span{font-size:11px;line-height:1;white-space:nowrap}
+.dock button svg{width:22px;height:22px}
+.dock button.send{color:#06101f;background:#7cc4ff;box-shadow:0 0 18px -2px rgba(124,196,255,.8)}
+
+/* 发布选择 */
+
+.notes{max-width:720px;margin:0 auto 30px;padding:0 16px;font-size:13px;color:#586b80;line-height:1.75}.notes h3{font-size:14px;color:var(--ink);margin:14px 0 4px}.notes ul{margin:0;padding-left:18px}
+</style>
+</head>
+<body>
+<header class="toolbar">
+  <p class="eyebrow">STAYCUBE · PREVIEW</p>
+  <h1>留言板主页 v2</h1>
+  <p>磁贴画布可上下左右拖动；从首页分别进入留言墙和床位留言簿，底部只有发布按钮。</p>
+  <div class="tabs" id="tabs">
+    <button data-v="wall" aria-pressed="true">旅宿留言墙</button>
+    <button data-v="book">床位留言簿</button>
+  </div>
+</header>
+
+<div class="content"><div class="device"><div class="screen" id="screen">
+  <div class="island"></div>
+  <div class="status"><span>21:46</span><span>●●● 100%</span></div>
+  <div class="nav"><span class="home">⌂</span><span id="navTitle">旅宿留言墙</span><span class="pill">··· ◎</span></div>
+
+  <div class="viewport" id="viewport"><div class="canvas" id="canvas"></div></div>
+  <div class="timeline" id="timeline"></div>
+
+  <nav class="dock">
+    <button id="dSend" class="send" aria-label="发布" title="发布"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 3 3 10.5l7 2.5 2.5 7L21 3z"/><path d="m10 13 4-4"/></svg><span>发布</span></button>
+  </nav>
+
+</div></div></div>
+
+<section class="notes">
+  <h3>说明</h3>
+  <ul>
+    <li>去掉标题、数量统计和说明文字；主区域只放留言磁贴，磁贴大小一致，可上下左右拖动浏览。</li>
+    <li>文字显示不完时底部渐隐；带图片的留言整格显示图片（裁切填满）；点击磁贴进入这条留言。</li>
+    <li>床位留言簿按时间线排列（新的在上），上下滚动；每条可选卡片颜色（默认紫色），时间线圆点和详情边框按所选颜色显示；署名为昵称或匿名旅客，不显示床位。</li>
+    <li>底部只有发布按钮：在留言墙直接写留言，在床位留言簿直接写床位留言簿（当天写过则继续写）；未登录点击先登录，已离店不显示。</li>
+    <li>磁贴边框亮度仍随回应数变化（回应越多越亮）；顶部导航栏标题显示当前是“旅宿留言墙”还是“床位留言簿”。</li>
+  </ul>
+</section>
+
+<script>
+const hues={blue:'124,196,255',orange:'255,176,112',purple:'182,156,255',green:'128,220,160',yellow:'255,222,128',red:'255,138,138',white:'226,232,244'}
+const photo=(a,b)=>`radial-gradient(60% 80% at 30% 100%,${a},transparent 70%),radial-gradient(40% 50% at 80% 30%,${b},transparent 70%),linear-gradient(180deg,#1a2848,#0d1528)`
+const wall=[
+ ['城墙骑行推荐！傍晚的景色太美了，租车点就在南门。从南门骑到西门大概四十分钟，记得带水。','blue',.9],
+ ['西安真的没有秋天🥶','blue',.2],
+ [null,'orange',.6,photo('rgba(255,190,120,.7)','rgba(124,196,255,.4)')],
+ ['清晨在屋顶喝咖啡，看见城墙慢慢亮起来。','purple',.4],
+ ['第一次自己旅行，在这里认识了新朋友。','green',.7],
+ ['谢谢前台推荐的小巷，那家面馆我会再来！面很筋道，辣子是现泼的，老板人也特别好，还送了一碟凉菜。','yellow',.8],
+ [null,'purple',.3,photo('rgba(182,156,255,.6)','rgba(255,138,138,.3)')],
+ ['从钟楼一路走回旅舍，夜景比照片里还漂亮。','red',.5],
+ ['离开西安前的最后一晚，舍不得这份热闹和温暖。','white',.3],
+ ['公共厨房很好用，和室友一起做了顿晚饭。','blue',.15],
+ ['书院门买了一支毛笔，回家要好好练字。','purple',.25],
+ [null,'green',.5,photo('rgba(128,220,160,.5)','rgba(255,222,128,.4)')],
+]
+const book=[
+ ['楼下左转第二家豆花不错，记得加辣。','purple',.3],
+ ['早上七点左右阳光会照到床头，怕亮可以拉上遮光帘。','purple',.3],
+ [null,'purple',.3,photo('rgba(255,190,120,.5)','rgba(182,156,255,.4)')],
+ ['插座在床头左侧，靠墙那一个比较松，充电时注意。','purple',.3],
+ ['上铺的朋友很安静，晚上睡得很好。顺手留了一包纸巾在抽屉里。','purple',.3],
+ ['这个床位靠窗，夜里能看到一点城墙的灯。','purple',.3],
+]
+const $=id=>document.getElementById(id),scr=$('screen'),viewport=$('viewport'),canvas=$('canvas'),navTitle=$('navTitle'),dSend=$('dSend'),timeline=$('timeline')
+let view='wall'
+const bookEntries=[
+ ['10月29日','张测试','楼下左转第二家豆花不错，记得加辣。'],
+ ['10月28日','张测试','早上七点左右阳光会照到床头，怕亮可以拉上遮光帘。'],
+ ['9月14日','李同学','插座在床头左侧，靠墙那一个比较松，充电时注意。',photo('rgba(255,190,120,.5)','rgba(182,156,255,.4)')],
+ ['8月2日','匿名旅客','上铺的朋友很安静，晚上睡得很好。顺手留了一包纸巾在抽屉里。'],
+ ['2025年3月12日','匿名旅客','这个床位靠窗，夜里能看到一点城墙的灯。'],
+]
+function renderBook(){timeline.innerHTML=bookEntries.map(([d,a,t,img])=>`<div class="entry"><div class="when"><b>${d}</b><span>${a}</span></div><div class="box">${t}${img?`<div class="pic" style="background-image:${img}"></div>`:''}</div></div>`).join('')}
+function render(){
+  scr.classList.toggle('book',view==='book'); navTitle.textContent=view==='wall'?'旅宿留言墙':'床位留言簿'
+  if(view==='book'){renderBook();return}
+  const list=view==='wall'?wall:book, n=view==='wall'?42:24, html=[]
+  for(let i=0;i<n;i++){const [t,c,l,img]=list[i%list.length],h=hues[c]
+    html.push(`<div class="tile ${img?'photo':''}" style="--h:${h};--a:${(.03+l*.05).toFixed(3)};--b:${(.12+l*.5).toFixed(2)};--g:${Math.round(l*22)}px" onclick="alert('进入这条留言')">${img?`<div class="img" style="background-image:${img}"></div>`:`<p>${t}</p>`}</div>`)}
+  canvas.innerHTML=html.join('')
+  canvas.style.gridTemplateColumns=`repeat(${view==='wall'?7:6},150px)`
+  navTitle.textContent=view==='wall'?'旅宿留言墙':'床位留言簿'
+  center()
+}
+let x=0,y=0
+function clamp(){const vw=viewport.clientWidth,vh=viewport.clientHeight,cw=canvas.scrollWidth,ch=canvas.scrollHeight
+  x=Math.min(0,Math.max(vw-cw,x)); y=Math.min(80,Math.max(vh-ch-90,y)); canvas.style.transform=`translate(${x}px,${y}px)`}
+function center(){x=(viewport.clientWidth-canvas.scrollWidth)/2; y=60; clamp()}
+let drag=null
+viewport.addEventListener('pointerdown',e=>{drag={sx:e.clientX,sy:e.clientY,x,y,moved:false};viewport.setPointerCapture(e.pointerId)})
+viewport.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>4)drag.moved=true;x=drag.x+dx;y=drag.y+dy;clamp()})
+viewport.addEventListener('pointerup',()=>{setTimeout(()=>drag=null,0)})
+viewport.addEventListener('click',e=>{if(drag&&drag.moved){e.stopPropagation();e.preventDefault()}},true)
+const setTab=v=>document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))
+dSend.onclick=()=>alert(view==='wall'?'进入写留言':'进入写床位留言簿')
+document.getElementById('tabs').onclick=e=>{const v=e.target.dataset.v;if(!v)return;view=v;render();setTab(v)}
+render()
+</script>
+</body>
+</html>

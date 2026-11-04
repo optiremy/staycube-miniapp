@@ -1,6 +1,6 @@
 const theme = require('../../utils/guestbook-theme')
-const session = require('../../utils/guestbook-session')
 const api = require('../api')
+const i18n = require('../../utils/guestbook-i18n')
 
 function themed(page) {
   const slot = theme.slotOf()
@@ -9,27 +9,56 @@ function themed(page) {
   return slot
 }
 
-Page({
-  data: { welcome: null, agreed: false, loading: false },
+// 登录后去往的页面；没有 next 时回到来源页（如详情页回应）
+const TARGETS = { book: '/guestbook/index/index?view=book', mine: '/guestbook/mine/index', compose: '/guestbook/compose/index' }
 
-  // 欢迎图小程序码以 scene 参数带入凭证
-  onLoad(options) {
-    const scene = options.scene ? decodeURIComponent(options.scene) : ''
-    this._scene = scene
-    api.resolveWelcome(scene).then((welcome) => this.setData({ welcome }))
+Page({
+  data: { name: '', rooms: i18n.ROOMS, roomLabels: [], roomIndex: -1, beds: i18n.BEDS, bedIndex: -1, needBed: false, ready: false, agreed: false, loading: false, taken: false },
+
+  onLoad(options) { this._next = options.next || '' },
+
+  onShow() {
+    themed(this)
+    const t = i18n.copy()
+    wx.setNavigationBarTitle({ title: t.loginTitle })
+    this.setData({ t, roomLabels: i18n.ROOMS.map((room) => i18n.formatBed(room, '', t.locale)) })
   },
 
-  onShow() { themed(this) },
+  updateReady() {
+    const { name, roomIndex, needBed, bedIndex } = this.data
+    this.setData({ ready: !!name.trim() && roomIndex >= 0 && (!needBed || bedIndex >= 0) })
+  },
+
+  inputName(event) { this.setData({ name: event.detail.value }); this.updateReady() },
+
+  // 换房间时清空床位；独立房间不选床位
+  pickRoom(event) {
+    const roomIndex = Number(event.detail.value)
+    this.setData({ roomIndex, needBed: !i18n.PRIVATE_ROOMS.includes(i18n.ROOMS[roomIndex]), bedIndex: -1 })
+    this.updateReady()
+  },
+
+  pickBed(event) { this.setData({ bedIndex: Number(event.detail.value) }); this.updateReady() },
+
   toggleAgree() { this.setData({ agreed: !this.data.agreed }) },
 
+  leave(state) {
+    const next = state === 'staying' || this._next === 'mine' ? TARGETS[this._next] : this._next && '/guestbook/index/index'
+    if (next) wx.redirectTo({ url: next })
+    else wx.navigateBack()
+  },
+
   login() {
-    if (!this.data.agreed) { wx.showToast({ title: '请先阅读并同意', icon: 'none' }); return }
+    const { ready, agreed, name, roomIndex, needBed, bedIndex, t } = this.data
+    if (!ready || this.data.loading) return
+    if (!agreed) { wx.showToast({ title: t.agreeFirst, icon: 'none' }); return }
     this.setData({ loading: true })
-    api.login(this._scene).then(({ result }) => {
-      if (result === 'taken') { this.setData({ loading: false, taken: true }); return }
-      if (result === 'unbound' || result === 'invalid') { wx.redirectTo({ url: '/guestbook/entry/index' }); return }
-      wx.redirectTo({ url: '/guestbook/index/index' })
-    })
-      .catch(() => { this.setData({ loading: false }); wx.showToast({ title: '登录失败，请重试', icon: 'none' }) })
+    api.login({ name: name.trim(), room: i18n.ROOMS[roomIndex], bed: needBed ? i18n.BEDS[bedIndex] : '' }).then(({ result, state }) => {
+      this.setData({ loading: false })
+      if (result === 'bound') { this.leave(state); return }
+      if (result === 'left') { wx.showModal({ content: t.leftNotice, showCancel: false, success: () => this.leave(state) }); return }
+      if (result === 'taken') { this.setData({ taken: true }); return }
+      wx.showToast({ title: result === 'limited' ? t.tooFrequent : t.noStay, icon: 'none' })
+    }).catch(() => { this.setData({ loading: false }); wx.showToast({ title: t.loginFailed, icon: 'none' }) })
   },
 })

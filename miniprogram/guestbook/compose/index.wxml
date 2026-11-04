@@ -1,30 +1,28 @@
 <view class="gb-page" style="{{pageStyle}}">
-  <text class="gb-title">写留言</text>
-  <view class="gb-seg seg">
-    <view class="gb-seg-item {{mode === 'wall' ? 'gb-seg-on' : ''}}" data-mode="wall" bindtap="setMode">发到留言板</view>
-    <view class="gb-seg-item {{mode === 'book' ? 'gb-seg-on' : ''}}" data-mode="book" bindtap="setMode">床位留言本</view>
-  </view>
+  <text class="gb-title">{{mode === 'book' ? (editId ? t.continueBook : t.writeBook) : (editId ? t.edit : t.write)}}</text>
   <view class="editor" style="{{editorStyle}}">
-    <textarea class="editor-input" value="{{content}}" maxlength="{{limit}}" auto-height placeholder="写点什么" placeholder-class="editor-ph" bindinput="input" />
+    <textarea class="editor-input" value="{{content}}" maxlength="{{limit}}" auto-height placeholder="{{t.placeholder}}" placeholder-class="editor-ph" bindinput="input" />
     <text class="editor-count">{{content.length}} / {{limit}}</text>
   </view>
 
-  <block wx:if="{{mode === 'wall'}}">
-    <text class="gb-label">卡片颜色</text>
-    <view class="hues">
-      <view wx:for="{{colors}}" wx:key="key" class="hue {{color === item.key ? 'hue-on' : ''}}" style="border-color:{{color === item.key ? item.hue : ''}}" data-key="{{item.key}}" bindtap="pickColor"><view class="hue-dot" style="background:{{item.hue}}"></view></view>
-    </view>
-  </block>
-
-  <text class="gb-label">署名</text>
-  <view class="gb-row">
-    <view class="gb-chip {{signature === 'room' ? 'gb-chip-on' : ''}}" data-value="room" bindtap="pickSignature">{{mode === 'book' ? (bed || '本床位') + ' 的旅客' : (room ? room + ' 号房的旅客' : '房间号')}}</view>
-    <view class="gb-chip {{signature === 'anon' ? 'gb-chip-on' : ''}}" data-value="anon" bindtap="pickSignature">匿名旅客</view>
+  <view class="photos">
+    <view wx:for="{{photos}}" wx:key="src" class="photo" data-index="{{index}}" bindtap="removePhoto"><image src="{{item.src}}" mode="aspectFill" /><text class="photo-del">×</text></view>
+    <view wx:if="{{photos.length < maxPhotos}}" class="photo photo-add" bindtap="choosePhoto"><text>＋</text><text class="photo-add-text">{{t.photo}}</text></view>
   </view>
 
+  <text class="gb-label">{{t.color}}</text>
+  <view class="hues">
+    <view wx:for="{{colors}}" wx:key="key" class="hue {{color === item.key ? 'hue-on' : ''}}" style="border-color:{{color === item.key ? item.hue : ''}}" data-key="{{item.key}}" bindtap="pickColor"><view class="hue-dot" style="background:{{item.hue}}"></view></view>
+  </view>
 
-  <text class="gb-hint" wx:if="{{mode === 'book'}}">每天可以写一条，当天可以修改或删除。</text>
-  <text class="gb-hint" wx:else>请勿留下手机号、证件号等个人信息。</text>
+  <text class="gb-label">{{t.signature}}</text>
+  <view class="gb-row">
+    <view wx:for="{{signatures}}" wx:key="value" class="gb-chip {{signature === item.value ? 'gb-chip-on' : ''}}" data-value="{{item.value}}" bindtap="pickSignature">{{item.label}}</view>
+  </view>
+  <input wx:if="{{signature === 'nickname'}}" class="gb-input nickname" value="{{nickname}}" maxlength="20" placeholder="{{t.nickname}}" placeholder-class="editor-ph" bindinput="inputNickname" />
 
-  <view class="gb-bottom"><button class="gb-primary" disabled="{{!content || submitting}}" bindtap="submit">提交</button></view>
+  <text class="gb-hint" wx:if="{{mode === 'book'}}">{{t.bookHint}}</text>
+  <text class="gb-hint" wx:else>{{t.wallHint}}</text>
+
+  <view class="gb-bottom"><button class="gb-primary" disabled="{{!content || submitting || (signature === 'nickname' && !nickname)}}" bindtap="submit">{{t.submit}}</button></view>
 </view>

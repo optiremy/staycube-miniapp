@@ -1,9 +1,11 @@
 <view class="gb-page done" style="{{pageStyle}}">
-  <view class="ghosts"><view></view><view class="slot"></view><view></view><view></view><view></view><view></view></view>
-  <view class="fly"><view class="note" style="{{noteStyle}}"><text class="note-text">{{text}}</text></view></view>
-  <view class="after">
-    <text class="done-title">已提交</text>
-    <text class="gb-sub">审核通过后显示在{{mode === 'book' ? '床位留言本' : '留言板'}}</text>
-    <text class="done-back" bindtap="back">返回{{mode === 'book' ? '床位留言本' : '留言板'}} ›</text>
+  <view class="stage">
+    <view class="ghosts"><view></view><view class="slot" style="{{noteStyle}}"><text class="slot-text">{{text}}</text></view><view></view><view></view><view></view><view></view></view>
+    <view class="fly"><view class="note" style="{{noteStyle}}"><text class="note-text">{{text}}</text></view></view>
   </view>
+  <view class="after">
+    <text class="done-title">{{t.submitted}}</text>
+    <text class="gb-sub">{{showsIn}}</text>
+  </view>
+  <text class="done-back" bindtap="back">{{backText}} ›</text>
 </view>

@@ -65,7 +65,7 @@ async function run() {
     : null
   global.getApp = () => ({ globalData: { foregroundRevision: 1 } })
   let navigationUrl = ''
-  global.wx = { navigateTo: ({ url }) => { navigationUrl = url } }
+  global.wx = { navigateTo: ({ url }) => { navigationUrl = url }, setNavigationBarColor() {} }
 
   try {
     const homePage = loadHomePage()

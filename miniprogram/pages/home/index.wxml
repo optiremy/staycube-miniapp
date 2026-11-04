@@ -1,37 +1,38 @@
-<view class="page home-page">
+<view class="page home-page" style="{{pageStyle}}">
   <view class="page-head">
-    <image class="brand-logo" src="/assets/sifang-blue.png" mode="heightFix" />
+    <image class="brand-logo {{dark ? 'brand-logo-light' : ''}}" src="/assets/sifang-blue.png" mode="heightFix" />
     <text class="brand-divider"></text>
     <text class="brand-product">stayCube</text>
     <language-switcher id="lang-switcher" locale="{{locale}}" bindchange="changeLocale" />
   </view>
 
   <view class="home-main">
-    <view wx:if="{{guestbook.state === 'guest'}}" class="board board-{{guestbook.tone}}" data-page="index" bindtap="openGuestbook">
-      <view class="board-top"><text class="board-title">{{copy.board.title}}</text><text class="board-arrow">›</text></view>
-    </view>
-    <view wx:else class="board board-{{guestbook.tone}}">
-      <text class="board-title">{{copy.board.title}}</text>
-      <view class="board-entries">
-        <view class="board-entry board-entry-main" data-page="index" bindtap="openGuestbook"><text>{{copy.board.wall}}</text><text class="entry-arrow">›</text></view>
-        <view wx:if="{{guestbook.state === 'staying'}}" class="board-entry" data-page="book" bindtap="openGuestbook"><text>{{copy.board.book}}</text><text class="entry-arrow">›</text></view>
-        <view class="board-entry {{guestbook.state === 'staying' ? '' : 'board-entry-main'}}" data-page="mine" bindtap="openGuestbook"><text>{{copy.board.mine}}</text><text class="entry-arrow">›</text></view>
-      </view>
-    </view>
-
     <view wx:if="{{guestbook.state === 'staying'}}" class="stay-ticket">
       <view class="ticket-stub"><text class="ticket-small">{{guestbook.nightParts[0]}}</text><text class="ticket-night">{{guestbook.nights}}</text><text class="ticket-small">{{guestbook.nightParts[1]}}</text></view>
       <view class="ticket-info">
-        <view class="ticket-bed"><text class="ticket-room">{{guestbook.roomLabel}}</text><text class="ticket-bed-no">{{guestbook.bed}}</text></view>
+        <text class="ticket-bed-no">{{guestbook.bedLabel}}</text>
         <view wx:if="{{guestbook.slipper}}" class="ticket-slipper"><text>{{copy.board.slipper}}</text><text class="ticket-slipper-no">{{guestbook.slipper}}</text></view>
       </view>
     </view>
 
-    <view class="service-grid">
-      <button wx:for="{{services}}" wx:key="key" class="service-open" data-path="{{item.path}}" bindtap="openService">
-        <text class="service-title">{{item.title}}</text>
-        <text class="service-arrow">›</text>
-      </button>
+    <view class="board">
+      <text class="board-title">{{copy.board.title}}</text>
+      <view class="board-entries {{guestbook.state !== 'left' ? 'board-entries-3' : ''}}">
+        <view class="board-entry" data-page="index" bindtap="openGuestbook"><image class="entry-icon" src="/assets/home-icons/wall-{{guestbook.tone}}.svg" /><text class="entry-arrow">›</text><text class="entry-label">{{copy.board.wall}}</text></view>
+        <view wx:if="{{guestbook.state !== 'left'}}" class="board-entry" data-page="book" bindtap="openGuestbook"><image class="entry-icon" src="/assets/home-icons/book-{{guestbook.tone}}.svg" /><text class="entry-arrow">›</text><text class="entry-label">{{copy.board.book}}</text></view>
+        <view class="board-entry" data-page="mine" bindtap="openGuestbook"><image class="entry-icon" src="/assets/home-icons/mine-{{guestbook.tone}}.svg" /><text class="entry-arrow">›</text><text class="entry-label">{{copy.board.mine}}</text></view>
+      </view>
+    </view>
+
+    <view class="board board-services">
+      <text class="board-title">{{copy.home.title}}</text>
+      <view class="service-list">
+        <button wx:for="{{services}}" wx:key="key" class="service-open" data-path="{{item.path}}" bindtap="openService">
+          <image class="service-icon" src="/assets/home-icons/{{item.key}}-{{guestbook.tone}}.svg" />
+          <text class="service-title">{{item.title}}</text>
+          <text class="service-arrow">›</text>
+        </button>
+      </view>
     </view>
   </view>
 

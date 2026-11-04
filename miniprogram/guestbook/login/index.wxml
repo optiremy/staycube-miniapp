@@ -1,7 +1,26 @@
-<view class="gb-page" style="{{pageStyle}}">
-  <text wx:if="{{welcome}}" class="hit">已识别欢迎图 · {{welcome.maskedName}} · {{welcome.room}} 号房 {{welcome.bed}}</text>
-  <block wx:if="{{taken}}"><text class="gb-title">这张欢迎图已在其他微信上使用</text><text class="gb-sub">如需更换微信，请联系前台。</text></block>
-  <block wx:else><text class="gb-title">使用微信登录</text>
-  <view class="agree" bindtap="toggleAgree"><view class="agree-box {{agreed ? 'agree-on' : ''}}"></view><text>已阅读并同意《肆方空间留言板使用说明》和《隐私保护指引》</text></view>
-  <view class="gb-bottom"><button class="gb-primary" loading="{{loading}}" bindtap="login">使用微信登录</button></view></block>
+<view class="gb-page login" style="{{pageStyle}}">
+  <block wx:if="{{taken}}"><text class="gb-title">{{t.takenTitle}}</text><text class="gb-sub">{{t.takenSub}}</text></block>
+  <block wx:else>
+    <text class="gb-title welcome">{{t.welcome}}</text>
+
+    <text class="gb-label">{{t.nameLabel}}</text>
+    <input class="gb-input" value="{{name}}" maxlength="60" bindinput="inputName" />
+
+    <text class="gb-label">{{t.roomLabel}}</text>
+    <picker mode="selector" range="{{roomLabels}}" value="{{roomIndex < 0 ? 0 : roomIndex}}" bindchange="pickRoom">
+      <view class="gb-input select {{roomIndex < 0 ? 'select-empty' : ''}}"><text>{{roomIndex < 0 ? t.pick : roomLabels[roomIndex]}}</text><text class="select-arrow">›</text></view>
+    </picker>
+
+    <block wx:if="{{needBed}}">
+      <text class="gb-label">{{t.bedLabel}}</text>
+      <picker mode="selector" range="{{beds}}" value="{{bedIndex < 0 ? 0 : bedIndex}}" bindchange="pickBed">
+        <view class="gb-input select {{bedIndex < 0 ? 'select-empty' : ''}}"><text>{{bedIndex < 0 ? t.pick : beds[bedIndex]}}</text><text class="select-arrow">›</text></view>
+      </picker>
+    </block>
+
+    <view class="actions">
+      <button class="gb-primary" disabled="{{!ready}}" loading="{{loading}}" bindtap="login">{{t.loginButton}}</button>
+      <view class="agree" bindtap="toggleAgree"><view class="agree-box {{agreed ? 'agree-on' : ''}}"></view><text>{{t.agree}}</text></view>
+    </view>
+  </block>
 </view>

@@ -1,0 +1,7 @@
+<view class="gb-page" style="{{pageStyle}}">
+  <view wx:if="{{entry}}" class="detail" style="border-color:{{hue}};box-shadow:0 0 60rpx -24rpx {{hue}}">
+    <view class="detail-when"><text class="detail-date">{{entry.date}}</text><text>{{entry.author}}</text></view>
+    <text class="note-text detail-text">{{entry.content}}</text>
+    <image wx:for="{{entry.photoList}}" wx:key="*this" class="detail-photo" src="{{item}}" mode="widthFix" data-src="{{item}}" bindtap="preview" />
+  </view>
+</view>

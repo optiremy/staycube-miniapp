@@ -1,5 +1,5 @@
 @import "../common.wxss";
-.seg { margin:28rpx 0 32rpx; }
+.editor { margin-top:32rpx; }
 .editor { position:relative; min-height:400rpx; padding:40rpx 36rpx 64rpx; border-radius:36rpx; border:1rpx solid var(--line); background:var(--card); box-sizing:border-box; }
 .editor-input { width:100%; min-height:300rpx; font-size:32rpx; line-height:1.85; color:var(--text); }
 .editor-ph { color:var(--faint); }
@@ -8,5 +8,10 @@
 .hue { width:68rpx; height:68rpx; border-radius:50%; border:2rpx solid var(--line); display:flex; align-items:center; justify-content:center; box-sizing:border-box; }
 .hue-on { border-width:4rpx; }
 .hue-dot { width:44rpx; height:44rpx; border-radius:50%; }
-.photo { width:140rpx; height:140rpx; border-radius:20rpx; overflow:hidden; }
+.photos { display:flex; gap:16rpx; margin-top:24rpx; }
+.photo { position:relative; width:150rpx; height:150rpx; border-radius:20rpx; overflow:hidden; }
 .photo image { width:100%; height:100%; }
+.photo-del { position:absolute; top:6rpx; right:10rpx; color:#fff; font-size:32rpx; text-shadow:0 0 8rpx rgba(0,0,0,.6); }
+.photo-add { display:flex; flex-direction:column; align-items:center; justify-content:center; border:1rpx dashed var(--line); background:var(--card); color:var(--sub); font-size:40rpx; box-sizing:border-box; }
+.photo-add-text { font-size:22rpx; margin-top:4rpx; }
+.nickname { margin-top:20rpx; }

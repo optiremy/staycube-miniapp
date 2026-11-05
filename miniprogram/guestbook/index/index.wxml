@@ -1,6 +1,6 @@
 <view class="gb-root" style="{{pageStyle}}">
   <movable-area wx:if="{{view === 'wall' && loaded}}" class="area">
-    <movable-view class="canvas" direction="{{pannable ? 'all' : 'none'}}" x="{{canvas.x}}" y="{{canvas.y}}" style="width:{{canvas.width}}px;height:{{canvas.height}}px">
+    <movable-view class="canvas" direction="{{pannable ? 'all' : 'none'}}" inertia="true" friction="1" out-of-bounds="true" damping="30" x="{{canvas.x}}" y="{{canvas.y}}" style="width:{{canvas.width}}px;height:{{canvas.height}}px">
       <view class="grid" style="grid-template-columns:repeat({{cols}}, 300rpx)">
         <view wx:for="{{tiles}}" wx:key="id" class="tile {{item.photoUrl ? 'tile-photo' : ''}}" style="{{item.style}}" data-id="{{item.id}}" bindtap="openNote">
           <image wx:if="{{item.photoUrl}}" class="tile-img" src="{{item.photoUrl}}" mode="aspectFill" />

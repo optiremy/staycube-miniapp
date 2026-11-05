@@ -4,6 +4,7 @@
     <view wx:for="{{list}}" wx:key="id" class="note" style="{{item.style}}">
       <text class="mine-source">{{item.source}}</text>
       <text class="note-text">{{item.content}}</text>
+      <view wx:if="{{item.photoList.length}}" class="mine-pics"><image wx:for="{{item.photoList}}" wx:for-item="p" wx:key="*this" class="mine-pic" src="{{p}}" mode="aspectFill" data-src="{{p}}" data-list="{{item.photoList}}" bindtap="previewPhoto" /></view>
       <view class="note-foot"><text>{{item.statusText}}</text><text>{{item.date}}</text></view>
       <view wx:if="{{item.editable || item.deletable}}" class="mine-actions">
         <text wx:if="{{item.editable}}" class="mine-action" data-id="{{item.id}}" data-kind="{{item.kind}}" bindtap="edit">{{t.editAction}}</text>

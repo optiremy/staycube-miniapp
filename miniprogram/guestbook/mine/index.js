@@ -26,11 +26,16 @@ Page({
     this.load()
   },
 
-  load() {
-    return api.listMine().catch(() => []).then((list) => this.setData({
-      list: list.map((item) => ({ ...item, source: item.kind === 'entry' ? this.data.t.book : this.data.t.wall, statusText: statusText(item, this.data.t), style: theme.noteStyle(this.data.slot, item.color, 0.3) })),
-    }))
+  async load() {
+    const list = await api.listMine().catch(() => [])
+    const paths = (item) => (item.kind === 'entry' ? (item.photoPaths || []) : [item.photoPath].filter(Boolean))
+    const urls = await api.photoUrls(list.flatMap(paths))
+    this.setData({
+      list: list.map((item) => ({ ...item, photoList: paths(item).map((path) => urls[path]).filter(Boolean), source: item.kind === 'entry' ? this.data.t.book : this.data.t.wall, statusText: statusText(item, this.data.t), style: theme.noteStyle(this.data.slot, item.color, 0.3) })),
+    })
   },
+
+  previewPhoto(event) { wx.previewImage({ current: event.currentTarget.dataset.src, urls: event.currentTarget.dataset.list }) },
 
   edit(event) {
     const { id, kind } = event.currentTarget.dataset

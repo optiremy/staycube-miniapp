@@ -166,3 +166,10 @@
 - 分享图不放小程序码，不写“旅客留言墙”；左下角 logo，右下角署名和数码日期。
 - 需要在小程序后台把云开发网关加入 downloadFile 合法域名，并在隐私保护指引中声明相册写入。
 
+## 13. 2026-11-05 决定：票根第几晚的分界点
+
+- 票根第几晚改为每天 14:00 加一晚，覆盖第 3.5 节和第 10 节的 12:00。算法不变：`第 N 晚 = 分界后的日期 − 入住日期 + 1`，最小为 1。
+- 床位留言簿的“每天一条”和“当天可改可删”仍按 12:00（`gb_business_date`）。
+
+迁移：`stayCube-guestbook/cloudbase/compat/20261105130000_cloudbase_guestbook_night_boundary.sql`；生产执行：`cloudbase/scripts/apply-guestbook-night-boundary.sh`。
+

@@ -18,6 +18,15 @@
         "login/index",
         "entry-detail/index"
       ]
+    },
+    {
+      "root": "cleaning",
+      "pages": [
+        "index/index",
+        "task/index",
+        "bind/index",
+        "stats/index"
+      ]
     }
   ],
   "window": {

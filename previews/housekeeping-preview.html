@@ -1,0 +1,154 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>保洁端逐页预览</title><style>
+*{box-sizing:border-box}body{margin:0;background:#eef2f6;color:#0b1f44;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:12px 18px;background:rgba(238,242,246,.96);border-bottom:1px solid #dfe6ed}.bar h1{margin:0;font-size:20px}.bar p{margin:2px 0 0;color:#667b91;font-size:13px}.bar .sp{flex:1}
+.widths{display:flex;gap:6px}.widths button{height:30px;padding:0 12px;border:1px solid #cfd9e4;border-radius:15px;background:#fff;color:#0b1f44;font:inherit;font-size:13px;cursor:pointer}.widths button.on{background:#176be8;border-color:#176be8;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--w),var(--w)));gap:20px;justify-content:center;padding:16px 16px 28px}figure{margin:0;min-width:0}figcaption{margin-bottom:8px;font-size:14px;font-weight:600;text-align:center}figcaption small{display:block;margin-top:2px;color:#667b91;font-weight:400;font-size:12px}
+.screen{position:relative;height:720px;border-radius:28px;overflow:hidden;display:flex;flex-direction:column;
+ background:radial-gradient(80% 30% at 88% -4%,#ffefb0 0%,transparent 72%),linear-gradient(180deg,#eef6ff 0%,#f7fbff 45%,#fff 100%);
+ color:#063884;--text:#063884;--sub:#586b80;--faint:#8799ad;--line:rgba(6,56,132,.1);--accent:#176be8;--accent-soft:rgba(23,107,232,.14);--card:rgba(255,255,255,.82);--nav:#eef6ff;--btn:#176be8;--on-btn:#fff;--field:#fff;--field-line:rgba(6,56,132,.2);--fill:rgba(6,56,132,.05);
+ --red:#c8402f;--red-soft:rgba(200,64,47,.1);--amber:#a86a00;--amber-soft:rgba(232,160,0,.14);--green:#1f8a5b;--green-soft:rgba(31,138,91,.12)}
+.nav{flex:none;height:44px;line-height:44px;text-align:center;font-size:15px;font-weight:600;background:var(--nav);position:relative}.nav .back{position:absolute;left:14px;top:0;font-size:20px;font-weight:400}
+.scroll{flex:1;overflow:auto;padding:0 16px 24px}.scroll::-webkit-scrollbar{display:none}
+.foot-bar{flex:none;padding:10px 16px 26px;background:rgba(255,255,255,.94);border-top:1px solid var(--line)}
+.btn{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-radius:6px;font:inherit;font-size:15px;font-weight:650;border:1px solid var(--btn);background:var(--btn);color:var(--on-btn);cursor:pointer}.btn i{position:absolute;right:16px;font-style:normal}.btn.off{background:#c9d4e2;border-color:#c9d4e2;color:#fff;cursor:default}.btn.sec{background:var(--field);border-color:var(--field-line);color:var(--text)}
+.state-note{text-align:center;color:var(--sub);font-size:14px;height:48px;line-height:48px}
+/* 绑定 */
+.center{padding:90px 20px 0}.logo{height:21px}h2{margin:36px 0 0;font-size:22px;color:var(--text)}.intro{margin:10px 0 0;color:var(--sub);font-size:14px;line-height:1.65}
+.who{margin-top:24px;padding:14px 16px;border:1px solid var(--line);border-radius:9px;background:var(--card);display:flex;justify-content:space-between;font-size:15px}.who span{color:var(--sub)}.who b{color:var(--text)}
+.mt{margin-top:28px}
+/* 列表 */
+.today{margin:16px 0 0;padding:16px;border-radius:12px;background:var(--card);border:1px solid var(--line)}.today .d{color:var(--sub);font-size:13px}.today .row{display:flex;align-items:flex-end;margin-top:6px}.today .n{font-size:30px;font-weight:700;line-height:1}.today .u{margin-left:4px;font-size:14px;color:var(--sub)}.today .sp{flex:1}.today .link{font-size:13px;color:var(--accent)}
+.today .sub{display:flex;gap:14px;margin-top:10px;font-size:13px;color:var(--sub)}.today .sub b{color:var(--text)}
+.group{margin-top:22px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--sub)}.group .c{font-weight:400;color:var(--faint)}.group.pri{color:var(--red)}
+.task{position:relative;display:flex;align-items:center;gap:10px;margin-top:10px;padding:13px 12px 13px 14px;border:1px solid var(--line);border-radius:9px;background:var(--field)}.task.pinned{border-color:rgba(200,64,47,.35)}
+.task .main{flex:1;min-width:0}.task .t{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.task .room{font-size:17px;font-weight:700;color:var(--text)}.task .meta{margin-top:5px;font-size:12px;color:var(--faint);line-height:1.5}.task .warn{color:var(--amber)}.task>i{font-style:normal;color:var(--faint);font-size:18px}
+.tag{display:inline-block;height:20px;line-height:20px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:600;background:var(--fill);color:var(--sub)}.tag.kind{background:var(--accent-soft);color:var(--accent)}.tag.doing{background:var(--accent);color:#fff}.tag.rej{background:var(--red-soft);color:var(--red)}.tag.wait{background:var(--amber-soft);color:var(--amber)}.tag.ok{background:var(--green-soft);color:var(--green)}.tag.prio{background:var(--red);color:#fff}
+.task.dim{opacity:.6}
+.today-line{display:flex;align-items:center;margin:16px 2px 4px;font-size:14px;color:var(--sub)}.today-line b{font-size:18px;color:var(--text);margin:0 2px}.today-line .link{margin-left:auto;color:var(--accent)}
+.task .kind-txt{flex:none;font-size:14px;color:var(--sub)}.task .tag.wait,.task .tag.ok{flex:none}.task .room{font-size:19px}
+.group{margin-top:20px;font-size:17px;font-weight:700;color:var(--text)}.group .c{font-size:14px;font-weight:400}
+.task{margin-top:8px;padding:9px 12px 9px 14px;border-radius:8px}.task .room{font-size:16px}.task .meta{margin-top:3px;font-size:12px}
+.cat{margin-top:14px;padding:4px 14px 6px;border:1px solid var(--line);border-radius:12px;background:var(--field)}.cat .group{margin-top:10px;margin-bottom:4px;display:flex;align-items:baseline}.cat .group .c{margin-left:auto;font-size:15px;font-weight:600;color:var(--sub)}
+.cat .task{margin:0;padding:11px 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none}.cat .task.pinned{border-color:var(--line)}
+.cat{padding:0;overflow:hidden}.cat .group{margin:0;padding:11px 14px;background:var(--accent-soft);color:var(--accent);font-size:16px;font-weight:700;letter-spacing:.04em}.cat .group .c{color:var(--accent);font-size:15px;font-weight:700}
+.cat .group{font-size:19px;padding:12px 14px}.cat .group .c{font-size:24px;line-height:1}
+.cat .task{margin:0 14px;border-top:1px solid var(--line)}.cat .group+.task{border-top:0}.cat .task .room{font-size:15px;font-weight:400;color:var(--text)}
+.task .doing-txt{color:var(--accent)}.task .rej-txt{color:var(--red)}.task .meta{font-size:13px}
+/* 详情 */
+.dhead{margin-top:18px}.dhead .room{font-size:24px;font-weight:700;color:var(--text)}.dhead .tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.dhead .pos{margin-top:8px;font-size:13px;color:var(--sub)}
+.banner{margin-top:14px;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.55}.banner.rej{background:var(--red-soft);color:var(--red)}.banner.wait{background:var(--amber-soft);color:var(--amber)}
+.sec-t{margin-top:22px;font-size:13px;font-weight:700;color:var(--sub);display:flex}.sec-t .sp{flex:1}.sec-t .c{font-weight:400;color:var(--faint)}
+.list{margin-top:8px;border:1px solid var(--line);border-radius:9px;background:var(--field);overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;min-height:48px;padding:10px 14px;border-top:1px solid var(--line);font-size:15px;color:var(--text);cursor:pointer;user-select:none}.item:first-child{border-top:0}.item .q{margin-left:auto;color:var(--sub);font-size:14px;font-variant-numeric:tabular-nums}
+.box{flex:none;width:22px;height:22px;border-radius:5px;border:1.5px solid var(--field-line);display:grid;place-items:center;font-size:13px;color:#fff}.item.on .box{background:var(--accent);border-color:var(--accent)}.item.on .txt{color:var(--sub)}
+.locked .item{cursor:default}.locked .box{background:var(--fill)}
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.shot{border:1px dashed var(--field-line);border-radius:9px;background:var(--field);padding:10px;cursor:pointer}.shot .ph{height:96px;border-radius:6px;background:var(--fill);display:grid;place-items:center;color:var(--accent);font-size:13px;font-weight:600}.shot .cap{margin-top:8px;font-size:12px;color:var(--sub);line-height:1.45}
+.shot.done{border-style:solid;border-color:var(--line)}.shot.done .ph{background:linear-gradient(135deg,#d9e3ee,#b7c6d6 60%,#a3b4c7);color:#fff;position:relative}.shot.done .ph:after{content:"重拍";position:absolute;right:6px;bottom:6px;font-size:11px;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,.35)}
+.locked .shot{cursor:default}
+/* 工作量 */
+.month{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:16px;font-size:15px;font-weight:600}.month i{font-style:normal;color:var(--faint);font-size:18px}
+.total{margin-top:14px;padding:18px 16px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-align:center}.total .n{font-size:40px;font-weight:700;line-height:1;color:var(--text)}.total .u{font-size:14px;color:var(--sub);margin-top:6px}
+.day{margin-top:10px;border:1px solid var(--line);border-radius:9px;background:var(--field);overflow:hidden}.day .h{display:flex;padding:12px 14px;font-size:14px;font-weight:600;color:var(--text)}.day .h span{margin-left:auto}.day .r{display:flex;padding:9px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--sub)}.day .r span{margin-left:auto;font-variant-numeric:tabular-nums}
+.notes{max-width:1180px;margin:0 auto;padding:0 16px 32px;color:#3e5268;font-size:13px;line-height:1.7}.notes h3{font-size:15px;color:#0b1f44;margin:8px 0 4px}.notes ul{margin:0;padding-left:20px}
+</style></head><body>
+<div class="bar"><div><h1>保洁端逐页预览</h1><p>小程序分包 cleaning/ · 中午配色 · 示例数据；清单项和照片点可点击</p></div><span class="sp"></span><div class="widths" id="widths"><button data-w="320">320</button><button data-w="375" class="on">375</button><button data-w="430">430</button></div></div>
+<div class="grid" id="grid" style="--w:375px"></div>
+<div class="notes"><h3>待你确认</h3><ul>
+<li>平移拍照点为本预览暂定：涉及的每张床各拍一张。员工可在后台修改。</li>
+<li>布草按件显示，右侧写来源：「换新」或「用 某床 的」；没动的件不显示。</li>
+<li>完整换房床在保洁端显示为原床位的「退房整理」，不单独出现。</li>
+<li>「回收」组不勾也能完成；没勾的项在员工验收时显示为未回收，由员工判断。</li>
+<li>借用物品只列出保洁相关的（如被子、枕头）；哪些名称算保洁相关，由员工在后台维护。</li>
+<li>保洁端固定用中午配色，不随时段变化。</li>
+<li>任务列表只显示今天及以前的任务；布草更换预约在以后日期的，到当天才出现。</li>
+</ul></div>
+<script>
+const $=s=>document.querySelector(s)
+const tag=(t,c='')=>`<span class="tag ${c}">${t}</span>`
+const nav=(t,back=true)=>`<div class="nav">${back?'<span class="back">‹</span>':''}${t}</div>`
+const items=(arr,locked,opt)=>`<div class="list ${locked?'locked':''} ${opt?'opt':''}">${arr.map(([t,q,on])=>`<div class="item ${on?'on':''}"><span class="box">${on?'✓':''}</span><span class="txt">${t}</span>${q?`<span class="q">${q}</span>`:''}</div>`).join('')}</div>`
+const photos=(arr,locked)=>`<div class="photos ${locked?'locked':''}">${arr.map(([t,on])=>`<div class="shot ${on?'done':''}"><div class="ph">${on?'':'拍照'}</div><div class="cap">${t}</div></div>`).join('')}</div>`
+const sec=(t,c='')=>`<div class="sec-t">${t}<span class="sp"></span><span class="c">${c}</span></div>`
+
+const screens=[]
+const add=(cap,sub,html)=>screens.push({cap,sub,html})
+
+// 1 绑定
+add('绑定','扫员工生成的小程序码进入',`<div class="scroll"><div class="center" style="padding-left:4px;padding-right:4px"><img class="logo" src="../miniprogram/assets/sifang-blue.png"><h2>保洁员绑定</h2><div class="who"><span>姓名</span><b>王阿姨</b></div><div class="mt"><button class="btn">微信登录并绑定</button></div></div></div>`)
+add('绑定成功','',`<div class="scroll"><div class="center" style="padding-left:4px;padding-right:4px"><img class="logo" src="../miniprogram/assets/sifang-blue.png"><h2>已绑定</h2><p class="intro">王阿姨</p><div class="mt"><button class="btn">查看待整理<i>→</i></button></div></div></div>`)
+add('绑定码无效 / 未绑定','绑定码已用、过期，或未绑定的微信打开保洁页面',`<div class="scroll"><div class="center" style="padding-left:4px;padding-right:4px"><img class="logo" src="../miniprogram/assets/sifang-blue.png"><h2>绑定码已失效</h2><p class="intro">请联系员工重新生成绑定码。</p></div></div>`)
+
+// 2 列表：只显示房床和要做的事；位置指引不显示
+const T=(room,kind,o={})=>`<div class="task ${o.pin?'pinned':''} ${o.dim?'dim':''}"><div class="main"><div class="t">${o.pin?tag('优先','prio'):''}<span class="room">${room}</span></div>${o.note?`<div class="meta ${o.cls||''}">${o.note}</div>`:''}</div>${kind?`<span class="kind-txt">${kind}</span>`:''}${o.st||''}<i>›</i></div>`
+add('待整理','按“退房”“更换”“平移”分类；每类里优先的在前；右上角为剩余数量；不显示已提交的任务',`${nav('待整理',false)}<div class="scroll">
+<div class="today-line"><span>今天已完成 <b>3</b> 床位</span><span class="link">本月 ›</span></div>
+<div class="cat"><div class="group">退房 <span class="c">3</span></div>
+${T('曲江','',{pin:1})}
+${T('雁塔 F','',{pin:1})}
+${T('未央 E','',{note:'打回：储物柜少一个衣架',cls:'rej-txt'})}</div>
+<div class="cat"><div class="group">更换 <span class="c">2</span></div>
+${T('莲湖 B','')}
+${T('灞上','')}</div>
+<div class="cat"><div class="group">平移 <span class="c">1</span></div>
+${T('汉城 A → 秦都 C','')}</div>
+</div>`)
+add('待整理 · 空','没有任务时三张卡片保留，数量为 0',`${nav('待整理',false)}<div class="scroll"><div class="today-line"><span>今天已完成 <b>8</b> 床位</span><span class="link">本月 ›</span></div><div class="cat"><div class="group">退房 <span class="c">0</span></div></div><div class="cat"><div class="group">更换 <span class="c">0</span></div></div><div class="cat"><div class="group">平移 <span class="c">0</span></div></div></div>`)
+
+// 3 详情
+const D=(o)=>`${nav(o.title)}<div class="scroll"><div class="dhead"><div class="room">${o.room}</div><div class="tags">${tag(o.kind,'kind')}${o.st}${o.prio?tag('优先','prio'):''}</div>${o.pos?`<div class="pos">${o.pos}</div>`:''}</div>${o.banner||''}${o.body}</div><div class="foot-bar">${o.foot}</div>`
+add('任务 · 未开始','合住四人间退房整理；点“开始整理”后任务归自己',D({title:'汉城 C',room:'汉城 C',kind:'退房',st:tag('待整理'),
+ body:sec('回收')+items([['入住手袋'],['毛巾'],['水杯']],1,1)+sec('布草')+items([['床笠','换新',0],['被套','换新',0],['枕套','换新',0]],1)+sec('拍照')+photos([['拉开帘子，拍整理好的床位']],1),
+ foot:'<button class="btn">开始整理</button>'}))
+add('任务 · 有借用物品','旅客借用的保洁相关物品在退房时列出，需一并回收',D({title:'雁塔 D',room:'雁塔 D',kind:'退房',st:tag('整理中','doing'),
+ body:sec('借用物品','1 / 2')+items([['被子','×1',1],['枕头','×1']])+sec('布草','0 / 3')+items([['床笠','换新'],['被套','换新'],['枕套','换新']])+sec('储物柜')+items([['黑色衣架','×3'],['隔音耳塞','×1']])+sec('拍照')+photos([['拉开帘子，拍整理好的床位']]),
+ foot:'<button class="btn off">完成</button>'}))
+add('任务 · 整理中','勾齐全部项目、拍齐照片后“完成”可点',D({title:'秦都 C',room:'秦都 C',kind:'退房',st:tag('整理中','doing'),prio:1,
+ body:sec('布草','3 / 3')+items([['床笠','换新',1],['被套','换新',1],['枕套','换新',1]])+sec('储物柜','1 / 2')+items([['黑色衣架','×3',1],['隔音耳塞','×1']])+sec('拍照','0 / 1')+photos([['拉开帘子，拍整理好的床位']]),
+ foot:'<button class="btn off">完成</button>'}))
+add('任务 · 曲江','大床房：分房间、卫生间、minibar；两个拍照点；计 2 床位',D({title:'曲江',room:'曲江',kind:'退房',st:tag('整理中','doing'),prio:1,
+ body:sec('回收')+items([['毛巾','×2',1],['浴巾','×2',1],['地巾','×1',1]],0,1)+sec('布草')+items([['大床笠','换新',1],['大被罩','换新',1],['枕套','×4 换新',1]])+sec('房间')+items([['浴巾','×2'],['抽纸','×2']])+sec('卫生间')+items([['毛巾','×2'],['一次性牙具','×2'],['梳子','×1'],['卷纸','×1'],['地巾','×1']])+sec('minibar')+items([['可乐','×1'],['雪碧','×1'],['350ml 怡宝','×4']])+sec('拍照','1 / 2')+photos([['房间全景',1],['卫生间全景']]),
+ foot:'<button class="btn off">完成</button>'}))
+add('任务 · 灞上','单人间退房整理',D({title:'灞上',room:'灞上',kind:'退房',st:tag('整理中','doing'),
+ body:sec('回收')+items([['毛巾','×1',1],['水杯','×1',1]],0,1)+sec('布草')+items([['床笠','换新',1],['被套','换新',1],['枕套','换新',1]])+sec('其他')+items([['抽纸','',1],['洗漱框：毛巾、杯子、一次性牙具','',1],['遥控器','×2',1]])+sec('拍照','1 / 1')+photos([['房间全景',1]]),
+ foot:'<button class="btn">完成</button>'}))
+add('任务 · 被打回','显示员工填写的打回原因，改好后再次完成',D({title:'未央 E',room:'未央 E',kind:'退房',st:tag('被打回','rej'),
+ banner:'<div class="banner rej">打回原因：储物柜少一个衣架</div>',
+ body:sec('布草')+items([['床笠','换新',1],['被套','换新',1],['枕套','换新',1]])+sec('储物柜')+items([['黑色衣架','×3',1],['隔音耳塞','×1',1]])+sec('拍照','1 / 1')+photos([['拉开帘子，拍整理好的床位',1]]),
+ foot:'<button class="btn">完成</button>'}))
+add('换布草 · 部分','员工登记时只选了枕套；未动的件不显示',D({title:'莲湖 B',room:'莲湖 B',kind:'更换',st:tag('整理中','doing'),
+ body:sec('布草')+items([['枕套','换新']])+sec('拍照')+photos([['拉开帘子，拍整理好的床位']]),
+ foot:'<button class="btn off">完成</button>'}))
+add('平移 · 新床位已整理好','莲湖 D 平移到雁塔 B：两床布草互换；莲湖 D 空出，四人间无配套确认',D({title:'平移',room:'莲湖 D → 雁塔 B',kind:'平移',st:tag('整理中','doing'),
+ body:sec('雁塔 B')+items([['床笠','用 莲湖 D 的'],['被套','用 莲湖 D 的'],['枕套','用 莲湖 D 的']])+sec('莲湖 D')+items([['床笠','用 雁塔 B 的'],['被套','用 雁塔 B 的'],['枕套','用 雁塔 B 的']])+sec('拍照')+photos([['雁塔 B 床位'],['莲湖 D 床位']]),
+ foot:'<button class="btn off">完成</button>'}))
+add('平移 · 新床位刚退房','雁塔 A 平移到秦都 C：秦都 C 旧布草送洗；雁塔 A 空出，六人间确认储物柜',D({title:'平移',room:'雁塔 A → 秦都 C',kind:'平移',st:tag('整理中','doing'),
+ body:sec('秦都 C')+items([['床笠','用 雁塔 A 的'],['被套','用 雁塔 A 的'],['枕套','用 雁塔 A 的']])+sec('雁塔 A')+items([['床笠','换新'],['被套','换新'],['枕套','换新']])+sec('雁塔 A 储物柜')+items([['黑色衣架','×3'],['隔音耳塞','×1']])+sec('拍照')+photos([['秦都 C 床位'],['雁塔 A 床位']]),
+ foot:'<button class="btn off">完成</button>'}))
+add('平移 · 连环','碑林 A → 雁塔 A → 秦都 C：从最后一张床往前做；只有碑林 A 换新',D({title:'平移',room:'碑林 A → 雁塔 A → 秦都 C',kind:'平移',st:tag('整理中','doing'),
+ body:sec('秦都 C')+items([['床笠','用 雁塔 A 的'],['被套','用 雁塔 A 的'],['枕套','用 雁塔 A 的']])+sec('雁塔 A')+items([['床笠','用 碑林 A 的'],['被套','用 碑林 A 的'],['枕套','用 碑林 A 的']])+sec('碑林 A')+items([['床笠','换新'],['被套','换新'],['枕套','换新']])+sec('拍照')+photos([['秦都 C 床位'],['雁塔 A 床位'],['碑林 A 床位']]),
+ foot:'<button class="btn off">完成</button>'}))
+
+// 4 工作量
+const day=(d,n,rows)=>`<div class="day"><div class="h">${d}<span>${n} 床位</span></div>${rows.map(([a,b,c])=>`<div class="r">${a} · ${b}<span>${c}</span></div>`).join('')}</div>`
+add('本月工作量','只计员工验收通过的任务；曲江计 2 床位',`${nav('工作量')}<div class="scroll"><div class="month"><i>‹</i>2026年11月<i>›</i></div><div class="total"><div class="n">46</div><div class="u">床位 · 另有 1 件</div></div>
+${day('11月9日 周一',3,[['长安 A','更换',1],['曲江','退房',2]])}
+${day('11月8日 周日',7,[['秦都 A','退房',1],['秦都 B','退房',1],['汉城 D','平移',1],['雁塔 F','退房',1],['曲江','更换',2],['碑林 A','更换',1]])}
+${day('11月7日 周六',5,[['未央 C','退房',1],['莲湖 A','退房',1],['灞上','退房',1],['长安 B','更换',1],['汉城 B','退房',1]])}
+</div>`)
+
+const only=new URLSearchParams(location.search).get('only');const shown=only?screens.filter(x=>x.cap.includes(only)):screens
+$('#grid').innerHTML=shown.map(s=>`<figure><figcaption>${s.cap}${s.sub?`<small>${s.sub}</small>`:''}</figcaption><div class="screen">${s.html}</div></figure>`).join('')
+
+// 交互：勾选、拍照，联动“完成”按钮
+document.querySelectorAll('.screen').forEach(sc=>{
+ const refresh=()=>{const btn=sc.querySelector('.foot-bar .btn');if(!btn||btn.textContent!=='完成')return
+  const open=[...sc.querySelectorAll('.list:not(.locked):not(.opt) .item')].some(i=>!i.classList.contains('on'))||[...sc.querySelectorAll('.photos:not(.locked) .shot')].some(s=>!s.classList.contains('done'))
+  btn.classList.toggle('off',open)}
+ sc.addEventListener('click',e=>{const it=e.target.closest('.list:not(.locked) .item'),sh=e.target.closest('.photos:not(.locked) .shot')
+  if(it){it.classList.toggle('on');it.querySelector('.box').textContent=it.classList.contains('on')?'✓':''}
+  if(sh){sh.classList.toggle('done');sh.querySelector('.ph').textContent=sh.classList.contains('done')?'':'拍照'}
+  refresh()})
+})
+document.querySelectorAll('#widths button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#widths button').forEach(x=>x.classList.toggle('on',x===b));$('#grid').style.setProperty('--w',b.dataset.w+'px')})
+</script></body></html>

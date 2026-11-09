@@ -1,0 +1,48 @@
+<view wx:if="{{task}}" class="hk-page with-bar">
+  <view class="head">
+    <text class="head-room">{{task.title}}</text>
+    <view class="head-tags">
+      <text class="hk-tag kind">{{kind}}</text>
+      <text wx:if="{{task.status === 'in_progress' && !task.rejectReason}}" class="hk-tag doing">整理中</text>
+      <text wx:if="{{task.status === 'in_progress' && task.rejectReason}}" class="hk-tag rej">被打回</text>
+      <text wx:if="{{task.priority}}" class="hk-tag prio">优先</text>
+    </view>
+  </view>
+
+  <view wx:if="{{task.rejectReason && task.status === 'in_progress'}}" class="banner rej">打回原因：{{task.rejectReason}}</view>
+  <view wx:if="{{task.blockedBy}}" class="banner wait">先完成 {{task.blockedBy}} 退房</view>
+  <view wx:if="{{task.other}}" class="banner wait">{{task.other}}在做这条任务</view>
+
+  <block wx:for="{{groups}}" wx:for-item="group" wx:key="id">
+    <view class="sec">
+      <text>{{group.title}}</text>
+      <text class="sec-count">{{group.done}} / {{group.items.length}}</text>
+    </view>
+    <view class="list {{editable ? '' : 'locked'}}">
+      <view wx:for="{{group.items}}" wx:key="id" class="item {{item.checked ? 'on' : ''}}" data-id="{{item.id}}" data-checked="{{item.checked}}" bindtap="toggle">
+        <view class="box">{{item.checked ? '✓' : ''}}</view>
+        <text class="item-name">{{item.name}}</text>
+        <text wx:if="{{item.right}}" class="item-right">{{item.right}}</text>
+      </view>
+    </view>
+  </block>
+
+  <view class="sec">
+    <text>拍照</text>
+    <text class="sec-count">{{photoDone}} / {{photos.length}}</text>
+  </view>
+  <view class="photos {{editable ? '' : 'locked'}}">
+    <view wx:for="{{photos}}" wx:key="id" class="shot {{item.path ? 'done' : ''}}" data-id="{{item.id}}" data-photo="{{item.photoId}}" bindtap="shoot">
+      <image wx:if="{{item.url}}" class="shot-img" src="{{item.url}}" mode="aspectFill" />
+      <view wx:elif="{{item.path}}" class="shot-empty">已上传</view>
+      <view wx:else class="shot-empty">拍照</view>
+      <text wx:if="{{item.path && editable}}" class="shot-redo">重拍</text>
+      <text class="shot-cap">{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="hk-bar">
+    <button wx:if="{{task.status === 'pending'}}" class="hk-btn" disabled="{{!canStart || busy}}" bindtap="start">开始整理</button>
+    <button wx:else class="hk-btn" disabled="{{!canSubmit || busy}}" bindtap="submit">完成</button>
+  </view>
+</view>

@@ -1,0 +1,11 @@
+@import "../common.wxss";
+
+.wrap { padding:180rpx 8rpx 0; }
+.logo { display:block; height:42rpx; }
+.title { display:block; margin-top:72rpx; font-size:44rpx; font-weight:700; color:var(--text); }
+.intro { display:block; margin-top:20rpx; font-size:28rpx; line-height:1.65; color:var(--sub); }
+.who { display:flex; justify-content:space-between; margin-top:48rpx; padding:28rpx 32rpx; border:1rpx solid var(--line); border-radius:18rpx; background:var(--field); font-size:30rpx; }
+.who-label { color:var(--sub); }
+.who-name { font-weight:700; color:var(--text); }
+.action { margin-top:56rpx; }
+.intro.error { color:var(--red); }

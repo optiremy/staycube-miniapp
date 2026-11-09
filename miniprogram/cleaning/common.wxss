@@ -1,0 +1,23 @@
+/* 保洁端公共样式：固定使用中午配色，不随时段变化。尺寸与 previews/housekeeping-preview.html 一致（1px = 2rpx）。 */
+.hk-page {
+  --text:#063884; --sub:#586b80; --faint:#8799ad; --line:rgba(6,56,132,.1);
+  --accent:#176be8; --accent-soft:rgba(23,107,232,.14); --field:#ffffff; --field-line:rgba(6,56,132,.2); --fill:rgba(6,56,132,.05);
+  --red:#c8402f; --red-soft:rgba(200,64,47,.1); --amber:#a86a00; --amber-soft:rgba(232,160,0,.14);
+  min-height:100vh; box-sizing:border-box; padding:0 32rpx calc(48rpx + env(safe-area-inset-bottom));
+  background:radial-gradient(80% 30% at 88% -4%, #ffefb0 0%, transparent 72%), linear-gradient(180deg, #eef6ff 0%, #f7fbff 45%, #ffffff 100%);
+  color:var(--text); font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+.hk-page.with-bar { padding-bottom:calc(180rpx + env(safe-area-inset-bottom)); }
+
+.hk-tag { display:inline-block; height:40rpx; line-height:40rpx; padding:0 14rpx; border-radius:8rpx; font-size:24rpx; font-weight:600; background:var(--fill); color:var(--sub); }
+.hk-tag.kind { background:var(--accent-soft); color:var(--accent); }
+.hk-tag.doing { background:var(--accent); color:#fff; }
+.hk-tag.rej { background:var(--red-soft); color:var(--red); }
+.hk-tag.prio { background:var(--red); color:#fff; }
+
+.hk-btn { position:relative; display:flex; align-items:center; justify-content:center; width:100% !important; height:96rpx; margin:0; padding:0; border-radius:12rpx; border:1rpx solid var(--accent); background:var(--accent); color:#fff; font-size:30rpx; font-weight:650; line-height:96rpx; }
+.hk-btn::after { border:0; }
+.hk-btn[disabled] { background:#c9d4e2 !important; border-color:#c9d4e2 !important; color:#fff !important; }
+.hk-btn .arrow { position:absolute; right:32rpx; }
+
+.hk-bar { position:fixed; left:0; right:0; bottom:0; padding:20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom)); background:rgba(255,255,255,.94); border-top:1rpx solid var(--line); }

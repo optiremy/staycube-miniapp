@@ -20,6 +20,8 @@ function operationForPath(path) {
   if (rpc && rpcAllowlist.has(rpc[1])) return `rpc:${rpc[1]}`
   const payment = String(path).match(/^\/functions\/v1\/self-checkin-payment\/(create|status|switch)$/)
   if (payment) return `function:self-checkin-payment:${payment[1]}`
+  const deposit = String(path).match(/^\/functions\/v1\/deposit-payment\/(create|status|switch)$/)
+  if (deposit) return `function:deposit-payment:${deposit[1]}`
   if (path === '/functions/v1/special-cancellation-storage') return 'function:special-cancellation-storage'
   return null
 }

@@ -1,0 +1,23 @@
+<view class="hk-page">
+  <view class="today">
+    <text>今天已完成 <text class="today-n">{{todayUnits}}</text> 床位</text>
+    <text class="today-link" bindtap="openStats">本月 ›</text>
+  </view>
+
+  <view wx:for="{{groups}}" wx:for-item="group" wx:key="key" class="cat">
+    <view class="cat-head">
+      <text class="cat-name">{{group.name}}</text>
+      <text class="cat-count">{{group.count}}</text>
+    </view>
+    <view wx:for="{{group.tasks}}" wx:key="id" class="row" data-id="{{item.id}}" bindtap="openTask">
+      <view class="row-main">
+        <view class="row-title">
+          <text wx:if="{{item.priorityRank}}" class="hk-tag prio">优先</text>
+          <text class="row-room">{{item.title}}</text>
+        </view>
+        <text wx:if="{{item.status === 'rejected'}}" class="row-note">打回：{{item.rejectReason}}</text>
+      </view>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+</view>

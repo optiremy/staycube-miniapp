@@ -6,6 +6,7 @@ const appLocale = require('../../utils/app-locale')
 const { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, isValidPhone, formatPhone } = require('../../utils/phone-input')
 const { createRequestId } = require('../../utils/guest-transport')
 const share = require('../../utils/share')
+const timeTheme = require('../../utils/guestbook-theme')
 
 const claimTimeOptions = Array.from({ length: 51 }, (_, index) => {
   const totalMinutes = 10 * 60 + index * 15
@@ -73,6 +74,10 @@ Page(share.withShare('pages/luggage-storage/index', 'luggage', {
     loading: false,
     submitting: false,
     photoProcessing: false,
+  },
+
+  onShow() {
+    this.setData(timeTheme.themeData())
   },
 
   onLoad() {

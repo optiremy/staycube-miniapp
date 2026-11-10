@@ -17,6 +17,7 @@ const globalCopy = require('../../data/global-copy')
 const appLocale = require('../../utils/app-locale')
 const { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, parsePhone } = require('../../utils/phone-input')
 const share = require('../../utils/share')
+const timeTheme = require('../../utils/guestbook-theme')
 
 const locales = Object.keys(copyData.locales)
 const imageMaxBytes = 2 * 1024 * 1024
@@ -136,6 +137,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
   },
 
   onShow() {
+    this.setData(timeTheme.themeData())
     if (this.data.step === 1 && this.data.screen === 'form') this.startRuleTimer()
     if (this.data.step === 4 && this.data.screen === 'form' && this.data.paymentChannel === 'wechat' && !this.data.testMode) this.refreshPaymentStatus()
   },

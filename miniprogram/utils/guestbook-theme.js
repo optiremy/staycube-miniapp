@@ -39,7 +39,16 @@ function slotOf(date = new Date()) {
 
 function pageStyle(slot) {
   const t = SLOTS[slot]
-  return `background:${t.sky};color:${t.text};--text:${t.text};--sub:${t.sub};--faint:${t.faint};--line:${t.line};--accent:rgb(${t.accent});--accent-soft:rgba(${t.accent},.14);--on-accent:${t.onAccent};--card:rgba(${t.card},${t.cardA});--nav:${t.nav};`
+  return `background:${t.sky};color:${t.text};--text:${t.text};--sub:${t.sub};--faint:${t.faint};--line:${t.line};--accent:rgb(${t.accent});--accent-soft:rgba(${t.accent},.14);--on-accent:${t.onAccent};--card:rgba(${t.card},${t.cardA});--nav:${t.nav};${formVars(t)}`
+}
+
+// 表单页（自助入住、寄存等）额外用到的输入框和浅底颜色。浅色时段保持白底输入框，深色时段改为半透明。
+// 实心按钮：傍晚霞光上浅蓝发灰，改用品牌蓝白字；夜晚沿用浅蓝。
+function formVars(t) {
+  const button = t.nav === SLOTS.dusk.nav ? '--btn:#176be8;--on-btn:#ffffff;' : `--btn:rgb(${t.accent});--on-btn:${t.onAccent};`
+  return button + (t.dark
+    ? '--field:rgba(255,255,255,.07);--field-line:rgba(255,255,255,.2);--fill:rgba(255,255,255,.06);--sheet:' + t.nav + ';'
+    : '--field:#ffffff;--field-line:rgba(6,56,132,.2);--fill:rgba(6,56,132,.05);--sheet:#ffffff;')
 }
 
 // 亮度 0.12–1，回应越多越亮
@@ -67,4 +76,12 @@ function applyNavigationBar(slot) {
   wx.setNavigationBarColor({ frontColor: t.dark ? '#ffffff' : '#000000', backgroundColor: t.nav, animation: { duration: 0 } })
 }
 
-module.exports = { COLORS, SLOTS, slotOf, pageStyle, luminance, noteStyle, hue, applyNavigationBar }
+// 非留言板页面套用当前时段：页面背景、导航栏、下拉回弹底色，以及 logo / 图标的日夜版本。
+function themeData(slot = slotOf()) {
+  const t = SLOTS[slot]
+  applyNavigationBar(slot)
+  if (wx.setBackgroundColor) wx.setBackgroundColor({ backgroundColor: t.nav, backgroundColorTop: t.nav, backgroundColorBottom: t.nav })
+  return { pageStyle: pageStyle(slot), dark: t.dark, iconTone: t.dark ? 'night' : 'day' }
+}
+
+module.exports = { COLORS, SLOTS, slotOf, pageStyle, luminance, noteStyle, hue, applyNavigationBar, themeData }

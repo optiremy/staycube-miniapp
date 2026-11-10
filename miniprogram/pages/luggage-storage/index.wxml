@@ -1,6 +1,6 @@
-<view class="page luggage-page">
+<view class="page luggage-page" style="{{pageStyle}}">
   <view class="page-head">
-    <image class="brand-logo" src="/assets/sifang-blue.png" mode="heightFix" />
+    <image class="brand-logo {{dark ? 'brand-logo-light' : ''}}" src="/assets/sifang-blue.png" mode="heightFix" />
     <text class="brand-divider"></text>
     <text class="brand-product">stayCube</text>
     <language-switcher id="lang-switcher" wx:if="{{screen !== 'success'}}" locale="{{locale}}" bindchange="changeLocale" />

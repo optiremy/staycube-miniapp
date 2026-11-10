@@ -3,8 +3,7 @@
     <view class="page home-page">
       <view class="page-head">
         <image class="brand-logo sk-image" mode="heightFix" style="width: 53.004px;"></image>
-        <text class="brand-divider"></text>
-        <text class="brand-product sk-transparent sk-text-14-2857-62 sk-text">stayCube</text>
+        <view class="head-spacer"></view>
       </view>
       <view class="home-main">
         <text class="home-title sk-transparent sk-text-11-5385-142 sk-text">自助服务</text>

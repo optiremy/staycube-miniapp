@@ -7,6 +7,7 @@ const appLocale = require('../../utils/app-locale')
 const { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, isValidPhone } = require('../../utils/phone-input')
 const { openHostelLocation } = require('../../utils/pre-arrival-map')
 const share = require('../../utils/share')
+const timeTheme = require('../../utils/guestbook-theme')
 
 const DEFAULT_FORM = () => ({ guestName: '', contactMethod: 'phone', countryCode: DEFAULT_COUNTRY_CODE, contactValue: '', arrivalTime: '18:00', bedPreference: 'all', guestNote: '' })
 
@@ -22,6 +23,10 @@ Page(share.withShare('pages/pre-arrival/index', 'preArrival', {
     submitting: false,
     notice: '',
     guideImageFailed: false,
+  },
+
+  onShow() {
+    this.setData(timeTheme.themeData())
   },
 
   onLoad() {

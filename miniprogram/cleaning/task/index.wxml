@@ -1,0 +1,46 @@
+<view wx:if="{{task}}" class="hk-page with-bar">
+  <view class="head">
+    <text class="head-room">{{task.title}}</text>
+    <view class="head-tags">
+      <text class="hk-tag kind">{{kind}}</text>
+      <text wx:if="{{task.status === 'doing'}}" class="hk-tag doing">整理中</text>
+      <text wx:if="{{task.status === 'rejected'}}" class="hk-tag rej">被打回</text>
+      <text wx:if="{{task.priorityRank}}" class="hk-tag prio">优先</text>
+    </view>
+  </view>
+
+  <view wx:if="{{task.status === 'rejected'}}" class="banner rej">打回原因：{{task.rejectReason}}</view>
+  <view wx:if="{{task.waitFor}}" class="banner wait">先完成 {{task.waitFor}} 退房</view>
+
+  <block wx:for="{{groups}}" wx:for-item="group" wx:key="title">
+    <view class="sec">
+      <text>{{group.title}}</text>
+      <text class="sec-count">{{group.done}} / {{group.items.length}}</text>
+    </view>
+    <view class="list {{editable ? '' : 'locked'}}">
+      <view wx:for="{{group.items}}" wx:key="id" class="item {{item.checked ? 'on' : ''}}" data-id="{{item.id}}" data-checked="{{item.checked}}" bindtap="toggle">
+        <view class="box">{{item.checked ? '✓' : ''}}</view>
+        <text class="item-name">{{item.name}}</text>
+        <text wx:if="{{item.right}}" class="item-right">{{item.right}}</text>
+      </view>
+    </view>
+  </block>
+
+  <view class="sec">
+    <text>拍照</text>
+    <text class="sec-count">{{photoDone}} / {{task.photos.length}}</text>
+  </view>
+  <view class="photos {{editable ? '' : 'locked'}}">
+    <view wx:for="{{task.photos}}" wx:key="id" class="shot {{item.path ? 'done' : ''}}" data-id="{{item.id}}" bindtap="shoot">
+      <image wx:if="{{item.path}}" class="shot-img" src="{{item.path}}" mode="aspectFill" />
+      <view wx:else class="shot-empty">拍照</view>
+      <text wx:if="{{item.path && editable}}" class="shot-redo">重拍</text>
+      <text class="shot-cap">{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="hk-bar">
+    <button wx:if="{{task.status === 'pending'}}" class="hk-btn" disabled="{{!!task.waitFor}}" bindtap="start">开始整理</button>
+    <button wx:else class="hk-btn" disabled="{{!canSubmit || busy}}" bindtap="submit">完成</button>
+  </view>
+</view>

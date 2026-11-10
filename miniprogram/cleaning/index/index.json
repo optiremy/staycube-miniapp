@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "待整理",
+  "navigationBarBackgroundColor": "#EEF6FF",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true
+}

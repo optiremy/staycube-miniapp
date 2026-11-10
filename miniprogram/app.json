@@ -4,7 +4,8 @@
     "pages/index/index",
     "pages/luggage-storage/index",
     "pages/pre-arrival/index",
-    "pages/special-cancellation/index"
+    "pages/special-cancellation/index",
+    "pages/unattended/index"
   ],
   "subPackages": [
     {
@@ -18,10 +19,19 @@
         "login/index",
         "entry-detail/index"
       ]
+    },
+    {
+      "root": "cleaning",
+      "pages": [
+        "index/index",
+        "task/index",
+        "bind/index",
+        "stats/index"
+      ]
     }
   ],
   "window": {
-    "navigationBarTitleText": "stayCube",
+    "navigationBarTitleText": "肆方空间",
     "navigationBarBackgroundColor": "#F7F9FC",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#F7F9FC"

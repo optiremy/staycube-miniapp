@@ -8,6 +8,8 @@ module.exports = {
   publicLookupFallbackUrl: "https://sifang-guest-platform.netlify.app/.netlify/functions/self-checkin-public-lookup",
   developmentSelfCheckinTestCode: "123456",
   nativePaymentEnabled: true,
+  // 早到自助寄存：开发版（开发者工具/开发版二维码）走本地演示，不产生真实付款、开门或登记。
+  unattendedDemoInDevelop: true,
   backend: 'cloudbase',
   // backend 为 'cloudbase' 时使用：腾讯云环境 ID 与公开钥匙（publishable key）。
   cloudbaseEnvId: 'staycube-prod-d0g2d759v95954cd6',

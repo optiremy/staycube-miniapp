@@ -1,83 +1,83 @@
 .cancellation-page { min-height:100vh; box-sizing:border-box; padding:28rpx 40rpx calc(56rpx + env(safe-area-inset-bottom)); display:flex; flex-direction:column; }
 .cancellation-page .page-head { height:56rpx; flex:none; display:flex; align-items:center; gap:14rpx; }
 .cancellation-page .brand-logo { width:106rpx; height:42rpx; }
-.cancellation-page .brand-divider { width:1rpx; height:30rpx; margin:0 2rpx; background:#d7e2ec; }
-.cancellation-page .brand-product { margin-right:auto; color:#0b1f44; font-size:27rpx; font-weight:700; }
+.cancellation-page .brand-divider { width:1rpx; height:30rpx; margin:0 2rpx; background:var(--line); }
+.cancellation-page .brand-product { margin-right:auto; color:var(--text); font-size:27rpx; font-weight:700; }
 .cancellation-page .screen { flex:1; min-height:0; display:flex; flex-direction:column; padding-top:48rpx; padding-bottom:20rpx; }
-.cancellation-page .eyebrow { display:block; color:#176be8; font-size:21rpx; font-weight:700; letter-spacing:2rpx; }
-.cancellation-page .screen-title { display:block; margin-top:12rpx; color:#0b1f44; font-size:38rpx; line-height:1.4; font-weight:700; }
-.cancellation-page .body-copy { display:block; margin-top:12rpx; color:#586b80; font-size:26rpx; line-height:1.65; }
-.cancellation-page .form-section { margin-top:26rpx; padding-top:22rpx; border-top:1rpx solid #dce5ee; }
-.cancellation-page .form-section-title { display:block; color:#0b1f44; font-size:27rpx; line-height:1.5; font-weight:700; }
+.cancellation-page .eyebrow { display:block; color:var(--accent); font-size:21rpx; font-weight:700; letter-spacing:2rpx; }
+.cancellation-page .screen-title { display:block; margin-top:12rpx; color:var(--text); font-size:38rpx; line-height:1.4; font-weight:700; }
+.cancellation-page .body-copy { display:block; margin-top:12rpx; color:var(--sub); font-size:26rpx; line-height:1.65; }
+.cancellation-page .form-section { margin-top:26rpx; padding-top:22rpx; border-top:1rpx solid var(--line); }
+.cancellation-page .form-section-title { display:block; color:var(--text); font-size:27rpx; line-height:1.5; font-weight:700; }
 .cancellation-page .field-block { display:flex; flex-direction:column; gap:12rpx; margin-top:20rpx; }
 .cancellation-page .first-field { margin-top:0; }
-.cancellation-page .field-label { color:#42566e; font-size:24rpx; font-weight:600; }
-.cancellation-page .field-hint { display:block; margin-top:8rpx; color:#7a8ca0; font-size:22rpx; line-height:1.5; }
+.cancellation-page .field-label { color:var(--sub); font-size:24rpx; font-weight:600; }
+.cancellation-page .field-hint { display:block; margin-top:8rpx; color:var(--sub); font-size:22rpx; line-height:1.5; }
 .cancellation-page .status-hint { margin-top:20rpx; color:#9a5b00; }
-.cancellation-page .text-input { box-sizing:border-box; width:100%; height:92rpx; padding:0 22rpx; border:1rpx solid #c9d5e1; border-radius:12rpx; background:#fff; color:#0b1f44; font-size:30rpx; }
+.cancellation-page .text-input { box-sizing:border-box; width:100%; height:92rpx; padding:0 22rpx; border:1rpx solid var(--field-line); border-radius:12rpx; background:var(--field); color:var(--text); font-size:30rpx; }
 .cancellation-page .code-input { letter-spacing:8rpx; font-weight:600; }
-.cancellation-page .text-area { box-sizing:border-box; width:100%; height:180rpx; padding:18rpx 22rpx; border:1rpx solid #c9d5e1; border-radius:12rpx; background:#fff; color:#0b1f44; font-size:27rpx; line-height:1.55; }
-.cancellation-page .picker-value { box-sizing:border-box; min-height:88rpx; border:1rpx solid #c9d5e1; border-radius:12rpx; background:#fff; padding:22rpx 20rpx; color:#0b1f44; font-size:28rpx; display:flex; align-items:center; justify-content:space-between; }
-.cancellation-page .picker-value.is-disabled { background:#f1f4f8; }
-.cancellation-page .placeholder { color:#9aa9b9; }
-.cancellation-page .picker-arrow { color:#71849a; font-size:28rpx; }
+.cancellation-page .text-area { box-sizing:border-box; width:100%; height:180rpx; padding:18rpx 22rpx; border:1rpx solid var(--field-line); border-radius:12rpx; background:var(--field); color:var(--text); font-size:27rpx; line-height:1.55; }
+.cancellation-page .picker-value { box-sizing:border-box; min-height:88rpx; border:1rpx solid var(--field-line); border-radius:12rpx; background:var(--field); padding:22rpx 20rpx; color:var(--text); font-size:28rpx; display:flex; align-items:center; justify-content:space-between; }
+.cancellation-page .picker-value.is-disabled { background:var(--fill); }
+.cancellation-page .placeholder { color:var(--faint); }
+.cancellation-page .picker-arrow { color:var(--sub); font-size:28rpx; }
 .cancellation-page .access-screen .field-block { margin-top:42rpx; }
 
 .material-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16rpx; }
 .material-heading { flex:1; min-width:0; }
-.material-count { flex:none; color:#42566e; font-size:24rpx; font-weight:650; line-height:1.5; }
-.material-row { margin-top:18rpx; padding:20rpx; border:1rpx solid #d7e2ec; border-radius:14rpx; background:#fff; }
+.material-count { flex:none; color:var(--sub); font-size:24rpx; font-weight:650; line-height:1.5; }
+.material-row { margin-top:18rpx; padding:20rpx; border:1rpx solid var(--line); border-radius:14rpx; background:var(--field); }
 .material-upload { display:flex; align-items:center; justify-content:space-between; gap:16rpx; }
-.material-name { flex:1; min-width:0; color:#0b1f44; font-size:25rpx; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.material-choose { flex:none; margin:0; padding:0 20rpx; height:64rpx; line-height:64rpx; border:1rpx solid #176be8; border-radius:10rpx; background:#fff; color:#176be8; font-size:23rpx; font-weight:650; }
+.material-name { flex:1; min-width:0; color:var(--text); font-size:25rpx; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.material-choose { flex:none; margin:0; padding:0 20rpx; height:64rpx; line-height:64rpx; border:1rpx solid var(--accent); border-radius:10rpx; background:var(--field); color:var(--accent); font-size:23rpx; font-weight:650; }
 .material-row .field-block { margin-top:16rpx; }
 .material-description { height:130rpx; margin-top:16rpx; }
-.add-material { box-sizing:border-box; width:100%; min-height:88rpx; margin:18rpx 0 0; border:1rpx dashed #a9bed3; border-radius:14rpx; background:#fff; color:#176be8; font-size:24rpx; font-weight:650; display:flex; align-items:center; justify-content:center; }
+.add-material { box-sizing:border-box; width:100%; min-height:88rpx; margin:18rpx 0 0; border:1rpx dashed var(--field-line); border-radius:14rpx; background:var(--field); color:var(--accent); font-size:24rpx; font-weight:650; display:flex; align-items:center; justify-content:center; }
 .material-choose::after,.add-material::after,.cancellation-page .primary-button::after,.cancellation-page .secondary-button::after,.cancellation-page .text-button::after { border:0; }
 
 .declaration-list { display:flex; flex-direction:column; gap:18rpx; margin-top:16rpx; }
-.notice-row { display:flex; align-items:flex-start; gap:10rpx; color:#485c70; font-size:24rpx; line-height:1.6; }
+.notice-row { display:flex; align-items:flex-start; gap:10rpx; color:var(--sub); font-size:24rpx; line-height:1.6; }
 .notice-row checkbox { flex:none; margin-top:2rpx; transform:scale(.9); transform-origin:left top; }
-.signature-wrap { position:relative; margin-top:14rpx; height:300rpx; border:1rpx solid #c9d5e1; border-radius:14rpx; background:#fff; overflow:hidden; }
+.signature-wrap { position:relative; margin-top:14rpx; height:300rpx; border:1rpx solid var(--field-line); border-radius:14rpx; background:#ffffff; overflow:hidden; }
 .signature-canvas { width:100%; height:100%; }
-.signature-placeholder { position:absolute; left:0; right:0; top:50%; margin-top:-20rpx; color:#a5b3c2; font-size:24rpx; text-align:center; pointer-events:none; }
-.cancellation-page .text-button { align-self:flex-start; margin:10rpx 0 0; padding:0; background:transparent; color:#176be8; font-size:24rpx; text-align:left; }
+.signature-placeholder { position:absolute; left:0; right:0; top:50%; margin-top:-20rpx; color:var(--faint); font-size:24rpx; text-align:center; pointer-events:none; }
+.cancellation-page .text-button { align-self:flex-start; margin:10rpx 0 0; padding:0; background:transparent; color:var(--accent); font-size:24rpx; text-align:left; }
 
-.status-card { margin-top:20rpx; padding:26rpx; border-radius:16rpx; background:#e9f1ff; display:flex; flex-direction:column; gap:8rpx; }
-.status-caption { color:#42566e; font-size:22rpx; font-weight:600; }
-.status-value { color:#0b1f44; font-size:36rpx; line-height:1.35; font-weight:700; }
-.summary-strong { display:block; margin-top:10rpx; color:#0b1f44; font-size:27rpx; font-weight:650; }
-.note-box { display:block; margin-top:12rpx; padding:18rpx; border-radius:12rpx; background:#f3f6fa; color:#42566e; font-size:24rpx; line-height:1.6; }
+.status-card { margin-top:20rpx; padding:26rpx; border-radius:16rpx; background:var(--accent-soft); display:flex; flex-direction:column; gap:8rpx; }
+.status-caption { color:var(--sub); font-size:22rpx; font-weight:600; }
+.status-value { color:var(--text); font-size:36rpx; line-height:1.35; font-weight:700; }
+.summary-strong { display:block; margin-top:10rpx; color:var(--text); font-size:27rpx; font-weight:650; }
+.note-box { display:block; margin-top:12rpx; padding:18rpx; border-radius:12rpx; background:var(--fill); color:var(--sub); font-size:24rpx; line-height:1.6; }
 .summary-row { display:flex; gap:20rpx; margin-top:14rpx; font-size:24rpx; line-height:1.6; }
-.summary-label { flex:none; width:170rpx; color:#7a8ca0; }
-.summary-value { flex:1; min-width:0; color:#0b1f44; overflow-wrap:anywhere; }
-.attachment-item { margin-top:14rpx; padding:18rpx 20rpx; border:1rpx solid #d7e2ec; border-radius:12rpx; background:#fff; display:flex; flex-direction:column; gap:6rpx; }
+.summary-label { flex:none; width:170rpx; color:var(--sub); }
+.summary-value { flex:1; min-width:0; color:var(--text); overflow-wrap:anywhere; }
+.attachment-item { margin-top:14rpx; padding:18rpx 20rpx; border:1rpx solid var(--line); border-radius:12rpx; background:var(--field); display:flex; flex-direction:column; gap:6rpx; }
 .attachment-top { display:flex; align-items:center; gap:12rpx; }
-.attachment-name { flex:1; min-width:0; color:#0b1f44; font-size:24rpx; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.attachment-name { flex:1; min-width:0; color:var(--text); font-size:24rpx; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .new-badge { flex:none; padding:4rpx 12rpx; border-radius:20rpx; background:#e6f4ec; color:#23734f; font-size:20rpx; }
-.attachment-purpose { color:#71849a; font-size:22rpx; }
-.attachment-description { color:#42566e; font-size:23rpx; line-height:1.55; }
+.attachment-purpose { color:var(--sub); font-size:22rpx; }
+.attachment-description { color:var(--sub); font-size:23rpx; line-height:1.55; }
 .timeline-item { position:relative; margin-top:16rpx; padding-left:26rpx; display:flex; flex-direction:column; gap:4rpx; }
-.timeline-item::before { content:''; position:absolute; left:0; top:12rpx; width:10rpx; height:10rpx; border-radius:50%; background:#176be8; }
-.timeline-time { color:#7a8ca0; font-size:21rpx; }
-.timeline-title { color:#0b1f44; font-size:24rpx; font-weight:600; }
-.timeline-note { color:#42566e; font-size:23rpx; line-height:1.55; }
+.timeline-item::before { content:''; position:absolute; left:0; top:12rpx; width:10rpx; height:10rpx; border-radius:50%; background:var(--btn); }
+.timeline-time { color:var(--sub); font-size:21rpx; }
+.timeline-title { color:var(--text); font-size:24rpx; font-weight:600; }
+.timeline-note { color:var(--sub); font-size:23rpx; line-height:1.55; }
 .supplement-submit { width:100%; margin-top:20rpx !important; }
 
-.cancellation-page .status-line { display:block; margin-top:16rpx; color:#42566e; font-size:23rpx; }
+.cancellation-page .status-line { display:block; margin-top:16rpx; color:var(--sub); font-size:23rpx; }
 .cancellation-page .inline-error { display:block; margin-top:18rpx; color:#b42318; font-size:24rpx; line-height:1.55; }
 .cancellation-page .form-actions { display:flex; gap:14rpx; margin-top:28rpx; padding-bottom:10rpx; }
 .cancellation-page .form-action { position:relative; box-sizing:border-box; flex:1; min-width:0; min-height:90rpx; margin:0; border-radius:12rpx; font-size:26rpx; font-weight:650; display:flex; align-items:center; justify-content:center; text-align:center; }
-.cancellation-page .secondary-button { border:1rpx solid #c9d5e1; background:#fff; color:#29425d; }
-.cancellation-page .primary-button { border:1rpx solid #176be8; background:#176be8; color:#fff; }
+.cancellation-page .secondary-button { border:1rpx solid var(--field-line); background:var(--field); color:var(--text); }
+.cancellation-page .primary-button { border:1rpx solid var(--btn); background:var(--btn); color:var(--on-btn); }
 .cancellation-page .button-arrow { position:absolute; right:24rpx; font-size:34rpx; line-height:1; flex:none; }
 .cancellation-page .button-label { display:block; box-sizing:border-box; width:100%; min-width:0; padding:0 48rpx; white-space:normal; overflow-wrap:anywhere; line-height:1.3; text-align:center; }
 .cancellation-page .is-button-disabled { opacity:.55; }
-.cancellation-page .page-foot { margin-top:auto; padding-top:30rpx; color:#91a1b3; text-align:center; font-size:22rpx; }
+.cancellation-page .page-foot { margin-top:auto; padding-top:30rpx; color:var(--faint); text-align:center; font-size:22rpx; }
 .photo-processing-canvas { position:fixed; left:-10000px; top:-10000px; width:1px; height:1px; opacity:0; pointer-events:none; }
 
-.cancellation-page .primary-button[disabled] { border-color:#176be8 !important; background:#176be8 !important; color:#fff !important; }
-.cancellation-page .secondary-button[disabled] { background:#fff !important; color:#29425d !important; }
+.cancellation-page .primary-button[disabled] { border-color:var(--btn) !important; background:var(--btn) !important; color:var(--on-btn) !important; }
+.cancellation-page .secondary-button[disabled] { background:var(--field) !important; color:var(--text) !important; }
 .cancellation-page .add-material,.cancellation-page .supplement-submit { width:100% !important; }
 .cancellation-page .material-choose { width:auto !important; }
 .cancellation-page .text-button { width:auto !important; justify-content:flex-start; }

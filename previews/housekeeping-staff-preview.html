@@ -1,0 +1,153 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>保洁管理预览</title><style>
+:root{--brand:#063884;--brand-soft:#eaf0f9;--bg:#f4f6f8;--surface:#fff;--line:#dfe4eb;--text:#1b2b40;--muted:#626b77;--danger:#b4442f;--danger-soft:#fbeeea;--warn:#8a5a00;--warn-soft:#fdf3dc;--ok:#2f6b52;--ok-soft:#e7f3ed;--r:8px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;font-variant-numeric:tabular-nums}
+.shell{display:grid;grid-template-columns:208px minmax(0,1fr);min-height:100vh}
+.side{background:var(--surface);border-right:1px solid var(--line);padding:20px 12px}.side .brand{font-weight:700;color:var(--brand);padding:0 10px 18px}.side small{display:block;padding:14px 10px 6px;color:var(--muted);font-size:12px}
+.side a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;color:var(--text);text-decoration:none;cursor:pointer}.side a.on{background:var(--brand-soft);color:var(--brand);font-weight:600}.side a .n{margin-left:auto;font-size:12px;background:var(--danger);color:#fff;border-radius:9px;padding:0 6px}
+main{padding:24px 28px 48px;min-width:0}.ph{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}.ph h1{margin:0;font-size:26px;letter-spacing:-.02em}.ph p{margin:4px 0 0;color:var(--muted)}.ph .sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--text);font:inherit;cursor:pointer;white-space:nowrap}.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}.btn.dan{color:var(--danger);border-color:#e9c7bf}.btn.sm{min-height:30px;padding:0 10px;font-size:13px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px}.panel h2{margin:0;font-size:16px}.panel-h{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}.panel-h .sp{flex:1}.panel-b{padding:14px 16px}
+.chip{display:inline-block;padding:1px 8px;border-radius:5px;font-size:12px;font-weight:600;background:#eef1f5;color:var(--muted)}.chip.doing{background:var(--brand);color:#fff}.chip.wait{background:var(--warn-soft);color:var(--warn)}.chip.rej{background:var(--danger-soft);color:var(--danger)}.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.prio{background:var(--danger);color:#fff}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.metric{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}.metric span{color:var(--muted);font-size:13px}.metric strong{display:block;font-size:26px;color:var(--brand);line-height:1.2;margin-top:4px}
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.col .panel-h h2{color:var(--brand);font-size:18px}.col .panel-h .cnt{font-size:22px;font-weight:700;color:var(--brand)}
+.card{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}.card:first-child{border-top:0}.grip{cursor:grab;color:#a5afbc;user-select:none;padding-top:2px}.card .m{flex:1;min-width:0}.card .t{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.card .t b{font-size:15px}.card .meta{color:var(--muted);font-size:12px;margin-top:3px}.card .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.split{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
+.ck{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.ck:first-of-type{border-top:0}.ck .q{margin-left:auto;color:var(--muted)}.ck.miss{color:var(--danger)}.ck .dot{width:18px;height:18px;border-radius:4px;display:grid;place-items:center;font-size:12px;color:#fff;background:var(--brand)}.ck.miss .dot{background:#fff;border:1.5px solid var(--danger);color:var(--danger)}
+.gt{margin:14px 0 4px;font-size:12px;font-weight:700;color:var(--muted)}.gt:first-child{margin-top:0}
+.ph-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.pic{height:130px;border-radius:8px;background:linear-gradient(135deg,#d9e3ee,#a3b4c7);position:relative}.pic span{position:absolute;left:8px;bottom:6px;color:#fff;font-size:12px;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+table{width:100%;border-collapse:collapse}th,td{padding:9px 10px;border-top:1px solid var(--line);text-align:left;white-space:nowrap}th{font-size:12px;color:var(--muted);font-weight:600;border-top:0;background:#f8f9fb}td.n,th.n{text-align:right}tfoot td{font-weight:700;background:#f8f9fb}
+.tablewrap{overflow-x:auto}
+input[type=number],input[type=text],input[type=date],select,textarea{font:inherit;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:#fff}input[type=number]{width:64px;text-align:right}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.muted{color:var(--muted)}.hint{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px}.tabs button{border:0;background:none;padding:8px 12px;font:inherit;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}.tabs button.on{color:var(--brand);border-color:var(--brand);font-weight:600}
+.tpl-item{display:grid;grid-template-columns:22px minmax(0,1fr) 90px 80px 30px;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.qr{width:150px;height:150px;border:1px solid var(--line);border-radius:8px;background:repeating-linear-gradient(45deg,#1b2b40 0 6px,#fff 6px 12px);opacity:.85}
+.dialog{max-width:440px}.pieces label{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}.pieces label:first-child{border-top:0}.pieces select{margin-left:auto}
+.view{display:none}.view.on{display:block}
+.note{background:var(--brand-soft);border-radius:8px;padding:10px 12px;color:var(--brand);font-size:13px;margin-bottom:14px}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.side{display:flex;overflow-x:auto;padding:10px;border-right:0;border-bottom:1px solid var(--line)}.side .brand,.side small{display:none}.board,.split,.metrics{grid-template-columns:1fr}}
+</style></head><body><div class="shell">
+<nav class="side" id="nav"><div class="brand">肆方空间 · 工作台</div><small>保洁</small>
+<a data-v="board" class="on">任务看板</a><a data-v="review">验收<span class="n">2</span></a><a data-v="linen">布草统计</a><a data-v="work">工作量</a><a data-v="tpl">清单模板</a><a data-v="staff">保洁员</a><small>在住旅客</small><a data-v="change">换布草登记</a></nav>
+<main>
+
+<section class="view on" id="v-board">
+<div class="ph"><div><h1>保洁任务</h1><p>2026年11月9日 周一</p></div><span class="sp"></span><button class="btn">补建任务</button></div>
+<div class="metrics"><div class="metric"><span>待整理</span><strong>6</strong></div><div class="metric"><span>整理中</span><strong>1</strong></div><div class="metric"><span>待验收</span><strong>2</strong></div><div class="metric"><span>今日已通过</span><strong>3 床位</strong></div></div>
+<div class="board">
+<div class="panel col"><div class="panel-h"><h2>退房</h2><span class="sp"></span><span class="cnt">3</span></div><div class="panel-b">
+ <div class="card"><span class="grip">⋮⋮</span><div class="m"><div class="t"><span class="chip prio">优先 1</span><b>曲江</b><span class="chip">待整理</span></div><div class="meta">退房 10:42 · 未指派 · 2 床位</div><div class="acts"><button class="btn sm">取消优先</button><button class="btn sm">指派</button></div></div></div>
+ <div class="card"><span class="grip">⋮⋮</span><div class="m"><div class="t"><span class="chip prio">优先 2</span><b>雁塔 F</b><span class="chip doing">整理中</span></div><div class="meta">王阿姨 11:05 开始 · 借用：被子、枕头</div><div class="acts"><button class="btn sm">取消优先</button><button class="btn sm">改派</button></div></div></div>
+ <div class="card"><span class="grip">⋮⋮</span><div class="m"><div class="t"><b>未央 E</b><span class="chip rej">被打回</span></div><div class="meta">打回：储物柜少一个衣架</div><div class="acts"><button class="btn sm">设为优先</button><button class="btn sm">改派</button></div></div></div>
+</div></div>
+<div class="panel col"><div class="panel-h"><h2>更换</h2><span class="sp"></span><span class="cnt">2</span></div><div class="panel-b">
+ <div class="card"><span class="grip">⋮⋮</span><div class="m"><div class="t"><b>莲湖 B</b><span class="chip">待整理</span></div><div class="meta">枕套 · 1 件</div><div class="acts"><button class="btn sm">设为优先</button><button class="btn sm">指派</button></div></div></div>
+ <div class="card"><span class="grip">⋮⋮</span><div class="m"><div class="t"><b>灞上</b><span class="chip">待整理</span></div><div class="meta">整套 · 预约今天</div><div class="acts"><button class="btn sm">设为优先</button><button class="btn sm">指派</button></div></div></div>
+</div></div>
+<div class="panel col"><div class="panel-h"><h2>平移</h2><span class="sp"></span><span class="cnt">1</span></div><div class="panel-b">
+ <div class="card"><span class="grip">⋮⋮</span><div class="m"><div class="t"><b>汉城 A → 秦都 C</b><span class="chip">待整理</span></div><div class="meta">已并入 秦都 C 退房 · 送洗 1 套</div><div class="acts"><button class="btn sm">设为优先</button><button class="btn sm">指派</button></div></div></div>
+</div></div>
+</div>
+<div class="panel" style="margin-top:16px"><div class="panel-h"><h2>待验收</h2><span class="sp"></span><span class="chip wait">2</span></div><div class="panel-b tablewrap"><table><thead><tr><th>房床</th><th>类型</th><th>保洁员</th><th>提交时间</th><th>未回收</th><th></th></tr></thead><tbody>
+<tr><td>碑林 D</td><td>退房</td><td>王阿姨</td><td>11:32</td><td class="muted">—</td><td style="text-align:right"><button class="btn sm pri" data-go="review">验收</button></td></tr>
+<tr><td>汉城 C</td><td>退房</td><td>王阿姨</td><td>11:48</td><td style="color:var(--danger)">毛巾</td><td style="text-align:right"><button class="btn sm pri" data-go="review">验收</button></td></tr>
+</tbody></table></div></div>
+</section>
+
+<section class="view" id="v-review">
+<div class="ph"><div><h1>验收 · 汉城 C</h1><p>退房 · 王阿姨 11:48 提交 · 计 1 床位</p></div></div>
+<div class="split">
+<div class="panel"><div class="panel-h"><h2>清单</h2></div><div class="panel-b">
+ <div class="gt">回收</div>
+ <div class="ck"><span class="dot">✓</span>入住手袋</div><div class="ck miss"><span class="dot">!</span>毛巾<span class="q">未回收</span></div><div class="ck"><span class="dot">✓</span>水杯</div>
+ <div class="gt">布草</div>
+ <div class="ck"><span class="dot">✓</span>床笠<span class="q">换新</span></div><div class="ck"><span class="dot">✓</span>被套<span class="q">换新</span></div><div class="ck"><span class="dot">✓</span>枕套<span class="q">换新</span></div>
+ <div class="gt">送洗数量（可改）</div>
+ <div class="row"><label>床笠 <input type="number" value="1"></label><label>被套 <input type="number" value="1"></label><label>枕套 <input type="number" value="1"></label><label>毛巾 <input type="number" value="0"></label></div>
+ <p class="hint">未勾选的毛巾不计入送洗；如与实际不符可直接修改。</p>
+</div></div>
+<div class="panel"><div class="panel-h"><h2>照片</h2><span class="sp"></span><span class="hint">保留 60 天</span></div><div class="panel-b">
+ <div class="ph-grid"><div class="pic"><span>拉开帘子，拍整理好的床位</span></div></div>
+ <div class="gt" style="margin-top:18px">打回原因</div>
+ <textarea rows="3" style="width:100%" placeholder="打回时必填"></textarea>
+ <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn dan">打回</button><button class="btn pri">通过</button></div>
+</div></div>
+</div>
+</section>
+
+<section class="view" id="v-linen">
+<div class="ph"><div><h1>布草统计</h1><p>按保洁员首次提交日期统计，用于与洗涤公司对账</p></div><span class="sp"></span><input type="date" value="2026-11-01"> <span class="muted">至</span> <input type="date" value="2026-11-09"><button class="btn">导出 CSV</button></div>
+<div class="panel tablewrap"><table><thead><tr><th>日期</th><th class="n">床笠</th><th class="n">被套</th><th class="n">枕套</th><th class="n">大床笠</th><th class="n">大被罩</th><th class="n">毛巾</th><th class="n">浴巾</th><th class="n">地巾</th></tr></thead><tbody>
+<tr><td>11月9日</td><td class="n">3</td><td class="n">3</td><td class="n">4</td><td class="n">0</td><td class="n">0</td><td class="n">1</td><td class="n">0</td><td class="n">0</td></tr>
+<tr><td>11月8日</td><td class="n">3</td><td class="n">3</td><td class="n">8</td><td class="n">1</td><td class="n">1</td><td class="n">2</td><td class="n">0</td><td class="n">1</td></tr>
+<tr><td>11月7日</td><td class="n">4</td><td class="n">4</td><td class="n">5</td><td class="n">0</td><td class="n">0</td><td class="n">3</td><td class="n">0</td><td class="n">0</td></tr>
+<tr><td>11月6日</td><td class="n">2</td><td class="n">2</td><td class="n">2</td><td class="n">1</td><td class="n">1</td><td class="n">2</td><td class="n">2</td><td class="n">1</td></tr>
+</tbody><tfoot><tr><td>合计</td><td class="n">12</td><td class="n">12</td><td class="n">19</td><td class="n">2</td><td class="n">2</td><td class="n">8</td><td class="n">2</td><td class="n">2</td></tr></tfoot></table></div>
+<p class="hint">平移的布草不计；借用被子、枕头的被套、枕套计入；员工改过的数量以修改后为准。</p>
+</section>
+
+<section class="view" id="v-work">
+<div class="ph"><div><h1>工作量</h1><p>只计验收通过的任务</p></div><span class="sp"></span><select><option>2026年11月</option><option>2026年10月</option></select><button class="btn">导出 CSV</button></div>
+<div class="panel tablewrap"><table><thead><tr><th>保洁员</th><th class="n">退房</th><th class="n">更换</th><th class="n">平移</th><th class="n">部分更换（件）</th><th class="n">床位合计</th><th class="n">余件带入下月</th></tr></thead><tbody>
+<tr><td>王阿姨</td><td class="n">31</td><td class="n">9</td><td class="n">4</td><td class="n">7（上月余 1）</td><td class="n"><b>46</b></td><td class="n">2</td></tr>
+</tbody></table></div>
+<p class="hint">曲江计 2 床位；部分更换每累计 3 件计 1 床位，余数带到下个月。</p>
+</section>
+
+<section class="view" id="v-tpl">
+<div class="ph"><div><h1>清单模板</h1><p>修改后只影响之后生成的任务</p></div></div>
+<div class="tabs" id="tpl-tabs"><button class="on">合住四人间</button><button>合住六人间</button><button>灞上</button><button>曲江</button><button>借用物品</button></div>
+<div class="split">
+<div class="panel"><div class="panel-h"><h2>退房 · 合住四人间</h2><span class="sp"></span><button class="btn sm">添加项目</button></div><div class="panel-b">
+ <div class="gt">回收（不勾也能完成）</div>
+ <div class="tpl-item"><span class="grip">⋮⋮</span><input type="text" value="入住手袋"><select><option>回收</option></select><input type="text" value=""><button class="btn sm">×</button></div>
+ <div class="tpl-item"><span class="grip">⋮⋮</span><input type="text" value="毛巾"><select><option>回收</option></select><input type="text" value=""><button class="btn sm">×</button></div>
+ <div class="tpl-item"><span class="grip">⋮⋮</span><input type="text" value="水杯"><select><option>回收</option></select><input type="text" value=""><button class="btn sm">×</button></div>
+ <div class="gt">布草（按件；送洗数量按此计）</div>
+ <div class="tpl-item"><span class="grip">⋮⋮</span><input type="text" value="床笠"><select><option>布草</option></select><input type="text" value="1"><button class="btn sm">×</button></div>
+ <div class="tpl-item"><span class="grip">⋮⋮</span><input type="text" value="被套"><select><option>布草</option></select><input type="text" value="1"><button class="btn sm">×</button></div>
+ <div class="tpl-item"><span class="grip">⋮⋮</span><input type="text" value="枕套"><select><option>布草</option></select><input type="text" value="1"><button class="btn sm">×</button></div>
+ <div class="gt">配套确认（床位空出时）</div><p class="hint">无</p>
+</div></div>
+<div class="panel"><div class="panel-h"><h2>拍照点</h2><span class="sp"></span><button class="btn sm">添加</button></div><div class="panel-b">
+ <div class="tpl-item" style="grid-template-columns:22px 1fr 30px"><span class="grip">⋮⋮</span><input type="text" value="拉开帘子，拍整理好的床位"><button class="btn sm">×</button></div>
+ <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn pri">保存</button></div>
+</div></div>
+</div>
+</section>
+
+<section class="view" id="v-staff">
+<div class="ph"><div><h1>保洁员</h1><p>扫码绑定后可在小程序查看任务</p></div><span class="sp"></span><button class="btn pri">新增保洁员</button></div>
+<div class="split">
+<div class="panel tablewrap"><table><thead><tr><th>姓名</th><th>状态</th><th>绑定时间</th><th></th></tr></thead><tbody>
+<tr><td>王阿姨</td><td><span class="chip ok">已绑定</span></td><td>2026-11-09 09:12</td><td style="text-align:right"><button class="btn sm">生成绑定码</button> <button class="btn sm dan">停用</button></td></tr>
+<tr><td>李阿姨</td><td><span class="chip">未绑定</span></td><td class="muted">—</td><td style="text-align:right"><button class="btn sm pri">生成绑定码</button></td></tr>
+</tbody></table></div>
+<div class="panel"><div class="panel-h"><h2>绑定码 · 李阿姨</h2></div><div class="panel-b row" style="align-items:flex-start"><div class="qr"></div><div><p style="margin:0 0 6px">让保洁员用微信扫码，点「微信登录并绑定」。</p><p class="hint">24 小时内有效，只能使用一次；重新生成后旧码失效。</p><button class="btn sm">下载图片</button></div></div></div>
+</div>
+</section>
+
+<section class="view" id="v-change">
+<div class="ph"><div><h1>换布草登记</h1><p>在住旅客详情 · 曲江</p></div></div>
+<div class="panel dialog"><div class="panel-h"><h2>换布草</h2></div><div class="panel-b">
+ <div class="pieces">
+ <label><input type="checkbox" checked> 大床笠</label>
+ <label><input type="checkbox" checked> 大被罩</label>
+ <label><input type="checkbox" checked> 枕套 <select><option>4</option><option>3</option><option>2</option><option>1</option></select></label>
+ <label><input type="checkbox" checked> 地巾</label>
+ </div>
+ <div class="row" style="margin-top:10px"><span class="muted">日期</span><input type="date" value="2026-11-09"></div>
+ <p class="hint">默认整套，可取消；只换部分时按件计工作量。</p>
+ <div class="row" style="justify-content:flex-end"><button class="btn">取消</button><button class="btn pri">登记</button></div>
+</div></div>
+</section>
+
+</main></div>
+<script>
+const show=v=>{document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));try{history.replaceState(null,'','#'+v)}catch(e){}}
+document.querySelectorAll('#nav a').forEach(a=>a.onclick=()=>show(a.dataset.v))
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go))
+document.querySelectorAll('#tpl-tabs button').forEach(b=>b.onclick=()=>document.querySelectorAll('#tpl-tabs button').forEach(x=>x.classList.toggle('on',x===b)))
+if(location.hash)show(location.hash.slice(1))
+</script></body></html>

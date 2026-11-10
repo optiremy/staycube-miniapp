@@ -14,10 +14,12 @@ function buildServices(home, staying) {
     { key: 'pre-arrival', title: home.preArrival, path: '/pages/pre-arrival/index' },
     { key: 'self-checkin', title: home.checkin, path: '/pages/index/index' },
     { key: 'luggage-storage', title: home.luggage, path: '/pages/luggage-storage/index' },
+    { key: 'unattended', title: home.unattended, path: '/pages/unattended/index' },
     { key: 'special-cancellation', title: home.specialCancellation, path: '/pages/special-cancellation/index' },
   ]
+  // 早到自助寄存面向尚未入住的旅客；在住时排在后面。
   if (!staying) return services
-  return [services[2], services[0], services[1], services[3]]
+  return [services[2], services[0], services[1], services[4], services[3]]
 }
 
 // 房床写法与自助入住一致：房间名 + 空格 + 床位字母（单间只有房间名）；非中文显示房间拼音

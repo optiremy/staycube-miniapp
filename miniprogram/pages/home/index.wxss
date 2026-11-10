@@ -4,6 +4,7 @@
 .home-page .brand-logo-light { filter:brightness(0) invert(1); }
 .home-page .brand-divider { width:1rpx; height:30rpx; background:var(--line); margin:0 2rpx; }
 .home-page .brand-product { margin-right:auto; color:var(--text); font-size:27rpx; font-weight:700; }
+.home-page .head-spacer { flex:1; min-width:0; }
 .home-main { flex:1; display:flex; flex-direction:column; justify-content:flex-start; padding-top:40rpx; }
 
 /* 旅客留言板卡片：全宽置顶，色值随时段（guestbook-theme.pageStyle） */

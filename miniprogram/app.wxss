@@ -13,3 +13,14 @@ button {
   justify-content: center;
   text-align: center;
 }
+
+/* 时段配色变量的默认值（中午时段）。各页在根节点用 guestbook-theme.pageStyle 覆盖。 */
+page {
+  --text: #063884; --sub: #586b80; --faint: #8799ad; --line: rgba(6,56,132,.1);
+  --accent: #176be8; --accent-soft: rgba(23,107,232,.14); --on-accent: #ffffff; --btn: #176be8; --on-btn: #ffffff;
+  --card: rgba(255,255,255,.82); --nav: #eef6ff;
+  --field: #ffffff; --field-line: rgba(6,56,132,.2); --fill: rgba(6,56,132,.05); --sheet: #ffffff;
+
+}
+.brand-logo-light { filter: brightness(0) invert(1); }
+.page { --chip-bg: var(--card); --chip-line: var(--line); --chip-text: var(--text); }

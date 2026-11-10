@@ -1,0 +1,95 @@
+/* 早到自助寄存：页面框架、按钮、步骤条、底部操作栏、收款码与照片区直接沿用自助入住页样式，
+   只补充本流程特有的卡片。 */
+@import "../index/index.wxss";
+
+.service-screen .screen-title { margin-top: 0; }
+.service-state { margin-top: 28rpx; display: flex; flex-direction: column; align-items: flex-start; }
+.service-choices { margin-top: 42rpx; }
+.document-choice.is-unavailable { opacity: .55; }
+.service-choice-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.service-choice-note { margin-top: 6rpx; }
+.service-choices .option-arrow { flex: none; }
+
+.contact-options { display: flex; gap: 28rpx; align-items: center; min-height: 54rpx; }
+.contact-option { display: flex; align-items: center; gap: 8rpx; color: var(--sub); font-size: 25rpx; }
+.contact-option radio { transform: scale(.9); }
+
+.notice-card { display: flex; gap: 16rpx; align-items: flex-start; margin-top: 18rpx; padding: 24rpx; border: 1rpx solid var(--line); border-radius: 18rpx; background: var(--field); }
+.notice-card.is-checked { border-color: var(--accent); background: var(--accent-soft); }
+.notice-card checkbox { flex: none; margin-top: 2rpx; transform: scale(.85); transform-origin: left top; }
+.notice-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6rpx; }
+.notice-title { color: var(--text); font-size: 27rpx; line-height: 1.45; font-weight: 700; }
+.notice-body { color: var(--sub); font-size: 24rpx; line-height: 1.6; }
+
+.remark-card { display: flex; flex-direction: column; gap: 6rpx; margin-top: 20rpx; padding: 20rpx 24rpx; border-left: 6rpx solid var(--accent); background: var(--accent-soft); }
+.remark-copy { color: var(--sub); font-size: 24rpx; line-height: 1.6; }
+.remark-name { color: var(--text); font-size: 30rpx; line-height: 1.4; font-weight: 700; }
+.notice-warn { display: block; margin-top: 18rpx; padding: 18rpx 22rpx; border-radius: 12rpx; background: #fff7e8; color: #7a4a00; font-size: 24rpx; line-height: 1.6; }
+.notice-ok { display: block; margin-top: 18rpx; padding: 18rpx 22rpx; border-radius: 12rpx; background: #eef5ed; color: #23734f; font-size: 24rpx; line-height: 1.6; }
+
+.code-card { display: flex; flex-direction: column; align-items: center; gap: 8rpx; padding: 32rpx 24rpx; border-radius: 18rpx; background: var(--accent-soft); }
+.code-value { color: var(--text); font-size: 56rpx; line-height: 1.2; font-weight: 700; letter-spacing: 10rpx; }
+.code-hint { color: var(--sub); font-size: 24rpx; line-height: 1.5; text-align: center; }
+.own-note { display: flex; flex-direction: column; gap: 4rpx; margin-top: 20rpx; padding: 20rpx 24rpx; border-left: 6rpx solid var(--accent); background: var(--accent-soft); }
+.own-title { color: var(--text); font-size: 26rpx; font-weight: 700; }
+.own-body { color: var(--sub); font-size: 24rpx; line-height: 1.6; }
+.entry-state { display: flex; flex-direction: column; }
+
+.info-card { display: flex; flex-direction: column; gap: 10rpx; margin-top: 20rpx; padding: 24rpx 26rpx; border: 1rpx solid var(--line); border-radius: 18rpx; background: var(--field); }
+.card-title { color: var(--text); font-size: 28rpx; line-height: 1.45; font-weight: 700; }
+.card-body { color: var(--sub); font-size: 24rpx; line-height: 1.6; }
+.area-map { width: 100%; border-radius: 12rpx; border: 1rpx solid var(--line); }
+.photo-field { margin-top: 24rpx; }
+
+.done-screen { padding-top: 58rpx; }
+.done-screen .status-pill { align-self: flex-start; }
+.guide-item { display: flex; flex-direction: column; gap: 4rpx; padding-top: 16rpx; border-top: 1rpx solid var(--line); }
+.guide-name { color: var(--text); font-size: 26rpx; font-weight: 650; }
+.guide-link { color: var(--accent); font-size: 24rpx; font-weight: 650; }
+.guide-chips { display: flex; flex-wrap: wrap; gap: 10rpx; margin-top: 4rpx; }
+.guide-chip { padding: 4rpx 16rpx; border-radius: 30rpx; background: var(--accent-soft); color: var(--accent); font-size: 21rpx; }
+
+.demo-note { display: block; margin-top: 20rpx; color: var(--faint); font-size: 21rpx; text-align: center; }
+
+/* 进门寄存：三个视觉区块 */
+.entry-block { display: flex; flex-direction: column; gap: 14rpx; margin-top: 22rpx; padding: 28rpx 28rpx 30rpx; border: 1rpx solid var(--line); border-radius: 20rpx; background: var(--field); }
+.entry-block:first-child { margin-top: 0; }
+.block-title { color: var(--text); font-size: 30rpx; line-height: 1.4; font-weight: 700; }
+.code-block .code-card { margin-top: 2rpx; }
+.code-block .own-note { margin-top: 2rpx; }
+.area-placeholder { height: 220rpx; border: 1rpx dashed var(--field-line); border-radius: 12rpx; background: var(--fill); display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 23rpx; }
+.photo-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6rpx; min-height: 220rpx; border: 1rpx dashed var(--field-line); border-radius: 14rpx; background: var(--accent-soft); }
+.photo-drop.is-busy { opacity: .55; }
+.photo-drop-plus { color: var(--accent); font-size: 48rpx; line-height: 1; }
+.photo-drop-label { color: var(--accent); font-size: 27rpx; font-weight: 650; }
+.photo-drop-hint { color: var(--faint); font-size: 22rpx; }
+.block-photo { height: 320rpx; margin-top: 0; }
+.entry-block .photo-button { margin-top: 0; }
+.block-note { font-size: 22rpx; color: var(--faint); }
+
+/* 完成页 */
+.desk-card { display: flex; align-items: center; gap: 22rpx; margin-top: 28rpx; padding: 30rpx 28rpx; border-radius: 20rpx; background: var(--btn); }
+.desk-clock { position: relative; flex: none; width: 56rpx; height: 56rpx; box-sizing: border-box; border: 5rpx solid var(--on-btn); border-radius: 50%; }
+.desk-clock::before { content: ''; position: absolute; left: 50%; top: 9rpx; width: 4rpx; height: 18rpx; margin-left: -2rpx; border-radius: 2rpx; background: var(--on-btn); }
+.desk-clock-hand { position: absolute; left: 50%; top: 50%; width: 14rpx; height: 4rpx; margin-top: -2rpx; border-radius: 2rpx; background: var(--on-btn); transform-origin: left center; transform: rotate(-30deg); }
+.desk-title { flex: 1; min-width: 0; color: var(--on-btn); font-size: 31rpx; line-height: 1.45; font-weight: 700; }
+.block-heading { display: block; margin-top: 40rpx; color: var(--text); font-size: 32rpx; line-height: 1.4; font-weight: 700; }
+.done-screen .block-heading + .guide-block { margin-top: 18rpx; }
+.guide-head { display: flex; align-items: center; gap: 14rpx; }
+.guide-icon { width: 40rpx; height: 40rpx; flex: none; }
+.guide-head .block-title { flex: 1; min-width: 0; }
+.placeholder-tag { flex: none; padding: 4rpx 14rpx; border-radius: 10rpx; background: #fff4e0; color: #854f0b; font-size: 20rpx; font-weight: 600; }
+
+.guide-toggle { min-height: 48rpx; }
+.guide-arrow { flex: none; margin-left: 4rpx; color: var(--accent); font-size: 40rpx; line-height: 1; transform: rotate(90deg); transition: transform .2s; }
+.guide-arrow.is-open { transform: rotate(-90deg); }
+
+/* 底部操作：两按钮并排时主按钮用短文案；支付步骤文案较长，改为上下排列，避免按钮内换行。 */
+.form-footer .button-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.form-footer.is-stacked { flex-direction: column; }
+.form-footer.is-stacked .footer-back, .form-footer.is-stacked .footer-next { width: 100%; flex: none; }
+.form-footer.is-stacked .button-label { white-space: normal; }
+
+.unattended-page .brand-logo {
+  margin-right: auto;
+}

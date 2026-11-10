@@ -1,0 +1,20 @@
+<view class="hk-page">
+  <view class="month">
+    <text class="month-arrow" bindtap="prev">‹</text>
+    <text>{{label}}</text>
+    <text class="month-arrow {{isCurrent ? 'off' : ''}}" bindtap="next">›</text>
+  </view>
+
+  <view class="total">
+    <text class="total-n">{{units}}</text>
+    <text class="total-u">床位<text wx:if="{{remainder}}"> · 另有 {{remainder}} 件</text></text>
+  </view>
+
+  <view wx:for="{{days}}" wx:for-item="day" wx:key="label" class="day">
+    <view class="day-head"><text>{{day.label}}</text><text class="day-sum">{{day.units}} 床位</text></view>
+    <view wx:for="{{day.entries}}" wx:key="index" class="day-row">
+      <text>{{item.title}} · {{item.kind}}</text>
+      <text class="day-amount">{{item.amount}}</text>
+    </view>
+  </view>
+</view>

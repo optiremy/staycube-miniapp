@@ -1,0 +1,13 @@
+@import "../common.wxss";
+
+.month { display:flex; align-items:center; justify-content:center; gap:44rpx; padding-top:32rpx; font-size:30rpx; font-weight:600; }
+.month-arrow { padding:0 12rpx; font-size:36rpx; color:var(--faint); }
+.month-arrow.off { opacity:.3; }
+.total { margin-top:28rpx; padding:36rpx 32rpx; border:1rpx solid var(--line); border-radius:24rpx; background:rgba(255,255,255,.82); text-align:center; }
+.total-n { display:block; font-size:80rpx; font-weight:700; line-height:1; color:var(--text); }
+.total-u { display:block; margin-top:12rpx; font-size:28rpx; color:var(--sub); }
+.day { margin-top:20rpx; border:1rpx solid var(--line); border-radius:18rpx; background:var(--field); overflow:hidden; }
+.day-head { display:flex; padding:24rpx 28rpx; font-size:28rpx; font-weight:600; color:var(--text); }
+.day-sum { margin-left:auto; }
+.day-row { display:flex; padding:18rpx 28rpx; border-top:1rpx solid var(--line); font-size:26rpx; color:var(--sub); }
+.day-amount { margin-left:auto; }

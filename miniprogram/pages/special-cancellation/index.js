@@ -3,6 +3,7 @@ const { specialCancellationApi, MAX_BYTES } = require('../../utils/special-cance
 const { compressImageToLimit } = require('../../utils/image-processing')
 const { createRequestId } = require('../../utils/guest-transport')
 const share = require('../../utils/share')
+const timeTheme = require('../../utils/guestbook-theme')
 
 const MATERIAL_LIMIT = 5
 const EDITABLE = ['awaiting_guest', 'need_more_info']
@@ -53,6 +54,10 @@ Page(share.withShare('pages/special-cancellation/index', 'specialCancellation', 
     uploading: false,
     submitting: false,
     errorText: '',
+  },
+
+  onShow() {
+    this.setData(timeTheme.themeData())
   },
 
   onLoad() {

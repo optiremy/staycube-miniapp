@@ -1,8 +1,7 @@
 <view class="page home-page" style="{{pageStyle}}">
   <view class="page-head">
     <image class="brand-logo {{dark ? 'brand-logo-light' : ''}}" src="/assets/sifang-blue.png" mode="heightFix" />
-    <text class="brand-divider"></text>
-    <text class="brand-product">stayCube</text>
+    <view class="head-spacer"></view>
     <language-switcher id="lang-switcher" locale="{{locale}}" bindchange="changeLocale" />
   </view>
 

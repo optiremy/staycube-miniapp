@@ -1,0 +1,27 @@
+<view class="hk-page">
+  <view class="wrap">
+    <image class="logo" src="/assets/sifang-blue.png" mode="heightFix" />
+
+    <block wx:if="{{state === 'ready'}}">
+      <text class="title">保洁员绑定</text>
+      <view class="who"><text class="who-label">姓名</text><text class="who-name">{{name}}</text></view>
+      <button class="hk-btn action" disabled="{{busy}}" bindtap="bind">微信登录并绑定</button>
+    </block>
+
+    <block wx:elif="{{state === 'bound'}}">
+      <text class="title">已绑定</text>
+      <text class="intro">{{name}}</text>
+      <button class="hk-btn action" bindtap="openTasks">查看待整理<text class="arrow">→</text></button>
+    </block>
+
+    <block wx:elif="{{state === 'invalid'}}">
+      <text class="title">绑定码已失效</text>
+      <text class="intro">请联系员工重新生成绑定码。</text>
+    </block>
+
+    <block wx:elif="{{state === 'unbound'}}">
+      <text class="title">未绑定</text>
+      <text class="intro">请联系员工获取绑定码。</text>
+    </block>
+  </view>
+</view>

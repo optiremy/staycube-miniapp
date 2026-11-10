@@ -1,0 +1,218 @@
+<view class="page unattended-page" style="{{pageStyle}}">
+  <view class="page-head">
+    <image class="brand-logo {{dark ? 'brand-logo-light' : ''}}" src="/assets/sifang-blue.png" mode="heightFix" />
+    <language-switcher locale="{{locale}}" locked="{{busy || paymentBusy}}" bindchange="changeLocale" />
+  </view>
+
+  <!-- 服务选择 -->
+  <view wx:if="{{screen === 'service'}}" class="screen service-screen">
+    <text class="screen-title">{{text.serviceTitle}}</text>
+    <text class="body-copy">{{text.serviceIntro}}</text>
+    <view wx:if="{{configState === 'loading'}}" class="service-state"><text class="body-copy">{{text.loading}}</text></view>
+    <view wx:elif="{{configState === 'error'}}" class="service-state">
+      <text class="inline-error">{{errorText}}</text>
+      <button class="text-button" bindtap="loadConfig">{{text.codeRetry}}</button>
+    </view>
+    <view wx:else class="service-choices">
+      <view class="document-choice {{arrivalEnabled ? '' : 'is-unavailable'}}" bindtap="chooseArrival">
+        <view class="document-icon"><image class="document-icon-image" src="/assets/home-icons/unattended-{{iconTone || 'day'}}.svg" /></view>
+        <view class="service-choice-copy">
+          <text class="document-choice-label">{{text.arrival}}</text>
+          <text wx:if="{{!arrivalEnabled}}" class="hint-copy service-choice-note">{{text.serviceUnavailable}}</text>
+        </view>
+        <text class="option-arrow">›</text>
+      </view>
+      <view class="document-choice is-unavailable">
+        <view class="document-icon"><image class="document-icon-image" src="/assets/home-icons/luggage-storage-{{iconTone || 'day'}}.svg" /></view>
+        <view class="service-choice-copy">
+          <text class="document-choice-label">{{text.pickup}}</text>
+          <text wx:if="{{!pickupEnabled}}" class="hint-copy service-choice-note">{{text.serviceUnavailable}}</text>
+        </view>
+        <text class="option-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 读取已有申请 -->
+  <view wx:if="{{screen === 'loading'}}" class="screen loading-screen">
+    <view class="loader-mark"><view></view></view>
+    <text class="screen-title">{{text.loading}}</text>
+  </view>
+  <view wx:if="{{screen === 'resume-error'}}" class="screen error-screen">
+    <view class="status-symbol status-warn">!</view>
+    <text class="body-copy">{{errorText}}</text>
+    <button class="primary-button" bindtap="retryResume"><text class="button-label">{{text.codeRetry}}</text><text class="button-arrow">↻</text></button>
+  </view>
+
+  <!-- 办理步骤 -->
+  <view wx:if="{{stepIndex >= 0}}" class="screen form-screen">
+    <view class="form-intro">
+      <view class="section-index">0{{stepIndex + 1}} <text class="section-suffix"> / 04</text></view>
+    </view>
+    <view class="step-track">
+      <view wx:for="{{stepTitles}}" wx:key="index" class="step-track-item {{index <= stepIndex ? 'is-active' : ''}}">
+        <view class="step-dot">{{index < stepIndex ? '✓' : index + 1}}</view>
+        <text class="step-name">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 1 填写信息 -->
+    <view wx:if="{{screen === 'details'}}" class="step-content">
+      <view class="section-heading"><text>{{text.arrival}}</text></view>
+      <view class="field-block"><text class="field-label">{{text.name}}</text>
+        <input class="text-input" value="{{form.name}}" maxlength="100" bindinput="updateName" />
+        <text class="hint-copy">{{text.nameHint}}</text>
+      </view>
+      <view wx:if="{{locale !== 'zh-CN'}}" class="field-block"><text class="field-label">{{globalText.contact.method}}</text>
+        <radio-group class="contact-options" bindchange="updateContactMethod">
+          <label class="contact-option"><radio value="phone" checked="{{form.contactMethod === 'phone'}}" color="#176BE8" /><text>{{globalText.contact.phone}}</text></label>
+          <label class="contact-option"><radio value="email" checked="{{form.contactMethod === 'email'}}" color="#176BE8" /><text>{{globalText.contact.email}}</text></label>
+        </radio-group>
+      </view>
+      <view wx:if="{{form.contactMethod === 'phone'}}" class="field-block"><text class="field-label">{{text.phone}}</text>
+        <view class="phone-row">
+          <picker wx:if="{{locale !== 'zh-CN'}}" mode="selector" range="{{countryCodes}}" bindchange="updateCountryCode"><view class="country-code">{{form.countryCode}}<text class="country-code-arrow">▼</text></view></picker>
+          <input class="text-input phone-number-input" type="number" value="{{form.contact}}" maxlength="{{form.countryCode === '+86' ? 11 : 15}}" bindinput="updateContact" />
+        </view>
+        <text wx:if="{{form.countryCode === '+86'}}" class="hint-copy phone-hint">{{globalText.phone.mainlandHint}}</text>
+      </view>
+      <view wx:else class="field-block"><text class="field-label">{{globalText.contact.email}}</text>
+        <input class="text-input" type="text" value="{{form.contact}}" maxlength="200" bindinput="updateContact" />
+      </view>
+    </view>
+
+    <!-- 2 确认须知 -->
+    <view wx:if="{{screen === 'notice'}}" class="step-content">
+      <view class="section-heading"><text>{{text.noticeTitle}}</text></view>
+      <checkbox-group bindchange="updateNotice">
+        <label wx:for="{{text.notice}}" wx:key="title" class="notice-card {{noticeChecked[index] ? 'is-checked' : ''}}">
+          <checkbox value="{{index}}" checked="{{noticeChecked[index]}}" color="#176BE8" />
+          <view class="notice-copy"><text class="notice-title">{{item.title}}</text><text class="notice-body">{{item.body}}</text></view>
+        </label>
+      </checkbox-group>
+    </view>
+
+    <!-- 3 支付押金：微信支付，或其他方式（收款码备注姓名，自动核对） -->
+    <view wx:if="{{screen === 'payment'}}" class="step-content">
+      <view class="section-heading"><text>{{text.stepPayment}}</text></view>
+      <text class="body-copy section-copy">{{paymentCopy.description}}</text>
+      <view wx:if="{{paymentChannel === 'wechat'}}" class="payment-choice">
+        <button class="primary-button" disabled="{{paymentBusy}}" loading="{{paymentBusy}}" bindtap="payWechat"><text class="button-label">{{paymentCopy.pay}}</text></button>
+        <button wx:if="{{paymentStatus === 'pending' || paymentStatus === 'uncertain'}}" class="secondary-button photo-button" disabled="{{paymentBusy}}" bindtap="checkWechatStatus">{{paymentCopy.status}}</button>
+        <button class="secondary-button photo-button" disabled="{{paymentBusy}}" bindtap="useOtherPayment">{{paymentCopy.other}}</button>
+      </view>
+      <block wx:if="{{paymentChannel === 'other'}}">
+        <view wx:if="{{wechatAvailable}}" class="payment-choice">
+          <button class="secondary-button photo-button" disabled="{{busy}}" bindtap="chooseWechatPayment">{{paymentCopy.wechat}}</button>
+        </view>
+        <view class="qr-panel deposit-qr-panel">
+          <text class="qr-title">{{text.stepPayment}} ¥100</text>
+          <image class="deposit-qr-image" src="/assets/unattended-deposit.png" mode="aspectFit" show-menu-by-longpress="{{true}}" bindtap="previewQr" />
+          <text class="qr-instruction">{{text.qrSave}}</text>
+        </view>
+        <view class="remark-card">
+          <text class="remark-copy">{{text.paymentBefore}}</text>
+          <text class="remark-name">{{text.paymentName}}{{session.name}}</text>
+        </view>
+        <text class="hint-copy">{{deadlineText}}</text>
+        <text wx:if="{{possibleUnmarked}}" class="notice-warn">{{text.unmarked}}</text>
+        <text class="hint-copy">{{text.forgotRemark}}</text>
+      </block>
+      <text wx:if="{{messageText}}" class="notice-ok">{{messageText}}</text>
+    </view>
+
+    <!-- 4 进门寄存：开门密码 / 可进入区域 / 寄存行李 三个区块 -->
+    <view wx:if="{{screen === 'entry'}}" class="step-content">
+      <view class="entry-block code-block">
+        <text class="block-title">{{text.codeTitle}}</text>
+        <block wx:if="{{entry.state === 'available'}}">
+          <view class="code-card">
+            <text class="code-value">{{entry.code}}</text>
+            <text class="code-hint">{{text.codeHint}}</text>
+          </view>
+          <view class="own-note"><text class="own-title">{{text.ownUseTitle}}</text><text class="own-body">{{text.ownUseBody}}</text></view>
+        </block>
+        <text wx:elif="{{entry.state === 'unavailable'}}" class="notice-warn">{{text.codeUnavailable}}</text>
+        <view wx:elif="{{entry.state === 'error'}}" class="entry-state">
+          <text class="inline-error">{{text.codeReadFailed}}</text>
+          <button class="secondary-button photo-button" bindtap="retryEntryCode">{{text.codeRetry}}</button>
+        </view>
+        <text wx:else class="card-body">{{text.codeLoading}}</text>
+      </view>
+      <block wx:if="{{entry.state === 'available'}}">
+        <view class="entry-block">
+          <text class="block-title">{{text.areaTitle}}</text>
+          <image wx:if="{{areaMap}}" class="area-map" src="{{areaMap}}" mode="widthFix" />
+          <view wx:elif="{{demo}}" class="area-placeholder"><text>{{text.areaMapAlt}} · {{text.placeholder}}</text></view>
+          <text class="card-body">{{text.areaBody}}</text>
+        </view>
+        <view class="entry-block">
+          <text class="block-title">{{text.storeTitle}}</text>
+          <view wx:if="{{photoPath}}" class="photo-preview block-photo" bindtap="previewPhoto"><image class="preview-image" src="{{photoPath}}" mode="aspectFill" /></view>
+          <view wx:else class="photo-drop {{photoProcessing ? 'is-busy' : ''}}" bindtap="choosePhoto">
+            <text class="photo-drop-plus">＋</text>
+            <text class="photo-drop-label">{{text.choosePhoto}}</text>
+            <text class="photo-drop-hint">{{text.photoEmpty}}</text>
+          </view>
+          <button wx:if="{{photoPath}}" class="secondary-button photo-button" loading="{{photoProcessing}}" disabled="{{busy || photoProcessing}}" bindtap="choosePhoto">{{text.photoRetake}}</button>
+          <text class="card-body block-note">{{text.photoUse}}</text>
+        </view>
+      </block>
+    </view>
+
+    <text wx:if="{{errorText}}" class="inline-error">{{errorText}}</text>
+    <view class="bottom-spacer"></view>
+    <view class="form-footer {{screen === 'payment' ? 'is-stacked' : ''}}">
+      <button wx:if="{{screen === 'details'}}" class="secondary-button footer-back" disabled="{{busy}}" bindtap="backToService">{{globalText.common.back}}</button>
+      <button wx:if="{{screen === 'details'}}" class="primary-button footer-next {{busy ? 'is-button-disabled' : ''}}" loading="{{busy}}" disabled="{{busy}}" bindtap="submitDetails"><text class="button-label">{{text.nextLabel}}</text><text class="button-arrow">→</text></button>
+      <button wx:if="{{screen === 'notice'}}" class="secondary-button footer-back" disabled="{{busy}}" bindtap="backToDetails">{{text.previousLabel}}</button>
+      <button wx:if="{{screen === 'notice'}}" class="primary-button footer-next {{allAccepted && !busy ? '' : 'is-button-disabled'}}" loading="{{busy}}" disabled="{{busy || !allAccepted}}" bindtap="createRequest"><text class="button-label">{{text.nextLabel}}</text><text class="button-arrow">→</text></button>
+      <button wx:if="{{screen === 'payment' && paymentChannel === 'other'}}" class="primary-button footer-next {{busy ? 'is-button-disabled' : ''}}" loading="{{busy}}" disabled="{{busy}}" bindtap="checkPayment"><text class="button-label">{{text.checkPayment}}</text></button>
+      <button wx:if="{{screen === 'payment'}}" class="secondary-button footer-back" disabled="{{busy || paymentBusy}}" bindtap="cancelRequest">{{text.cancel}}</button>
+      <button wx:if="{{screen === 'entry' && entry.state === 'available'}}" class="primary-button footer-next {{photoPath && !busy ? '' : 'is-button-disabled'}}" loading="{{busy}}" disabled="{{busy || !photoPath}}" bindtap="submitPhoto"><text class="button-label">{{text.submitArrival}}</text><text class="button-arrow">→</text></button>
+    </view>
+  </view>
+
+  <!-- 完成：先说明何时办理入住，再列出入住前可以做的事 -->
+  <view wx:if="{{screen === 'done'}}" class="screen done-screen">
+    <view class="status-pill"><view class="status-dot"></view>{{text.savedTitle}}</view>
+    <view class="desk-card">
+      <view class="desk-clock"><view class="desk-clock-hand"></view></view>
+      <text class="desk-title">{{text.deskTitle}}</text>
+    </view>
+    <text class="block-heading">{{text.afterTitle}}</text>
+    <view class="entry-block guide-block">
+      <view class="guide-head"><image class="guide-icon" src="/assets/home-icons/luggage-storage-{{iconTone || 'day'}}.svg" /><text class="block-title">{{text.restTitle}}</text></view>
+      <text class="card-body">{{text.restBody}}</text>
+    </view>
+    <view wx:if="{{guideItems.breakfast.length || demo}}" class="entry-block guide-block">
+      <view class="guide-head guide-toggle" data-list="breakfast" bindtap="toggleGuide"><image class="guide-icon" src="/assets/home-icons/pre-arrival-{{iconTone || 'day'}}.svg" /><text class="block-title">{{text.breakfastTitle}}</text><text wx:if="{{!guideItems.breakfast.length}}" class="placeholder-tag">{{text.placeholder}}</text><text class="guide-arrow {{guideOpen.breakfast ? 'is-open' : ''}}">›</text></view>
+      <view wx:if="{{guideOpen.breakfast}}" wx:for="{{guideItems.breakfast.length ? guideItems.breakfast : placeholderItems}}" wx:key="index" class="guide-item">
+        <text class="guide-name">{{item.name}}</text>
+        <text class="card-body">{{item.meta}}</text>
+        <text wx:if="{{item.hasMap}}" class="guide-link" data-list="breakfast" data-index="{{item.index}}" bindtap="openGuideMap">{{text.openMap}} →</text>
+      </view>
+    </view>
+    <view wx:if="{{guideItems.places.length || demo}}" class="entry-block guide-block">
+      <view class="guide-head guide-toggle" data-list="places" bindtap="toggleGuide"><image class="guide-icon" src="/assets/home-icons/wall-{{iconTone || 'day'}}.svg" /><text class="block-title">{{text.placesTitle}}</text><text wx:if="{{!guideItems.places.length}}" class="placeholder-tag">{{text.placeholder}}</text><text class="guide-arrow {{guideOpen.places ? 'is-open' : ''}}">›</text></view>
+      <view wx:if="{{guideOpen.places}}" wx:for="{{guideItems.places.length ? guideItems.places : placeholderItems}}" wx:key="index" class="guide-item">
+        <text class="guide-name">{{item.name}}</text>
+        <text class="card-body">{{item.meta}}</text>
+        <view wx:if="{{item.amenities.length}}" class="guide-chips"><text wx:for="{{item.amenities}}" wx:for-item="tag" wx:key="*this" class="guide-chip">{{tag}}</text></view>
+        <text wx:if="{{item.hasMap}}" class="guide-link" data-list="places" data-index="{{item.index}}" bindtap="openGuideMap">{{text.openMap}} →</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 申请已取消或过期 -->
+  <view wx:if="{{screen === 'inactive'}}" class="screen error-screen">
+    <view class="status-symbol status-warn">!</view>
+    <text class="screen-title">{{inactiveStatus === 'cancelled' ? text.cancelled : text.expired}}</text>
+    <text class="body-copy">{{messageText || text.inactiveHint}}</text>
+    <button class="primary-button" bindtap="startAgain"><text class="button-label">{{text.startAgain}}</text><text class="button-arrow">→</text></button>
+  </view>
+
+  <text wx:if="{{demo}}" class="demo-note">{{text.demoNote}}</text>
+  <view class="page-foot"><text>Powered by stayCube</text></view>
+  <canvas id="photo-processing-canvas" type="2d" class="photo-processing-canvas"></canvas>
+</view>

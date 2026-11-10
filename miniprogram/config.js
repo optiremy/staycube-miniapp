@@ -5,7 +5,6 @@ module.exports = {
   depositQrValue: "https://dd6.cn/EWjeG",
   supabaseUrl: "https://vosippqokksetfdeljag.supabase.co",
   publishableKey: "sb_publishable_HgaP4nIBj-nwmmcgXxaK9w_lG5t3qk-",
-  publicLookupFallbackUrl: "https://sifang-guest-platform.netlify.app/.netlify/functions/self-checkin-public-lookup",
   developmentSelfCheckinTestCode: "123456",
   nativePaymentEnabled: true,
   // 早到自助寄存：开发版（开发者工具/开发版二维码）走本地演示，不产生真实付款、开门或登记。

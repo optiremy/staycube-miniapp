@@ -11,7 +11,18 @@ global.wx = {
   removeStorageSync: key => storage.delete(key),
   getAccountInfoSync: () => ({ miniProgram: { envVersion: 'release' } }),
   getRandomValues: ({ length, success }) => success({ randomValues: new Uint8Array(Array.from({ length }, (_, i) => (i * 37) % 256)).buffer }),
-  request: ({ url, data, header, success }) => { sent.push({ url, data, header }); setTimeout(() => success(responder(data, url, header || {})), 0) },
+  // 云函数经网关 /v1/functions/<名> 调用：请求体是事件，应答是 {statusCode, headers, body}。
+  request: ({ url, data, header, success }) => {
+    const fn = url.match(/\.api\.tcloudbasegateway\.com\/v1\/functions\/([a-z0-9-]+)$/)
+    if (!fn) { sent.push({ url, data, header }); setTimeout(() => success(responder(data, url, {})), 0); return }
+    const body = JSON.parse(data.body)
+    const op = data.path
+    sent.push({ url, data: body, header, op })
+    setTimeout(() => {
+      const answer = responder(body, url, { op })
+      success({ statusCode: 200, data: { statusCode: answer.statusCode, headers: { 'content-type': 'application/json' }, body: JSON.stringify(answer.data) } })
+    }, 0)
+  },
   login: ({ success }) => success({ code: 'login-code' }),
   requestPayment: ({ success }) => { paidByWechat = true; success({}) },
   setNavigationBarTitle() {},
@@ -42,7 +53,7 @@ const ok = data => ({ statusCode: 200, data })
 async function main() {
   // 1. 正常流程：服务开关 → 资格 → 须知 v2 → 申请 → 收款码认领 → 开门密码。
   responder = (body, url, header) => {
-    if (header['x-guest-relay-operation'] === 'function:deposit-payment:switch') return ok({ status: 'other_available' })
+    if (header.op === '/deposit-payment/switch') return ok({ status: 'other_available' })
     if (body.action === 'config') return ok({ arrivalEnabled: true, pickupEnabled: false, paymentEnabled: true })
     if (body.action === 'check-eligibility') return ok({ eligible: true })
     if (body.action === 'create') return ok({ requestId: 'r1', token: body.token, status: 'awaiting_payment', paymentDeadline: '2026-11-10T00:20:00Z' })
@@ -55,7 +66,9 @@ async function main() {
   await tick()
   assert.equal(page.data.configState, 'ready')
   assert.equal(page.data.arrivalEnabled, true)
-  assert.match(sent[0].url, /\/\.netlify\/functions\/unattended-access$/, 'mini program uses the same endpoint as the web page')
+  assert.equal(sent[0].url, 'https://staycube-prod-d0g2d759v95954cd6.api.tcloudbasegateway.com/v1/functions/unattended-access', 'unattended service goes straight to CloudBase')
+  assert.equal(sent[0].op, '/unattended-access')
+  assert.match(sent[0].header.Authorization, /^Bearer ey/, 'publishable key, no relay')
   page.chooseArrival()
   page.updateName({ detail: { value: '张三' } })
   page.updateContact({ detail: { value: '1380000' } })
@@ -78,7 +91,7 @@ async function main() {
   assert.equal(page.data.screen, 'payment')
   assert.equal(page.data.paymentChannel, 'wechat', 'mini program offers WeChat Pay first, like self check-in')
   await page.useOtherPayment()
-  assert.equal(sent.at(-1).header['x-guest-relay-operation'], 'function:deposit-payment:switch', 'open WeChat order is closed before switching')
+  assert.equal(sent.at(-1).op, '/deposit-payment/switch', 'open WeChat order is closed before switching')
   assert.deepEqual(sent.at(-1).data, { requestId: 'r1', token: create.token })
   assert.equal(page.data.paymentChannel, 'other')
   assert.equal(storage.get('unattended_session').requestId, 'r1', 'session survives leaving the mini program')
@@ -91,9 +104,9 @@ async function main() {
   // 1b. 微信支付：下单 → 调起支付 → 以服务端查询结果为准 → 开门密码。
   storage.clear(); paidByWechat = false
   responder = (body, url, header) => {
-    const op = header['x-guest-relay-operation']
-    if (op === 'function:deposit-payment:create') return ok({ status: 'pending', requestPayment: { timeStamp: '1', nonceStr: 'n', package: 'prepay_id=x', signType: 'RSA', paySign: 's' } })
-    if (op === 'function:deposit-payment:status') return ok({ status: paidByWechat ? 'paid' : 'pending' })
+    const op = header.op
+    if (op === '/deposit-payment/create') return ok({ status: 'pending', requestPayment: { timeStamp: '1', nonceStr: 'n', package: 'prepay_id=x', signType: 'RSA', paySign: 's' } })
+    if (op === '/deposit-payment/status') return ok({ status: paidByWechat ? 'paid' : 'pending' })
     if (body.action === 'config') return ok({ arrivalEnabled: true, pickupEnabled: false })
     if (body.action === 'check-eligibility') return ok({ eligible: true })
     if (body.action === 'create') return ok({ requestId: 'r2', token: body.token, status: 'awaiting_payment', paymentDeadline: '2026-11-10T00:20:00Z' })
@@ -110,7 +123,7 @@ async function main() {
   wechatPage.updateNotice({ detail: { value: ['0', '1', '2', '3'] } })
   await wechatPage.createRequest(); await tick()
   await wechatPage.payWechat()
-  const created = sent.find(item => item.header && item.header['x-guest-relay-operation'] === 'function:deposit-payment:create')
+  const created = sent.find(item => item.op === '/deposit-payment/create')
   assert.equal(created.data.loginCode, 'login-code')
   assert.equal(created.data.requestId, 'r2')
   assert.equal(wechatPage.data.screen, 'entry')

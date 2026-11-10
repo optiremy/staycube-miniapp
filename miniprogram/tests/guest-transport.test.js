@@ -1,67 +1,45 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const config = require('../config')
-const { requestGuest } = require('../utils/guest-transport')
+const { requestGuest, uploadGuestFile } = require('../utils/guest-transport')
 
-// 本文件验证旧 Supabase 模式的回退兼容性；正式默认模式由 backend-switch.test.js 覆盖。
-config.backend = 'supabase'
+// 旅客请求只发往当前后端（正式默认腾讯云），失败时不转发到任何中转站点。
+const gateway = `https://${config.cloudbaseEnvId}.api.tcloudbasegateway.com`
 
-test('allowlisted RPC retries through the fixed relay after direct network failure', async () => {
+test('direct RPC failure is reported, never replayed through another host', async () => {
   const calls = []
-  global.wx = {
-    request(options) {
-      calls.push(options)
-      if (calls.length === 1) options.fail({ errMsg: 'request:fail timeout' })
-      else options.success({ statusCode: 200, data: [{ id: 'record-1' }] })
-    },
-  }
-  const data = await requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', { p_request_id: 'request-1' }, 100)
-  assert.deepEqual(data, [{ id: 'record-1' }])
-  assert.equal(calls.length, 2)
-  assert.match(calls[1].url, /\.netlify\.app\/.netlify\/functions\/guest-relay$/)
-  assert.equal(calls[1].header['x-guest-relay-operation'], 'rpc:submit_pre_arrival_v2')
+  global.wx = { request(options) { calls.push(options); options.fail({ errMsg: 'request:fail timeout' }) } }
+  await assert.rejects(requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', { p_request_id: 'request-1' }, 100), error => error.kind === 'timeout')
+  assert.equal(calls.length, 1)
+  assert.equal(calls[0].url, `${gateway}/v1/rdb/rest/rpc/submit_pre_arrival_v2`)
 })
 
-test('non-allowlisted and rate-limited requests are not replayed', async () => {
-  let calls = 0
-  global.wx = { request(options) { calls++; options.success({ statusCode: 429, data: {} }) } }
-  await assert.rejects(requestGuest('/rest/v1/rpc/staff_delete_record', {}, 100))
-  await assert.rejects(requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', {}, 100))
-  assert.equal(calls, 2)
+test('upload failure is reported, never replayed through another host', async () => {
+  const calls = []
+  global.wx = { uploadFile(options) { calls.push(options); options.success({ statusCode: 503, data: '{"message":"busy"}' }) } }
+  await assert.rejects(uploadGuestFile('luggage-storage-photos', 'luggage-storage/a/photo-1.jpg', '/tmp/p.jpg', 'image/jpeg', 100), error => error.kind === 'service')
+  assert.equal(calls.length, 1)
+  assert.equal(calls[0].url, `${gateway}/v1/storages/object/luggage-storage-photos/luggage-storage/a/photo-1.jpg`)
 })
 
-test('self-check-in lookup uses the fixed relay allowlist and post-submit correction is rejected', async () => {
-  const operations = []
-  let calls = 0
-  global.wx = { request(options) {
-    calls++
-    if (calls % 2 === 1) options.fail({ errMsg: 'request:fail timeout' })
-    else {
-      operations.push(options.header['x-guest-relay-operation'])
-      options.success({ statusCode: 200, data: { state: 'not_found' } })
-    }
-  } }
-  await requestGuest('/rest/v1/rpc/lookup_self_checkin_public_context_by_access_code', { p_access_code: '123456', p_locale: 'zh-CN' }, 100)
-  await assert.rejects(requestGuest('/rest/v1/rpc/update_self_checkin_public_contact_and_police', { p_access_code: '123456' }, 100))
-  assert.deepEqual(operations, [
-    'rpc:lookup_self_checkin_public_context_by_access_code',
-  ])
-})
-
-test('self-check-in payment retries through the relay and keeps the service error code', async () => {
+test('cloud function calls go to the gateway as an event and unwrap the function result', async () => {
   const { callPayment } = require('../utils/self-checkin-payment')
   const calls = []
-  global.wx = {
-    request(options) {
-      calls.push(options)
-      if (calls.length === 1) options.fail({ errMsg: 'request:fail timeout' })
-      else if (calls.length === 2) options.success({ statusCode: 200, data: { status: 'other_available' } })
-      else options.success({ statusCode: 409, data: { code: 'PAYMENT_ALREADY_PAID' } })
-    },
-  }
+  const answers = [{ statusCode: 200, body: '{"status":"other_available"}' }, { statusCode: 409, body: '{"code":"PAYMENT_ALREADY_PAID"}' }]
+  global.wx = { request(options) { calls.push(options); options.success({ statusCode: 200, data: { headers: {}, isBase64Encoded: false, ...answers[calls.length - 1] } }) } }
   assert.deepEqual(await callPayment('switch', 'token-1'), { status: 'other_available' })
-  assert.equal(calls[1].header['x-guest-relay-operation'], 'function:self-checkin-payment:switch')
-  assert.deepEqual(calls[1].data, { token: 'token-1' })
+  assert.equal(calls[0].url, `${gateway}/v1/functions/self-checkin-payment`)
+  assert.equal(calls[0].header.Authorization, `Bearer ${config.cloudbasePublishableKey}`)
+  assert.equal(calls[0].data.httpMethod, 'POST')
+  assert.equal(calls[0].data.path, '/self-checkin-payment/switch')
+  assert.deepEqual(JSON.parse(calls[0].data.body), { token: 'token-1' })
   await assert.rejects(callPayment('status', 'token-1'), /PAYMENT_ALREADY_PAID/)
-  assert.equal(calls.length, 3)
+  assert.equal(calls.length, 2)
+})
+
+test('a gateway refusal keeps its code and is not retried', async () => {
+  const calls = []
+  global.wx = { request(options) { calls.push(options); options.success({ statusCode: 403, data: { code: 'EXCEED_AUTHORITY' } }) } }
+  await assert.rejects(requestGuest('/functions/v1/deposit-payment/status', { requestId: 'r', token: 't' }, 100), error => error.statusCode === 403 && error.data.code === 'EXCEED_AUTHORITY')
+  assert.equal(calls.length, 1)
 })

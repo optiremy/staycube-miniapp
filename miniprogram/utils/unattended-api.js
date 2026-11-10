@@ -1,4 +1,4 @@
-// 早到自助寄存（非值守服务）接口。与网页版共用 Netlify 函数 unattended-access：
+// 早到自助寄存（非值守服务）接口。与网页版共用腾讯云函数 unattended-access（网关 /v1/functions 直连）：
 // 资格核对、申请、押金核对、开门密码与拍照登记均由服务端按申请凭证重新校验。
 // 开发版（envVersion = develop）且 config.unattendedDemoInDevelop 为 true 时走本地演示，不产生真实付款或登记。
 const config = require('../config')
@@ -14,28 +14,14 @@ class UnattendedApiError extends Error {
   }
 }
 
-function endpoint() {
-  const base = String(config.publicLookupFallbackUrl || '').replace(/\/\.netlify\/functions\/self-checkin-public-lookup\/?$/, '')
-  return base ? `${base}/.netlify/functions/unattended-access` : ''
-}
+const FUNCTION_PATH = '/functions/v1/unattended-access'
 
 function post(body, timeout = 15000) {
-  const url = endpoint()
-  if (!url) return Promise.reject(new UnattendedApiError('API_UNAVAILABLE', ''))
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url, method: 'POST', data: body, timeout, header: { 'Content-Type': 'application/json' },
-      success(response) {
-        const data = response.data && typeof response.data === 'object' ? response.data : {}
-        if (response.statusCode === 429) { reject(new UnattendedApiError('REQUEST_LIMITED', data.message, 429)); return }
-        if (response.statusCode < 200 || response.statusCode >= 300) {
-          reject(new UnattendedApiError(typeof data.code === 'string' ? data.code : 'API_FAILED', data.message, response.statusCode))
-          return
-        }
-        resolve(data)
-      },
-      fail() { reject(new UnattendedApiError('NETWORK', '')) },
-    })
+  return requestGuest(FUNCTION_PATH, body, timeout).then(data => (data && typeof data === 'object' ? data : {}), error => {
+    if (error && error.kind === 'limited') throw new UnattendedApiError('REQUEST_LIMITED', error.data && error.data.message, 429)
+    if (error && (error.kind === 'network' || error.kind === 'timeout')) throw new UnattendedApiError('NETWORK', '')
+    const data = error && error.data && typeof error.data === 'object' ? error.data : {}
+    throw new UnattendedApiError(typeof data.code === 'string' ? data.code : 'API_FAILED', data.message, error && error.statusCode)
   })
 }
 
@@ -65,7 +51,7 @@ function secureRecoveryToken() {
 
 const noticeVersion = kind => (kind === 'arrival' ? 'v2' : 'v1')
 
-// 押金微信支付（stayCube 押金模块的 deposit-payment 云函数，经 guest-relay 中转）。
+// 押金微信支付（stayCube 押金模块的 deposit-payment 云函数，网关直连）。
 async function depositPayment(route, requestId, token, extra = {}) {
   try {
     return await requestGuest(`/functions/v1/deposit-payment/${route}`, { requestId, token, ...extra }, 15000)
@@ -131,4 +117,4 @@ function unattendedApi() {
   return demoApi
 }
 
-module.exports = { UnattendedApiError, unattendedApi, demoEnabled, secureRecoveryToken, noticeVersion, endpoint }
+module.exports = { UnattendedApiError, unattendedApi, demoEnabled, secureRecoveryToken, noticeVersion, FUNCTION_PATH }

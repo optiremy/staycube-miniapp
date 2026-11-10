@@ -1,4 +1,4 @@
-// 默认腾讯云正式环境；四项旅客服务的直连和中转地址均由开关控制。wx 为离线模拟对象。
+// 默认腾讯云正式环境；旅客数据、存储和云函数都直连所选后端，不经任何中转。wx 为离线模拟对象。
 const assert = require('assert')
 const config = require('../config')
 const testMode = require('../utils/test-mode')
@@ -6,7 +6,8 @@ const { requestGuest, uploadGuestFile } = require('../utils/guest-transport')
 const { specialCancellationApi } = require('../utils/special-cancellation-api')
 
 const gateway = 'https://env-test.api.tcloudbasegateway.com'
-const relay = config.publicLookupFallbackUrl.replace(/self-checkin-public-lookup$/, 'guest-relay')
+const fnUrl = name => `${gateway}/v1/functions/${name}`
+const fnResult = (statusCode, body) => ({ statusCode: 200, data: { statusCode, headers: {}, body: JSON.stringify(body), isBase64Encoded: false } })
 const original = { backend: config.backend, cloudbaseEnvId: config.cloudbaseEnvId, cloudbasePublishableKey: config.cloudbasePublishableKey }
 
 function mockWx(answer) {
@@ -63,40 +64,34 @@ async function run() {
     assert.strictEqual(calls[0].url, `${gateway}/v1/storages/object/luggage-storage-photos/luggage-storage/a/photo-1.jpg`)
     assert.strictEqual(calls[0].header.Authorization, 'Bearer cb-publishable')
 
-    // 付款云函数始终经现有中转，不把公开钥匙传给中转。
-    calls = mockWx(() => ({ statusCode: 200, data: { status: 'pending' } }))
-    await requestGuest('/functions/v1/self-checkin-payment/create', { token: 't', loginCode: 'c' })
+    // 云函数：POST <网关>/v1/functions/<名>，公开钥匙，请求作为事件。
+    calls = mockWx(() => fnResult(200, { status: 'pending' }))
+    assert.deepStrictEqual(await requestGuest('/functions/v1/self-checkin-payment/create', { token: 't', loginCode: 'c' }), { status: 'pending' })
     assert.strictEqual(calls.length, 1)
-    assert.strictEqual(calls[0].url, relay)
-    assert.strictEqual(calls[0].header['x-guest-relay-operation'], 'function:self-checkin-payment:create')
-    assert.strictEqual(calls[0].header.Authorization, undefined)
+    assert.strictEqual(calls[0].url, fnUrl('self-checkin-payment'))
+    assert.strictEqual(calls[0].header.Authorization, 'Bearer cb-publishable')
+    assert.strictEqual(calls[0].data.path, '/self-checkin-payment/create')
+    assert.deepStrictEqual(JSON.parse(calls[0].data.body), { token: 't', loginCode: 'c' })
 
-    // 网关异常时只回退到正式 guest-relay。
-    calls = mockWx(options => options.url === relay ? { statusCode: 200, data: { status: 'submitted' } } : { statusCode: 503, data: { message: 'unavailable' } })
-    await requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', { p_request_id: 'r' })
-    assert.strictEqual(calls.length, 2)
+    // 网关异常时直接报错，不回退到其他站点。
+    calls = mockWx(() => ({ statusCode: 503, data: { message: 'unavailable' } }))
+    await assert.rejects(requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', { p_request_id: 'r' }))
+    assert.strictEqual(calls.length, 1)
     assert.strictEqual(calls[0].url, `${gateway}/v1/rdb/rest/rpc/submit_pre_arrival_v2`)
-    assert.strictEqual(calls[1].url, relay)
-    assert.strictEqual(calls[1].header['x-guest-relay-operation'], 'rpc:submit_pre_arrival_v2')
 
-    calls = mockWx(options => options.url === relay ? { statusCode: 200, data: {} } : { statusCode: 503, data: { message: 'unavailable' } })
-    await requestGuest('/rest/v1/rpc/submit_special_cancellation_guest', {})
-    assert.strictEqual(calls[1].url, relay)
-    assert.strictEqual(calls[1].header['x-guest-relay-operation'], 'rpc:submit_special_cancellation_guest')
-
-    // 特殊取消：签名和登记经中转，文件直传腾讯云存储。
-    calls = mockWx(options => options.url === relay
-      ? { statusCode: 200, data: options.data.action === 'create_upload' ? { path: 'app/1.jpg', token: 'up-token' } : { attachment: { id: 'att-1', original_name: '1.jpg', mime_type: 'image/jpeg' } } }
+    // 特殊取消：签名和登记走云函数，文件直传腾讯云存储。
+    calls = mockWx(options => options.url === fnUrl('special-cancellation-storage')
+      ? fnResult(200, JSON.parse(options.data.body).action === 'create_upload' ? { path: 'app/1.jpg', token: 'up-token' } : { attachment: { id: 'att-1', original_name: '1.jpg', mime_type: 'image/jpeg' } })
       : { statusCode: 200, data: {} })
     await specialCancellationApi.uploadAttachment('11111111-1111-4111-8111-111111111111', '654321', { proof_purposes: ['other'], description: '', is_sensitive: false }, { name: '1.jpg', mimeType: 'image/jpeg', size: 4, originalBytes: 4, path: '/tmp/1.jpg' })
     const [create, put, register] = calls
-    assert.strictEqual(create.url, relay)
-    assert.strictEqual(create.header['x-guest-relay-operation'], 'function:special-cancellation-storage')
+    assert.strictEqual(create.url, fnUrl('special-cancellation-storage'))
+    assert.strictEqual(create.data.path, '/special-cancellation-storage')
     assert.strictEqual(put.url, `${gateway}/v1/storages/object/upload/sign/special-cancellation-proofs/app/1.jpg?token=up-token`)
     assert.strictEqual(put.method, 'PUT')
     assert.strictEqual(put.header.Authorization, 'Bearer cb-publishable')
-    assert.strictEqual(register.url, relay)
-    assert.ok(calls.every(call => !/tcloudbase\.com\//.test(call.url) || call.url.startsWith(gateway)), '不使用默认域名路由')
+    assert.strictEqual(register.url, fnUrl('special-cancellation-storage'))
+    assert.ok(calls.every(call => call.url.startsWith(gateway)), '只请求腾讯云网关')
   } finally {
     Object.assign(config, original)
     global.wx = originalWx

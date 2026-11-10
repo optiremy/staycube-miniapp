@@ -78,7 +78,7 @@ async function rpc(name, data, fallback, timeout = 15000) {
 }
 
 function storageFunction(body, fallback) {
-  // 腾讯云模式：函数调用经 guest-relay（见 utils/backend.js）。
+  // 腾讯云模式：函数经网关 /v1/functions 直连（见 utils/guest-transport.js）。
   if (backend.isCloudbase()) {
     return requestGuest('/functions/v1/special-cancellation-storage', body, 20000).then(data => data || {}, error => { throw friendlyError(error, fallback) })
   }

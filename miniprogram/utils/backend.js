@@ -2,7 +2,7 @@
 // - config.backend 为 'supabase'：直连旧 Supabase；默认值由 config.js 指定。
 // - 'cloudbase'：数据接口 /rest/v1 → <网关>/v1/rdb/rest，存储 /storage/v1 → <网关>/v1/storages，
 //   网关为 https://<环境ID>.api.tcloudbasegateway.com，凭证是腾讯云公开钥匙（publishable key）。
-//   云函数（/functions/v1/<名>）经现有 Netlify guest-relay 中转；生产中转按 DATA_BACKEND=cloudbase 路由。
+//   云函数（/functions/v1/<名>）→ POST <网关>/v1/functions/<名>（见 utils/guest-transport.js），不经任何中转。
 const config = require('../config')
 
 function backend() {
@@ -40,9 +40,8 @@ function isFunctionPath(path) {
   return /^\/functions\/v1\/[a-z0-9-]+(\/|$)/.test(String(path))
 }
 
-// 腾讯云模式下函数调用不直连，只走中转。
-function functionsViaRelayOnly(path) {
-  return isCloudbase() && isFunctionPath(path)
+function functionUrl(name) {
+  return `${cloudbaseGateway()}/v1/functions/${name}`
 }
 
-module.exports = { backend, isCloudbase, guestBase, guestUrl, guestHeaders, isFunctionPath, functionsViaRelayOnly }
+module.exports = { backend, isCloudbase, guestBase, guestUrl, guestHeaders, isFunctionPath, functionUrl }

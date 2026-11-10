@@ -35,7 +35,7 @@ async function run() {
   global.wx = { request(options) { calls++; options.fail({ errMsg: 'request:fail timeout' }) } }
   try { await preArrivalApi.submit(input) } catch (error) { failed = error instanceof PreArrivalApiError && ['network', 'timeout'].includes(error.kind) }
   assert.strictEqual(failed, true)
-  assert.equal(calls, 2, '网络故障时通过正式中转重试一次')
+  assert.equal(calls, 1, '网络故障时直接报错，不经其他站点重试')
 
   global.wx = originalWx
   config.cloudbasePublishableKey = originalKey

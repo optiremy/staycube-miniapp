@@ -11,7 +11,7 @@ const { compressImageToLimit } = require('../../utils/image-processing')
 const { luggageStorageApi } = require('../../utils/luggage-storage-api')
 const { UnattendedApiError, unattendedApi, demoEnabled, secureRecoveryToken } = require('../../utils/unattended-api')
 const share = require('../../utils/share')
-const timeTheme = require('../../utils/guestbook-theme')
+const timeTheme = require('../../utils/time-theme')
 
 const SESSION_KEY = 'unattended_session'
 const PENDING_KEY = 'unattended_pending'

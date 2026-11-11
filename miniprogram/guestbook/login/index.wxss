@@ -1,9 +1,0 @@
-@import "../common.wxss";
-.welcome { margin-top:40rpx; }
-.select { display:flex; align-items:center; justify-content:space-between; }
-.select-empty { color:var(--faint); }
-.select-arrow { color:var(--faint); }
-.actions { margin-top:64rpx; }
-.agree { display:flex; gap:12rpx; align-items:flex-start; justify-content:center; margin-top:32rpx; font-size:24rpx; line-height:1.6; color:var(--sub); }
-.agree-box { flex:none; width:32rpx; height:32rpx; margin-top:4rpx; border-radius:50%; border:2rpx solid var(--accent); box-sizing:border-box; }
-.agree-on { background:var(--accent); box-shadow:inset 0 0 0 6rpx var(--card); }

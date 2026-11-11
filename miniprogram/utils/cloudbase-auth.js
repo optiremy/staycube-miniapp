@@ -1,6 +1,6 @@
 // CloudBase 微信小程序登录（不依赖 SDK，按 @cloudbase/auth 的 signInWithOpenId 走 HTTP）：
 // wx.login → /auth/v1/provider/token → /auth/v1/signin/with/provider，得到旅客自己的 access_token。
-// 只用于留言板；其他旅客功能仍用公开钥匙匿名访问。
+// 只用于保洁端；旅客功能用公开钥匙匿名访问。
 const config = require('../config')
 const backend = require('./backend')
 

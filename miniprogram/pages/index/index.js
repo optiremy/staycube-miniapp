@@ -1,5 +1,5 @@
 const copyData = require('../../data/self-checkin-copy')
-const guestbookApi = require('../../utils/guestbook-api')
+const stayTicket = require('../../utils/stay-ticket')
 const paymentCopies = require('../../data/self-checkin-payment-copy')
 const appConfig = require('../../config')
 const testModeConfig = require('../../utils/test-mode')
@@ -17,7 +17,7 @@ const globalCopy = require('../../data/global-copy')
 const appLocale = require('../../utils/app-locale')
 const { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, parsePhone } = require('../../utils/phone-input')
 const share = require('../../utils/share')
-const timeTheme = require('../../utils/guestbook-theme')
+const timeTheme = require('../../utils/time-theme')
 
 const locales = Object.keys(copyData.locales)
 const imageMaxBytes = 2 * 1024 * 1024
@@ -897,7 +897,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
         context: { ...this.data.context, signature_record_id: result.signature_record_id || this.data.context.signature_record_id },
         })
       selfCheckinDrafts.removeDraft(id)
-      guestbookApi.linkSelfCheckin(this.data.context.token).catch(() => {})
+      stayTicket.remember(this.data.context.token)
     } catch (error) {
       const uncertain = error instanceof SelfCheckinApiError && ['network', 'timeout'].includes(error.kind)
       const limited = error instanceof SelfCheckinApiError && error.kind === 'limited'

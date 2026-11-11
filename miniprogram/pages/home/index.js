@@ -3,10 +3,8 @@ const copyData = require('../../data/self-checkin-copy')
 const globalCopy = require('../../data/global-copy')
 const appLocale = require('../../utils/app-locale')
 const share = require('../../utils/share')
-const guestbookSession = require('../../utils/guestbook-session')
-const guestbookTheme = require('../../utils/guestbook-theme')
-const guestbookApi = require('../../utils/guestbook-api')
-const { formatBed } = require('../../utils/guestbook-i18n')
+const timeTheme = require('../../utils/time-theme')
+const stayTicket = require('../../utils/stay-ticket')
 
 // 按入住前后排序；在住时行李寄存最常用，排在第一位。
 function buildServices(home, staying) {
@@ -22,20 +20,16 @@ function buildServices(home, staying) {
   return [services[2], services[0], services[1], services[4], services[3]]
 }
 
-// 房床写法与自助入住一致：房间名 + 空格 + 床位字母（单间只有房间名）；非中文显示房间拼音
-
 // 图标文件后缀：早晨、中午用深蓝，傍晚、夜晚用浅蓝
 const ICON_TONES = { dawn: 'day', noon: 'day', dusk: 'night', night: 'night' }
 
-function buildGuestbook(board, session, locale, slot) {
-  const view = { state: session.state, tone: ICON_TONES[slot] }
-  if (session.state !== 'staying') return view
+function buildTicket(text, ticket, locale) {
+  if (!ticket || ticket.state !== 'staying') return null
   return {
-    ...view,
-    bedLabel: formatBed(session.room, session.bed, locale),
-    nightParts: board.night.split('{n}'),
-    nights: session.nights,
-    slipper: session.slipper,
+    bedLabel: stayTicket.formatBed(ticket.room, ticket.bed, locale),
+    nightParts: text.night.split('{n}'),
+    nights: ticket.nights,
+    slipper: ticket.slipper,
   }
 }
 
@@ -47,16 +41,17 @@ function formatCheckinDate(locale, value, copy) {
 }
 
 const initialLocale = 'zh-CN'
-const initialSlot = guestbookTheme.slotOf()
+const initialSlot = timeTheme.slotOf()
 
 Page(share.withShare('pages/home/index', null, {
   data: {
     locale: initialLocale,
     copy: globalCopy[initialLocale],
     services: buildServices(globalCopy[initialLocale].home, false),
-    guestbook: { state: 'guest', tone: ICON_TONES[initialSlot] },
-    pageStyle: guestbookTheme.pageStyle(initialSlot),
-    dark: guestbookTheme.SLOTS[initialSlot].dark,
+    ticket: null,
+    tone: ICON_TONES[initialSlot],
+    pageStyle: timeTheme.pageStyle(initialSlot),
+    dark: timeTheme.SLOTS[initialSlot].dark,
     drafts: [],
     draftModalVisible: false,
   },
@@ -65,24 +60,25 @@ Page(share.withShare('pages/home/index', null, {
   // 从其他页面返回首页时保持旅客上次的选择，不再重复打扰。
   onShow() {
     this.applyLocale(appLocale.getLocale())
-    guestbookApi.detect().then(() => this.applyLocale(this.data.locale)).catch(() => {})
+    stayTicket.refresh().then(() => this.applyLocale(this.data.locale)).catch(() => {})
     this.refreshDraftModal(this._draftPrompted === true)
     this._draftPrompted = true
   },
 
-  // 留言板状态随时可能变化（登录、退房、时段），每次显示首页都重新计算。
+  // 在住状态（入住、退房）和时段随时可能变化，每次显示首页都重新计算。
   applyLocale(locale) {
     const copy = globalCopy[locale] || globalCopy['zh-CN']
-    const session = guestbookSession.read()
-    const slot = guestbookTheme.slotOf()
-    guestbookTheme.applyNavigationBar(slot)
+    const ticket = stayTicket.cached()
+    const slot = timeTheme.slotOf()
+    timeTheme.applyNavigationBar(slot)
     this.setData({
       locale,
-      pageStyle: guestbookTheme.pageStyle(slot),
-      dark: guestbookTheme.SLOTS[slot].dark,
+      pageStyle: timeTheme.pageStyle(slot),
+      dark: timeTheme.SLOTS[slot].dark,
+      tone: ICON_TONES[slot],
       copy,
-      services: buildServices(copy.home, session.state === 'staying'),
-      guestbook: buildGuestbook(copy.board, session, locale, slot),
+      services: buildServices(copy.home, Boolean(ticket)),
+      ticket: buildTicket(copy.ticket, ticket, locale),
     })
   },
 
@@ -118,13 +114,6 @@ Page(share.withShare('pages/home/index', null, {
     const path = event.currentTarget.dataset.path
     if (!path) return
     wx.navigateTo({ url: path })
-  },
-
-  openGuestbook(event) {
-    const page = event.currentTarget.dataset.page || 'index'
-    // 留言墙对所有人开放；床位留言簿和我的留言需要先登录
-    if (page !== 'index' && guestbookSession.read().state === 'guest') { wx.navigateTo({ url: `/guestbook/login/index?next=${page}` }); return }
-    wx.navigateTo({ url: page === 'book' ? '/guestbook/index/index?view=book' : `/guestbook/${page}/index` })
   },
 
   resumeDraft(event) {

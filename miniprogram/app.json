@@ -9,18 +9,6 @@
   ],
   "subPackages": [
     {
-      "root": "guestbook",
-      "pages": [
-        "index/index",
-        "detail/index",
-        "compose/index",
-        "done/index",
-        "mine/index",
-        "login/index",
-        "entry-detail/index"
-      ]
-    },
-    {
       "root": "cleaning",
       "pages": [
         "index/index",

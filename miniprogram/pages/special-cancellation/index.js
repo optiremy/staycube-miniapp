@@ -3,7 +3,7 @@ const { specialCancellationApi, MAX_BYTES } = require('../../utils/special-cance
 const { compressImageToLimit } = require('../../utils/image-processing')
 const { createRequestId } = require('../../utils/guest-transport')
 const share = require('../../utils/share')
-const timeTheme = require('../../utils/guestbook-theme')
+const timeTheme = require('../../utils/time-theme')
 
 const MATERIAL_LIMIT = 5
 const EDITABLE = ['awaiting_guest', 'need_more_info']

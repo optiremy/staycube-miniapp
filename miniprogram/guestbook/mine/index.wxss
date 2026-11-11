@@ -1,8 +1,0 @@
-@import "../common.wxss";
-.mine-list { margin-top:36rpx; }
-.mine-source { display:block; margin-bottom:12rpx; font-size:22rpx; color:var(--faint); }
-.mine-pics { display:flex; gap:12rpx; margin-top:20rpx; }
-.mine-pic { flex:1; height:200rpx; border-radius:16rpx; }
-.mine-actions { display:flex; justify-content:flex-end; gap:40rpx; margin-top:20rpx; padding-top:20rpx; border-top:1rpx solid var(--line); }
-.mine-action { font-size:26rpx; color:var(--accent); }
-.mine-delete { color:#ff8a8a; }

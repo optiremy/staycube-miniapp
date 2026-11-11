@@ -6,7 +6,7 @@ const appLocale = require('../../utils/app-locale')
 const { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, isValidPhone, formatPhone } = require('../../utils/phone-input')
 const { createRequestId } = require('../../utils/guest-transport')
 const share = require('../../utils/share')
-const timeTheme = require('../../utils/guestbook-theme')
+const timeTheme = require('../../utils/time-theme')
 
 const claimTimeOptions = Array.from({ length: 51 }, (_, index) => {
   const totalMinutes = 10 * 60 + index * 15

@@ -1,6 +1,0 @@
-@import "../common.wxss";
-.detail { margin-top:24rpx; padding:40rpx 36rpx; border-radius:36rpx; border:1rpx solid var(--line); background:var(--card); }
-.detail-when { display:flex; justify-content:space-between; font-size:24rpx; color:var(--sub); }
-.detail-date { font-weight:600; color:var(--text); }
-.detail-text { margin-top:28rpx; font-size:32rpx; line-height:1.85; }
-.detail-photo { display:block; width:100%; margin-top:28rpx; border-radius:24rpx; }

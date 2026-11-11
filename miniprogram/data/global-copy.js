@@ -3,7 +3,7 @@ module.exports = {
   'zh-CN': {
     label: '中文',
     home: { title: '自助服务', intro: '请选择需要办理的服务', checkin: '自助入住登记', luggage: '自助行李寄存', unattended: '早到自助寄存行李', preArrival: '预抵问卷', specialCancellation: '特殊取消申请' },
-    board: { title: '旅客留言板', wall: '旅宿留言墙', book: '床位留言簿', mine: '我的留言', night: '第{n}晚', room: '{n} 号房', slipper: '拖鞋' },
+    ticket: { night: '第{n}晚', slipper: '拖鞋' },
     draft: { nameMissing: '未填写姓名', title: '继续未完成的登记？', intro: '发现一份最近编辑的自助入住登记草稿。', checkinDate: '入住日期：', checkinDateUnknown: '入住日期以登记信息为准', accessCode: '入住码：', lastUpdated: '上次填写：', today: '今天', resume: '继续登记', remove: '删除', later: '暂不继续', expired: '这份登记草稿已过期', removeTitle: '删除登记草稿', removeContent: '删除后，这位旅客已填写的信息和本机保存的照片、签名将无法恢复。' },
     language: { title: '选择语言 · Language', lockedHint: '登记开始后无法切换语言，如需更换请返回首页重新进入。' },
     documentType: { title: '请选择您的证件类型', mainlandId: '我持中国大陆身份证', passport: '我持护照或其他证件', required: '请选择证件类型。' },
@@ -14,7 +14,7 @@ module.exports = {
   'en-US': {
     label: 'English',
     home: { title: 'Self-service', intro: 'Please choose a service', checkin: 'Self check-in', luggage: 'Luggage storage', unattended: 'Store luggage early', preArrival: 'Pre-arrival form', specialCancellation: 'Special cancellation request' },
-    board: { title: 'Guestbook', wall: 'Guest wall', book: 'Bed notebook', mine: 'My posts', night: 'Night {n}', room: 'Room {n}', slipper: 'Slippers' },
+    ticket: { night: 'Night {n}', slipper: 'Slippers' },
     draft: { nameMissing: 'Name not entered', title: 'Continue your registration?', intro: 'We found a recently edited self check-in draft on this device.', checkinDate: 'Check-in date: ', checkinDateUnknown: 'Check-in date as registered', accessCode: 'Code: ', lastUpdated: 'Last edited: ', today: 'Today', resume: 'Continue', remove: 'Delete', later: 'Not now', expired: 'This draft has expired', removeTitle: 'Delete draft', removeContent: 'The information, photos and signature saved on this device will be permanently removed.' },
     language: { title: 'Language · 选择语言', lockedHint: 'The language cannot be changed after registration starts. Return to the home page to change it.' },
     documentType: { title: 'Select your ID document', mainlandId: 'I hold a Chinese mainland ID card', passport: 'I hold a passport or other ID', required: 'Please select your ID document.' },
@@ -25,7 +25,7 @@ module.exports = {
   'de-DE': {
     label: 'Deutsch',
     home: { title: 'Self-Service', intro: 'Bitte wählen Sie einen Service', checkin: 'Selbst-Check-in', luggage: 'Gepäckaufbewahrung', unattended: 'Gepäck früh abgeben', preArrival: 'Anreiseformular', specialCancellation: 'Antrag auf Sonderstornierung' },
-    board: { title: 'Gästebuch', wall: 'Gästewand', book: 'Bettnotizbuch', mine: 'Meine Beiträge', night: 'Nacht {n}', room: 'Zimmer {n}', slipper: 'Hausschuhe' },
+    ticket: { night: 'Nacht {n}', slipper: 'Hausschuhe' },
     draft: { nameMissing: 'Name nicht angegeben', title: 'Anmeldung fortsetzen?', intro: 'Auf diesem Gerät wurde ein kürzlich bearbeiteter Check-in-Entwurf gefunden.', checkinDate: 'Check-in: ', checkinDateUnknown: 'Check-in-Datum laut Anmeldung', accessCode: 'Code: ', lastUpdated: 'Zuletzt bearbeitet: ', today: 'Heute', resume: 'Fortsetzen', remove: 'Löschen', later: 'Nicht jetzt', expired: 'Dieser Entwurf ist abgelaufen', removeTitle: 'Entwurf löschen', removeContent: 'Die auf diesem Gerät gespeicherten Angaben, Fotos und die Unterschrift werden endgültig gelöscht.' },
     language: { title: 'Sprache · Language', lockedHint: 'Nach Beginn der Anmeldung kann die Sprache nicht geändert werden. Kehren Sie dazu zur Startseite zurück.' },
     documentType: { title: 'Wählen Sie Ihr Ausweisdokument', mainlandId: 'Ich habe einen chinesischen Personalausweis (Festland)', passport: 'Ich habe einen Reisepass oder anderen Ausweis', required: 'Bitte wählen Sie Ihr Ausweisdokument.' },
@@ -36,7 +36,7 @@ module.exports = {
   'fr-FR': {
     label: 'Français',
     home: { title: 'Libre-service', intro: 'Veuillez choisir un service', checkin: 'Arrivée autonome', luggage: 'Consigne à bagages', unattended: 'Déposer un bagage tôt', preArrival: 'Formulaire avant arrivée', specialCancellation: 'Demande d’annulation exceptionnelle' },
-    board: { title: 'Livre d’or', wall: 'Mur des voyageurs', book: 'Carnet du lit', mine: 'Mes messages', night: 'Nuit {n}', room: 'Chambre {n}', slipper: 'Chaussons' },
+    ticket: { night: 'Nuit {n}', slipper: 'Chaussons' },
     draft: { nameMissing: 'Nom non indiqué', title: 'Reprendre votre enregistrement ?', intro: 'Un brouillon d’arrivée autonome récemment modifié a été trouvé sur cet appareil.', checkinDate: 'Arrivée : ', checkinDateUnknown: 'Date d’arrivée selon l’enregistrement', accessCode: 'Code : ', lastUpdated: 'Modifié : ', today: 'Aujourd’hui', resume: 'Continuer', remove: 'Supprimer', later: 'Plus tard', expired: 'Ce brouillon a expiré', removeTitle: 'Supprimer le brouillon', removeContent: 'Les informations, photos et la signature enregistrées sur cet appareil seront définitivement supprimées.' },
     language: { title: 'Langue · Language', lockedHint: 'La langue ne peut plus être modifiée une fois l’enregistrement commencé. Revenez à l’accueil pour la changer.' },
     documentType: { title: 'Choisissez votre pièce d’identité', mainlandId: 'J’ai une carte d’identité de Chine continentale', passport: 'J’ai un passeport ou une autre pièce', required: 'Veuillez choisir votre pièce d’identité.' },
@@ -47,7 +47,7 @@ module.exports = {
   'es-ES': {
     label: 'Español',
     home: { title: 'Autoservicio', intro: 'Seleccione un servicio', checkin: 'Registro autónomo', luggage: 'Consigna de equipaje', unattended: 'Guardar equipaje temprano', preArrival: 'Formulario antes de llegar', specialCancellation: 'Solicitud de cancelación especial' },
-    board: { title: 'Libro de visitas', wall: 'Muro de viajeros', book: 'Cuaderno de la cama', mine: 'Mis mensajes', night: 'Noche {n}', room: 'Habitación {n}', slipper: 'Zapatillas' },
+    ticket: { night: 'Noche {n}', slipper: 'Zapatillas' },
     draft: { nameMissing: 'Nombre no indicado', title: '¿Continuar el registro?', intro: 'Se encontró un borrador de registro autónomo editado recientemente en este dispositivo.', checkinDate: 'Llegada: ', checkinDateUnknown: 'Fecha de llegada según el registro', accessCode: 'Código: ', lastUpdated: 'Editado: ', today: 'Hoy', resume: 'Continuar', remove: 'Eliminar', later: 'Ahora no', expired: 'Este borrador ha caducado', removeTitle: 'Eliminar borrador', removeContent: 'Los datos, fotos y la firma guardados en este dispositivo se eliminarán de forma permanente.' },
     language: { title: 'Idioma · Language', lockedHint: 'No se puede cambiar el idioma una vez iniciado el registro. Vuelva al inicio para cambiarlo.' },
     documentType: { title: 'Seleccione su documento de identidad', mainlandId: 'Tengo documento de identidad de China continental', passport: 'Tengo pasaporte u otro documento', required: 'Seleccione su documento de identidad.' },
@@ -58,7 +58,7 @@ module.exports = {
   'it-IT': {
     label: 'Italiano',
     home: { title: 'Self-service', intro: 'Scegli un servizio', checkin: 'Check-in autonomo', luggage: 'Deposito bagagli', unattended: 'Deposita il bagaglio in anticipo', preArrival: 'Modulo pre-arrivo', specialCancellation: 'Richiesta di cancellazione speciale' },
-    board: { title: 'Libro degli ospiti', wall: 'Muro degli ospiti', book: 'Quaderno del letto', mine: 'I miei messaggi', night: 'Notte {n}', room: 'Camera {n}', slipper: 'Pantofole' },
+    ticket: { night: 'Notte {n}', slipper: 'Pantofole' },
     draft: { nameMissing: 'Nome non inserito', title: 'Continuare la registrazione?', intro: 'Su questo dispositivo è presente una bozza di check-in modificata di recente.', checkinDate: 'Check-in: ', checkinDateUnknown: 'Data di check-in come registrata', accessCode: 'Codice: ', lastUpdated: 'Modificato: ', today: 'Oggi', resume: 'Continua', remove: 'Elimina', later: 'Non ora', expired: 'Questa bozza è scaduta', removeTitle: 'Elimina bozza', removeContent: 'I dati, le foto e la firma salvati su questo dispositivo verranno eliminati definitivamente.' },
     language: { title: 'Lingua · Language', lockedHint: 'Non è possibile cambiare lingua dopo l’inizio della registrazione. Torna alla home per cambiarla.' },
     documentType: { title: 'Seleziona il tuo documento', mainlandId: 'Ho una carta d’identità della Cina continentale', passport: 'Ho un passaporto o altro documento', required: 'Seleziona il tuo documento.' },
@@ -69,7 +69,7 @@ module.exports = {
   'ja-JP': {
     label: '日本語',
     home: { title: 'セルフサービス', intro: 'ご利用のサービスを選択してください', checkin: 'セルフチェックイン', luggage: '荷物預かり', unattended: '早朝の荷物預かり', preArrival: 'ご到着前アンケート', specialCancellation: '特別キャンセル申請' },
-    board: { title: 'ゲストボード', wall: 'ゲストウォール', book: 'ベッドノート', mine: '自分の投稿', night: '{n}泊目', room: '{n}号室', slipper: 'スリッパ' },
+    ticket: { night: '{n}泊目', slipper: 'スリッパ' },
     draft: { nameMissing: '氏名未入力', title: '登録を続けますか？', intro: 'この端末に最近編集したセルフチェックインの下書きがあります。', checkinDate: 'チェックイン日：', checkinDateUnknown: 'チェックイン日は登録情報のとおり', accessCode: 'コード：', lastUpdated: '最終編集：', today: '今日', resume: '続ける', remove: '削除', later: '後で', expired: 'この下書きは期限切れです', removeTitle: '下書きを削除', removeContent: 'この端末に保存された入力内容、写真、署名は完全に削除されます。' },
     language: { title: '言語 · Language', lockedHint: '登録開始後は言語を変更できません。変更する場合はホームに戻ってください。' },
     documentType: { title: '身分証明書の種類を選択してください', mainlandId: '中国大陸の身分証を持っています', passport: 'パスポートまたはその他の身分証を持っています', required: '身分証明書の種類を選択してください。' },
@@ -80,7 +80,7 @@ module.exports = {
   'ko-KR': {
     label: '한국어',
     home: { title: '셀프 서비스', intro: '이용할 서비스를 선택해 주세요', checkin: '셀프 체크인', luggage: '수하물 보관', unattended: '일찍 수하물 맡기기', preArrival: '도착 전 설문', specialCancellation: '특별 취소 신청' },
-    board: { title: '게스트 보드', wall: '게스트 월', book: '침대 노트', mine: '내 글', night: '{n}박째', room: '{n}호실', slipper: '슬리퍼' },
+    ticket: { night: '{n}박째', slipper: '슬리퍼' },
     draft: { nameMissing: '이름 미입력', title: '등록을 계속할까요?', intro: '이 기기에 최근 편집한 셀프 체크인 임시 저장본이 있습니다.', checkinDate: '체크인 날짜: ', checkinDateUnknown: '체크인 날짜는 등록 정보 기준', accessCode: '코드: ', lastUpdated: '마지막 편집: ', today: '오늘', resume: '계속하기', remove: '삭제', later: '나중에', expired: '이 임시 저장본은 만료되었습니다', removeTitle: '임시 저장본 삭제', removeContent: '이 기기에 저장된 정보, 사진, 서명이 영구적으로 삭제됩니다.' },
     language: { title: '언어 · Language', lockedHint: '등록을 시작한 후에는 언어를 바꿀 수 없습니다. 변경하려면 홈으로 돌아가세요.' },
     documentType: { title: '신분증 종류를 선택해 주세요', mainlandId: '중국 대륙 신분증을 소지하고 있습니다', passport: '여권 또는 기타 신분증을 소지하고 있습니다', required: '신분증 종류를 선택해 주세요.' },

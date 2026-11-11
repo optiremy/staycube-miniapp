@@ -6,28 +6,19 @@
   </view>
 
   <view class="home-main">
-    <view wx:if="{{guestbook.state === 'staying'}}" class="stay-ticket">
-      <view class="ticket-stub"><text class="ticket-small">{{guestbook.nightParts[0]}}</text><text class="ticket-night">{{guestbook.nights}}</text><text class="ticket-small">{{guestbook.nightParts[1]}}</text></view>
+    <view wx:if="{{ticket}}" class="stay-ticket">
+      <view class="ticket-stub"><text class="ticket-small">{{ticket.nightParts[0]}}</text><text class="ticket-night">{{ticket.nights}}</text><text class="ticket-small">{{ticket.nightParts[1]}}</text></view>
       <view class="ticket-info">
-        <text class="ticket-bed-no">{{guestbook.bedLabel}}</text>
-        <view wx:if="{{guestbook.slipper}}" class="ticket-slipper"><text>{{copy.board.slipper}}</text><text class="ticket-slipper-no">{{guestbook.slipper}}</text></view>
+        <text class="ticket-bed-no">{{ticket.bedLabel}}</text>
+        <view wx:if="{{ticket.slipper}}" class="ticket-slipper"><text>{{copy.ticket.slipper}}</text><text class="ticket-slipper-no">{{ticket.slipper}}</text></view>
       </view>
     </view>
 
-    <view class="board">
-      <text class="board-title">{{copy.board.title}}</text>
-      <view class="board-entries {{guestbook.state !== 'left' ? 'board-entries-3' : ''}}">
-        <view class="board-entry" data-page="index" bindtap="openGuestbook"><image class="entry-icon" src="/assets/home-icons/wall-{{guestbook.tone}}.svg" /><text class="entry-arrow">›</text><text class="entry-label">{{copy.board.wall}}</text></view>
-        <view wx:if="{{guestbook.state !== 'left'}}" class="board-entry" data-page="book" bindtap="openGuestbook"><image class="entry-icon" src="/assets/home-icons/book-{{guestbook.tone}}.svg" /><text class="entry-arrow">›</text><text class="entry-label">{{copy.board.book}}</text></view>
-        <view class="board-entry" data-page="mine" bindtap="openGuestbook"><image class="entry-icon" src="/assets/home-icons/mine-{{guestbook.tone}}.svg" /><text class="entry-arrow">›</text><text class="entry-label">{{copy.board.mine}}</text></view>
-      </view>
-    </view>
-
-    <view class="board board-services">
-      <text class="board-title">{{copy.home.title}}</text>
+    <view class="home-card">
+      <text class="card-title">{{copy.home.title}}</text>
       <view class="service-list">
         <button wx:for="{{services}}" wx:key="key" class="service-open" data-path="{{item.path}}" bindtap="openService">
-          <image class="service-icon" src="/assets/home-icons/{{item.key}}-{{guestbook.tone}}.svg" />
+          <image class="service-icon" src="/assets/home-icons/{{item.key}}-{{tone}}.svg" />
           <text class="service-title">{{item.title}}</text>
           <text class="service-arrow">›</text>
         </button>

@@ -19,4 +19,4 @@
 
 - 人工修改文案、样式和预览的入口见 [`UI_EDITING.md`](UI_EDITING.md)。
 - 小程序源码位于 `miniprogram/`；本地逐页预览位于 `previews/`。
-- 房间与床位清单见 [`plans/rooms-and-beds.md`](plans/rooms-and-beds.md)，不要再向用户询问；员工 Web 工作台仓库为 `~/stayCube`。
+- 房间与床位清单见 [`plans/rooms-and-beds.md`](plans/rooms-and-beds.md)，不要再向用户询问；员工 Web 工作台仓库为同级目录 `../web`（`~/staycube-workspace/web`）。

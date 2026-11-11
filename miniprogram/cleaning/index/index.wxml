@@ -4,6 +4,11 @@
     <text class="today-link" bindtap="openStats">本月 ›</text>
   </view>
 
+  <view wx:if="{{state === 'error'}}" class="state">
+    <text>{{message}}</text>
+    <text class="state-link" bindtap="retry">重试</text>
+  </view>
+
   <view wx:for="{{groups}}" wx:for-item="group" wx:key="key" class="cat">
     <view class="cat-head">
       <text class="cat-name">{{group.name}}</text>
@@ -12,10 +17,11 @@
     <view wx:for="{{group.tasks}}" wx:key="id" class="row" data-id="{{item.id}}" bindtap="openTask">
       <view class="row-main">
         <view class="row-title">
-          <text wx:if="{{item.priorityRank}}" class="hk-tag prio">优先</text>
+          <text wx:if="{{item.priority}}" class="hk-tag prio">优先</text>
           <text class="row-room">{{item.title}}</text>
         </view>
-        <text wx:if="{{item.status === 'rejected'}}" class="row-note">打回：{{item.rejectReason}}</text>
+        <text wx:if="{{item.rejected}}" class="row-note">打回：{{item.rejectReason}}</text>
+        <text wx:elif="{{item.other}}" class="row-other">{{item.other}}在做</text>
       </view>
       <text class="row-arrow">›</text>
     </view>

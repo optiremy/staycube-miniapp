@@ -1,4 +1,5 @@
 const api = require('../api')
+const logic = require('../logic')
 
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
@@ -22,18 +23,14 @@ Page({
 
   async load() {
     const key = monthKey(this.cursor)
-    const result = await api.stats(key)
-    this.setData({
-      label: `${this.cursor.getFullYear()}年${this.cursor.getMonth() + 1}月`,
-      units: result.units,
-      remainder: result.remainder,
-      isCurrent: key === monthKey(new Date()),
-      days: result.days.map((day) => ({
-        label: dayLabel(day.date),
-        units: day.units,
-        entries: day.entries.map((entry) => ({ title: entry.title, kind: entry.kind, amount: entry.pieces ? `${entry.pieces} 件` : `${entry.units}` })),
-      })),
-    })
+    this.setData({ label: `${this.cursor.getFullYear()}年${this.cursor.getMonth() + 1}月`, isCurrent: key === monthKey(new Date()) })
+    try {
+      const result = logic.statsView(await api.stats(key))
+      if (key !== monthKey(this.cursor)) return
+      this.setData({ units: result.units, remainder: result.remainder, days: result.days.map((day) => ({ ...day, label: dayLabel(day.date) })) })
+    } catch (error) {
+      wx.showToast({ title: logic.errorText(error, '读取失败，请重试'), icon: 'none' })
+    }
   },
 
   prev() {

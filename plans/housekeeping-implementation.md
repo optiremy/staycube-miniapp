@@ -1,6 +1,6 @@
 # 保洁端 · 实施方案
 
-日期：2026-11-09　状态：待确认（未建表、未部署、未改生产数据）
+日期：2026-11-09　状态：已实现，未部署（stayCube `feat/housekeeping`：迁移 `cloudbase/compat/20261109150000_cloudbase_housekeeping.sql`、员工页 `/staff/housekeeping`；小程序 `feat/housekeeping`：分包 `cleaning/`）。以下为原方案，与实现不同处以代码为准：工作台列表函数名为 `housekeeping_list`；小程序码由新云函数 `housekeeping` 生成，不放进 `staff-admin`
 
 需求见 [`housekeeping.md`](housekeeping.md)，房床见 [`rooms-and-beds.md`](rooms-and-beds.md)。
 

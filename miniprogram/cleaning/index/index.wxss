@@ -16,3 +16,6 @@
 .row-room { font-size:30rpx; font-weight:400; color:var(--text); }
 .row-note { display:block; margin-top:6rpx; font-size:24rpx; color:var(--red); }
 .row-arrow { margin-left:16rpx; font-size:36rpx; color:var(--faint); }
+.row-other { display:block; margin-top:6rpx; font-size:24rpx; color:var(--sub); }
+.state { display:flex; align-items:center; margin-top:28rpx; padding:20rpx 24rpx; border-radius:16rpx; background:var(--amber-soft); color:var(--amber); font-size:26rpx; }
+.state-link { margin-left:auto; color:var(--accent); font-weight:600; white-space:nowrap; }

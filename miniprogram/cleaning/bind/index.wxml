@@ -4,8 +4,9 @@
 
     <block wx:if="{{state === 'ready'}}">
       <text class="title">保洁员绑定</text>
-      <view class="who"><text class="who-label">姓名</text><text class="who-name">{{name}}</text></view>
+      <text class="intro">绑定后可以在这里查看和提交保洁任务。</text>
       <button class="hk-btn action" disabled="{{busy}}" bindtap="bind">微信登录并绑定</button>
+      <text wx:if="{{message}}" class="intro error">{{message}}</text>
     </block>
 
     <block wx:elif="{{state === 'bound'}}">
@@ -22,6 +23,11 @@
     <block wx:elif="{{state === 'unbound'}}">
       <text class="title">未绑定</text>
       <text class="intro">请联系员工获取绑定码。</text>
+    </block>
+
+    <block wx:elif="{{state === 'error'}}">
+      <text class="title">暂时连不上</text>
+      <text class="intro">{{message}}</text>
     </block>
   </view>
 </view>

@@ -2,7 +2,7 @@
 // 地图：填写 latitude/longitude（GCJ-02）与 address 后，“打开地图”调起微信内置地图。
 // areaMap：开门密码页“可进入区域”示意图，放入 /assets 后填写路径，例如 '/assets/arrival-area-map.png'。
 module.exports = {
-  areaMap: '',
+  areaMap: '/assets/arrival-area-map.jpg',
   breakfast: [
     // { name: { zh: '', en: '' }, specialty: { zh: '', en: '' }, walkMinutes: 5, hours: '06:30–11:00', latitude: 0, longitude: 0, address: '' },
   ],

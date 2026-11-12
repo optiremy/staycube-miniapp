@@ -5,9 +5,21 @@ const appLocale = require('../../utils/app-locale')
 const share = require('../../utils/share')
 const timeTheme = require('../../utils/time-theme')
 const stayTicket = require('../../utils/stay-ticket')
+const cloudbaseAuth = require('../../utils/cloudbase-auth')
+
+// 只有保洁员会用微信登录（旅客功能匿名访问），本机存有登录凭证即视为保洁员，入口排第一位。
+function isCleaner() {
+  const credentials = cloudbaseAuth.read()
+  return Boolean(credentials && credentials.accessToken)
+}
 
 // 按入住前后排序；在住时行李寄存最常用，排在第一位。
-function buildServices(home, staying) {
+function buildServices(home, staying, cleaner) {
+  const list = buildGuestServices(home, staying)
+  return cleaner ? [{ key: 'cleaning', title: home.cleaning, path: '/cleaning/index/index' }].concat(list) : list
+}
+
+function buildGuestServices(home, staying) {
   const services = [
     { key: 'pre-arrival', title: home.preArrival, path: '/pages/pre-arrival/index' },
     { key: 'self-checkin', title: home.checkin, path: '/pages/index/index' },
@@ -77,7 +89,7 @@ Page(share.withShare('pages/home/index', null, {
       dark: timeTheme.SLOTS[slot].dark,
       tone: ICON_TONES[slot],
       copy,
-      services: buildServices(copy.home, Boolean(ticket)),
+      services: buildServices(copy.home, Boolean(ticket), isCleaner()),
       ticket: buildTicket(copy.ticket, ticket, locale),
     })
   },

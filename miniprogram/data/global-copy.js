@@ -2,7 +2,7 @@
 module.exports = {
   'zh-CN': {
     label: '中文',
-    home: { title: '自助服务', intro: '请选择需要办理的服务', checkin: '自助入住登记', luggage: '自助行李寄存', unattended: '早到自助寄存行李', preArrival: '预抵问卷', specialCancellation: '特殊取消申请' },
+    home: { title: '自助服务', intro: '请选择需要办理的服务', checkin: '自助入住登记', luggage: '自助行李寄存', unattended: '早到自助寄存行李', preArrival: '预抵问卷', specialCancellation: '特殊取消申请', cleaning: '保洁任务' },
     ticket: { night: '第{n}晚', slipper: '拖鞋' },
     draft: { nameMissing: '未填写姓名', title: '继续未完成的登记？', intro: '发现一份最近编辑的自助入住登记草稿。', checkinDate: '入住日期：', checkinDateUnknown: '入住日期以登记信息为准', accessCode: '入住码：', lastUpdated: '上次填写：', today: '今天', resume: '继续登记', remove: '删除', later: '暂不继续', expired: '这份登记草稿已过期', removeTitle: '删除登记草稿', removeContent: '删除后，这位旅客已填写的信息和本机保存的照片、签名将无法恢复。' },
     language: { title: '选择语言 · Language', lockedHint: '登记开始后无法切换语言，如需更换请返回首页重新进入。' },
@@ -13,7 +13,7 @@ module.exports = {
   },
   'en-US': {
     label: 'English',
-    home: { title: 'Self-service', intro: 'Please choose a service', checkin: 'Self check-in', luggage: 'Luggage storage', unattended: 'Store luggage early', preArrival: 'Pre-arrival form', specialCancellation: 'Special cancellation request' },
+    home: { title: 'Self-service', intro: 'Please choose a service', checkin: 'Self check-in', luggage: 'Luggage storage', unattended: 'Store luggage early', preArrival: 'Pre-arrival form', specialCancellation: 'Special cancellation request', cleaning: 'Cleaning tasks' },
     ticket: { night: 'Night {n}', slipper: 'Slippers' },
     draft: { nameMissing: 'Name not entered', title: 'Continue your registration?', intro: 'We found a recently edited self check-in draft on this device.', checkinDate: 'Check-in date: ', checkinDateUnknown: 'Check-in date as registered', accessCode: 'Code: ', lastUpdated: 'Last edited: ', today: 'Today', resume: 'Continue', remove: 'Delete', later: 'Not now', expired: 'This draft has expired', removeTitle: 'Delete draft', removeContent: 'The information, photos and signature saved on this device will be permanently removed.' },
     language: { title: 'Language · 选择语言', lockedHint: 'The language cannot be changed after registration starts. Return to the home page to change it.' },
@@ -24,7 +24,7 @@ module.exports = {
   },
   'de-DE': {
     label: 'Deutsch',
-    home: { title: 'Self-Service', intro: 'Bitte wählen Sie einen Service', checkin: 'Selbst-Check-in', luggage: 'Gepäckaufbewahrung', unattended: 'Gepäck früh abgeben', preArrival: 'Anreiseformular', specialCancellation: 'Antrag auf Sonderstornierung' },
+    home: { title: 'Self-Service', intro: 'Bitte wählen Sie einen Service', checkin: 'Selbst-Check-in', luggage: 'Gepäckaufbewahrung', unattended: 'Gepäck früh abgeben', preArrival: 'Anreiseformular', specialCancellation: 'Antrag auf Sonderstornierung', cleaning: 'Reinigungsaufgaben' },
     ticket: { night: 'Nacht {n}', slipper: 'Hausschuhe' },
     draft: { nameMissing: 'Name nicht angegeben', title: 'Anmeldung fortsetzen?', intro: 'Auf diesem Gerät wurde ein kürzlich bearbeiteter Check-in-Entwurf gefunden.', checkinDate: 'Check-in: ', checkinDateUnknown: 'Check-in-Datum laut Anmeldung', accessCode: 'Code: ', lastUpdated: 'Zuletzt bearbeitet: ', today: 'Heute', resume: 'Fortsetzen', remove: 'Löschen', later: 'Nicht jetzt', expired: 'Dieser Entwurf ist abgelaufen', removeTitle: 'Entwurf löschen', removeContent: 'Die auf diesem Gerät gespeicherten Angaben, Fotos und die Unterschrift werden endgültig gelöscht.' },
     language: { title: 'Sprache · Language', lockedHint: 'Nach Beginn der Anmeldung kann die Sprache nicht geändert werden. Kehren Sie dazu zur Startseite zurück.' },
@@ -35,7 +35,7 @@ module.exports = {
   },
   'fr-FR': {
     label: 'Français',
-    home: { title: 'Libre-service', intro: 'Veuillez choisir un service', checkin: 'Arrivée autonome', luggage: 'Consigne à bagages', unattended: 'Déposer un bagage tôt', preArrival: 'Formulaire avant arrivée', specialCancellation: 'Demande d’annulation exceptionnelle' },
+    home: { title: 'Libre-service', intro: 'Veuillez choisir un service', checkin: 'Arrivée autonome', luggage: 'Consigne à bagages', unattended: 'Déposer un bagage tôt', preArrival: 'Formulaire avant arrivée', specialCancellation: 'Demande d’annulation exceptionnelle', cleaning: 'Tâches de ménage' },
     ticket: { night: 'Nuit {n}', slipper: 'Chaussons' },
     draft: { nameMissing: 'Nom non indiqué', title: 'Reprendre votre enregistrement ?', intro: 'Un brouillon d’arrivée autonome récemment modifié a été trouvé sur cet appareil.', checkinDate: 'Arrivée : ', checkinDateUnknown: 'Date d’arrivée selon l’enregistrement', accessCode: 'Code : ', lastUpdated: 'Modifié : ', today: 'Aujourd’hui', resume: 'Continuer', remove: 'Supprimer', later: 'Plus tard', expired: 'Ce brouillon a expiré', removeTitle: 'Supprimer le brouillon', removeContent: 'Les informations, photos et la signature enregistrées sur cet appareil seront définitivement supprimées.' },
     language: { title: 'Langue · Language', lockedHint: 'La langue ne peut plus être modifiée une fois l’enregistrement commencé. Revenez à l’accueil pour la changer.' },
@@ -46,7 +46,7 @@ module.exports = {
   },
   'es-ES': {
     label: 'Español',
-    home: { title: 'Autoservicio', intro: 'Seleccione un servicio', checkin: 'Registro autónomo', luggage: 'Consigna de equipaje', unattended: 'Guardar equipaje temprano', preArrival: 'Formulario antes de llegar', specialCancellation: 'Solicitud de cancelación especial' },
+    home: { title: 'Autoservicio', intro: 'Seleccione un servicio', checkin: 'Registro autónomo', luggage: 'Consigna de equipaje', unattended: 'Guardar equipaje temprano', preArrival: 'Formulario antes de llegar', specialCancellation: 'Solicitud de cancelación especial', cleaning: 'Tareas de limpieza' },
     ticket: { night: 'Noche {n}', slipper: 'Zapatillas' },
     draft: { nameMissing: 'Nombre no indicado', title: '¿Continuar el registro?', intro: 'Se encontró un borrador de registro autónomo editado recientemente en este dispositivo.', checkinDate: 'Llegada: ', checkinDateUnknown: 'Fecha de llegada según el registro', accessCode: 'Código: ', lastUpdated: 'Editado: ', today: 'Hoy', resume: 'Continuar', remove: 'Eliminar', later: 'Ahora no', expired: 'Este borrador ha caducado', removeTitle: 'Eliminar borrador', removeContent: 'Los datos, fotos y la firma guardados en este dispositivo se eliminarán de forma permanente.' },
     language: { title: 'Idioma · Language', lockedHint: 'No se puede cambiar el idioma una vez iniciado el registro. Vuelva al inicio para cambiarlo.' },
@@ -57,7 +57,7 @@ module.exports = {
   },
   'it-IT': {
     label: 'Italiano',
-    home: { title: 'Self-service', intro: 'Scegli un servizio', checkin: 'Check-in autonomo', luggage: 'Deposito bagagli', unattended: 'Deposita il bagaglio in anticipo', preArrival: 'Modulo pre-arrivo', specialCancellation: 'Richiesta di cancellazione speciale' },
+    home: { title: 'Self-service', intro: 'Scegli un servizio', checkin: 'Check-in autonomo', luggage: 'Deposito bagagli', unattended: 'Deposita il bagaglio in anticipo', preArrival: 'Modulo pre-arrivo', specialCancellation: 'Richiesta di cancellazione speciale', cleaning: 'Attività di pulizia' },
     ticket: { night: 'Notte {n}', slipper: 'Pantofole' },
     draft: { nameMissing: 'Nome non inserito', title: 'Continuare la registrazione?', intro: 'Su questo dispositivo è presente una bozza di check-in modificata di recente.', checkinDate: 'Check-in: ', checkinDateUnknown: 'Data di check-in come registrata', accessCode: 'Codice: ', lastUpdated: 'Modificato: ', today: 'Oggi', resume: 'Continua', remove: 'Elimina', later: 'Non ora', expired: 'Questa bozza è scaduta', removeTitle: 'Elimina bozza', removeContent: 'I dati, le foto e la firma salvati su questo dispositivo verranno eliminati definitivamente.' },
     language: { title: 'Lingua · Language', lockedHint: 'Non è possibile cambiare lingua dopo l’inizio della registrazione. Torna alla home per cambiarla.' },
@@ -68,7 +68,7 @@ module.exports = {
   },
   'ja-JP': {
     label: '日本語',
-    home: { title: 'セルフサービス', intro: 'ご利用のサービスを選択してください', checkin: 'セルフチェックイン', luggage: '荷物預かり', unattended: '早朝の荷物預かり', preArrival: 'ご到着前アンケート', specialCancellation: '特別キャンセル申請' },
+    home: { title: 'セルフサービス', intro: 'ご利用のサービスを選択してください', checkin: 'セルフチェックイン', luggage: '荷物預かり', unattended: '早朝の荷物預かり', preArrival: 'ご到着前アンケート', specialCancellation: '特別キャンセル申請', cleaning: '清掃タスク' },
     ticket: { night: '{n}泊目', slipper: 'スリッパ' },
     draft: { nameMissing: '氏名未入力', title: '登録を続けますか？', intro: 'この端末に最近編集したセルフチェックインの下書きがあります。', checkinDate: 'チェックイン日：', checkinDateUnknown: 'チェックイン日は登録情報のとおり', accessCode: 'コード：', lastUpdated: '最終編集：', today: '今日', resume: '続ける', remove: '削除', later: '後で', expired: 'この下書きは期限切れです', removeTitle: '下書きを削除', removeContent: 'この端末に保存された入力内容、写真、署名は完全に削除されます。' },
     language: { title: '言語 · Language', lockedHint: '登録開始後は言語を変更できません。変更する場合はホームに戻ってください。' },
@@ -79,7 +79,7 @@ module.exports = {
   },
   'ko-KR': {
     label: '한국어',
-    home: { title: '셀프 서비스', intro: '이용할 서비스를 선택해 주세요', checkin: '셀프 체크인', luggage: '수하물 보관', unattended: '일찍 수하물 맡기기', preArrival: '도착 전 설문', specialCancellation: '특별 취소 신청' },
+    home: { title: '셀프 서비스', intro: '이용할 서비스를 선택해 주세요', checkin: '셀프 체크인', luggage: '수하물 보관', unattended: '일찍 수하물 맡기기', preArrival: '도착 전 설문', specialCancellation: '특별 취소 신청', cleaning: '청소 작업' },
     ticket: { night: '{n}박째', slipper: '슬리퍼' },
     draft: { nameMissing: '이름 미입력', title: '등록을 계속할까요?', intro: '이 기기에 최근 편집한 셀프 체크인 임시 저장본이 있습니다.', checkinDate: '체크인 날짜: ', checkinDateUnknown: '체크인 날짜는 등록 정보 기준', accessCode: '코드: ', lastUpdated: '마지막 편집: ', today: '오늘', resume: '계속하기', remove: '삭제', later: '나중에', expired: '이 임시 저장본은 만료되었습니다', removeTitle: '임시 저장본 삭제', removeContent: '이 기기에 저장된 정보, 사진, 서명이 영구적으로 삭제됩니다.' },
     language: { title: '언어 · Language', lockedHint: '등록을 시작한 후에는 언어를 바꿀 수 없습니다. 변경하려면 홈으로 돌아가세요.' },

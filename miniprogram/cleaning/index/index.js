@@ -1,6 +1,5 @@
 const api = require('../api')
 const logic = require('../logic')
-const auth = require('../../utils/cloudbase-auth')
 
 // 待整理：每次进入或返回时读取一次，下拉刷新；不轮询
 Page({
@@ -20,8 +19,6 @@ Page({
       this.setData({ groups: logic.groupTasks(result.tasks), todayUnits: result.me.todayUnits, state: 'ready' })
     } catch (error) {
       if (error.code === 'NOT_BOUND' || error.code === 'LOGIN_REQUIRED') {
-        // 已解绑或登录失效：清掉本机凭证，首页不再显示保洁入口
-        auth.clear()
         wx.redirectTo({ url: '/cleaning/bind/index' })
         return
       }

@@ -100,11 +100,7 @@ Page(share.withShare('pages/unattended/index', 'unattended', {
 
   onShow() {
     this.setData(timeTheme.themeData())
-    // 旅客从相册扫码付款后回到小程序：只核对一次，不做常驻轮询。
-    if (this._shown && this.data.screen === 'payment' && this.data.session) {
-      if (this.data.paymentChannel === 'other') this.verifyPayment(true)
-      else if (this.data.paymentStatus === 'pending') this.refreshWechatStatus()
-    }
+    if (this._shown && this.data.session && this.data.screen !== 'loading') this.resume(this.data.session)
     this._shown = true
   },
 
@@ -237,7 +233,9 @@ Page(share.withShare('pages/unattended/index', 'unattended', {
     this.show('loading')
     try {
       const status = await unattendedApi().status(session.requestId, session.token)
+      if (status.refundInitiated === true) { this.clearSession(); return }
       this.openSession(session, status.status)
+      if (status.status === 'awaiting_payment' && this._shown && this.data.paymentChannel === 'other') this.verifyPayment(true)
     } catch (error) {
       if (error instanceof UnattendedApiError && error.code === 'INVALID_SESSION') { this.clearSession(); return }
       this.show('resume-error', { errorText: this.messageFor(error) })

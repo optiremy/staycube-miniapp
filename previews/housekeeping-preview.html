@@ -52,7 +52,7 @@
 .day{margin-top:10px;border:1px solid var(--line);border-radius:9px;background:var(--field);overflow:hidden}.day .h{display:flex;padding:12px 14px;font-size:14px;font-weight:600;color:var(--text)}.day .h span{margin-left:auto}.day .r{display:flex;padding:9px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--sub)}.day .r span{margin-left:auto;font-variant-numeric:tabular-nums}
 .notes{max-width:1180px;margin:0 auto;padding:0 16px 32px;color:#3e5268;font-size:13px;line-height:1.7}.notes h3{font-size:15px;color:#0b1f44;margin:8px 0 4px}.notes ul{margin:0;padding-left:20px}
 </style></head><body>
-<div class="bar"><div><h1>保洁端逐页预览</h1><p>小程序分包 cleaning/ · 中午配色 · 示例数据；清单项和照片点可点击</p></div><span class="sp"></span><div class="widths" id="widths"><button data-w="320">320</button><button data-w="375" class="on">375</button><button data-w="430">430</button></div></div>
+<div class="bar"><div><h1>保洁端逐页预览 · 字体放大提案</h1><p>字号整体提升约 15–25%，增加关键说明字级与行距；示例数据，可切换 320 / 375 / 430</p></div><span class="sp"></span><div class="widths" id="widths"><button data-w="320">320</button><button data-w="375" class="on">375</button><button data-w="430">430</button></div></div>
 <div class="grid" id="grid" style="--w:375px"></div>
 <div class="notes"><h3>待你确认</h3><ul>
 <li>平移拍照点为本预览暂定：涉及的每张床各拍一张。员工可在后台修改。</li>
@@ -151,4 +151,21 @@ document.querySelectorAll('.screen').forEach(sc=>{
   refresh()})
 })
 document.querySelectorAll('#widths button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#widths button').forEach(x=>x.classList.toggle('on',x===b));$('#grid').style.setProperty('--w',b.dataset.w+'px')})
-</script></body></html>
+</script><style>
+/* 仅用于本地评审，确认后再同步到小程序源码。 */
+.nav{font-size:17px}
+.center h2{font-size:26px}.intro{font-size:17px;line-height:1.7}.who{font-size:18px}
+.today-line{font-size:17px;line-height:1.5}.today-line b{font-size:22px}.today-line .link{font-size:16px}
+.cat .group{font-size:21px;line-height:1.35;padding:13px 14px}.cat .group .c{font-size:27px}
+.cat .task .room{font-size:18px;line-height:1.45}.cat .task .meta{font-size:16px;line-height:1.55}
+.tag{height:24px;line-height:24px;padding:0 8px;font-size:14px}
+.dhead .room{font-size:30px;line-height:1.35}.dhead .pos{font-size:16px;line-height:1.5}
+.banner{font-size:16px;line-height:1.6;padding:12px 14px}
+.sec-t{font-size:18px;line-height:1.5;font-weight:700}.sec-t .c{font-size:17px;font-weight:600}
+.item{min-height:60px;padding:12px 14px;font-size:20px;line-height:1.45;font-weight:600}.item .q{font-size:18px;font-weight:600}
+.box{width:24px;height:24px;font-size:16px}
+.shot .ph{font-size:16px}.shot .cap{font-size:15px;line-height:1.5}
+.month{font-size:18px}.month i{font-size:22px}.total .n{font-size:46px}.total .u{font-size:17px}
+.day .h{font-size:17px}.day .r{font-size:16px;line-height:1.5}
+.btn{font-size:18px;height:52px}
+</style></body></html>

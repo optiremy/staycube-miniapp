@@ -26,6 +26,7 @@ global.wx = {
   login: ({ success }) => success({ code: 'login-code' }),
   requestPayment: ({ success }) => { paidByWechat = true; success({}) },
   setNavigationBarTitle() {},
+  setNavigationBarColor() {},
   showShareMenu() {},
   showModal({ success }) { success({ confirm: true }) },
 }
@@ -157,6 +158,25 @@ async function main() {
   resumed.onLoad({})
   await tick()
   assert.equal(resumed.data.screen, 'done')
+  resumed.onShow()
+  responder = body => body.action === 'status' ? { statusCode: 503, data: { code: 'STATUS_READ_FAILED' } } : ok({ arrivalEnabled: true })
+  resumed.onShow()
+  await tick()
+  assert.equal(resumed.data.screen, 'resume-error', 'a status read failure blocks a new application')
+  assert.equal(storage.has('unattended_session'), true, 'read failures retain the recovery credential')
+  responder = body => body.action === 'status' ? ok({ requestId: 'r9', kind: 'arrival', status: 'completed', refundInitiated: true }) : ok({ arrivalEnabled: true, pickupEnabled: true })
+  resumed.retryResume()
+  await tick(); await tick()
+  assert.equal(resumed.data.screen, 'service', 'retrying after refund initiation opens a fresh service choice')
+  for (const kind of ['arrival', 'pickup']) {
+    storage.set('unattended_session', { requestId: 'r9', token: 't'.repeat(43), kind, name: '王五', paymentDeadline: '2026-11-10T00:20:00Z' })
+    responder = body => body.action === 'status' ? ok({ requestId: 'r9', kind, status: 'completed', refundInitiated: true }) : ok({ arrivalEnabled: true, pickupEnabled: true })
+    const ended = createPage()
+    ended.onLoad({})
+    await tick(); await tick()
+    assert.equal(ended.data.screen, 'service', `${kind} starts a new registration after refund initiation`)
+    assert.equal(storage.has('unattended_session'), false)
+  }
   responder = body => body.action === 'status' ? { statusCode: 404, data: { code: 'INVALID_SESSION' } } : ok({ arrivalEnabled: true, pickupEnabled: false })
   const invalid = createPage()
   invalid.onLoad({})

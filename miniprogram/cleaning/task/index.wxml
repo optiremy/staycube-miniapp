@@ -13,6 +13,8 @@
   <view wx:if="{{task.blockedBy}}" class="banner wait">先完成 {{task.blockedBy}} 退房</view>
   <view wx:if="{{task.other}}" class="banner wait">{{task.other}}在做这条任务</view>
 
+  <view wx:if="{{task.staffNote}}" class="staff-task-note staff-task-note-detail"><text class="staff-task-note-title">! 任务备注</text><text class="staff-task-note-body">{{task.staffNote}}</text></view>
+
   <block wx:for="{{groups}}" wx:for-item="group" wx:key="id">
     <view class="sec">
       <text>{{group.title}}</text>

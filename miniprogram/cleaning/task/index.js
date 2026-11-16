@@ -6,8 +6,15 @@ Page({
 
   onLoad(options) {
     this.id = options.id
-    this.load()
   },
+
+  onShow() {
+    this.active = true
+    if (this.id && !this.data.busy) this.load()
+  },
+
+  onHide() { this.active = false; this.readVersion = (this.readVersion || 0) + 1 },
+  onUnload() { this.onHide() },
 
   async show(detail) {
     this.detail = detail
@@ -15,22 +22,26 @@ Page({
     const paths = (detail.photoPoints || []).flatMap((point) => (point.photos || []).map((photo) => photo.path)).filter((path) => !(this.urls || {})[path])
     if (paths.length) {
       this.urls = { ...(this.urls || {}), ...(await api.photoUrls(paths)) }
-      if (this.detail === detail) this.setData(logic.taskView(detail, this.urls))
+      if (this.active && this.detail === detail) this.setData(logic.taskView(detail, this.urls))
     }
   },
 
   async load() {
+    const version = this.readVersion = (this.readVersion || 0) + 1
     try {
       const task = await api.task(this.id)
+      if (!this.active || version !== this.readVersion) return
       wx.setNavigationBarTitle({ title: task.title })
       await this.show(task)
     } catch (error) {
+      if (!this.active || version !== this.readVersion) return
       wx.showToast({ title: logic.errorText(error, '读取失败，请返回重试'), icon: 'none' })
     }
   },
 
   async run(work) {
     if (this.data.busy) return
+    this.readVersion = (this.readVersion || 0) + 1
     this.setData({ busy: true })
     try {
       await this.show(await work())

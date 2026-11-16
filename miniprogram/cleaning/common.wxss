@@ -21,3 +21,8 @@
 .hk-btn .arrow { position:absolute; right:32rpx; }
 
 .hk-bar { position:fixed; left:0; right:0; bottom:0; padding:20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom)); background:rgba(255,255,255,.94); border-top:1rpx solid var(--line); }
+
+.staff-task-note { margin: 24rpx 0; padding: 24rpx 28rpx; border: 2rpx solid #e7cc90; border-left: 8rpx solid #ad6b08; border-radius: 20rpx; background: #fff8e8; text-align: left; word-break: break-word; }
+.staff-task-note-title { display: block; margin-bottom: 8rpx; color: #775016; font-size: 32rpx; font-weight: 600; }
+.staff-task-note-body { display: block; color: #0B1F44; font-size: 32rpx; line-height: 1.65; white-space: pre-wrap; }
+.staff-task-note-detail .staff-task-note-body { font-size: 36rpx; }

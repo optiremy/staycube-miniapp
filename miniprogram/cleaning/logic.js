@@ -24,7 +24,7 @@ function groupTasks(tasks) {
       })
       .map((task) => ({
         id: task.id,
-        title: task.title,
+        title: task.title, staffNote: task.staffNoteDisplay || task.staffNote || '',
         priority: task.priorityRank != null,
         rejected: task.status === 'in_progress' && !!task.rejectReason,
         rejectReason: task.rejectReason || '',
@@ -55,7 +55,7 @@ function taskView(task, photoUrls) {
     return { id: point.id, name: point.text, photoId: latest ? latest.id : '', path: latest ? latest.path : '', url: latest ? urls[latest.path] || '' : '' }
   })
   return {
-    task: { id: task.id, title: task.title, status: task.status, priority: task.priorityRank != null, rejectReason: task.rejectReason || '', blockedBy: task.blockedBy || '', other: task.assigneeName && !task.mine ? task.assigneeName : '' },
+    task: { id: task.id, title: task.title, staffNote: task.staffNoteDisplay || task.staffNote || '', status: task.status, priority: task.priorityRank != null, rejectReason: task.rejectReason || '', blockedBy: task.blockedBy || '', other: task.assigneeName && !task.mine ? task.assigneeName : '' },
     kind: KIND_NAMES[task.kind] || '',
     editable,
     groups,

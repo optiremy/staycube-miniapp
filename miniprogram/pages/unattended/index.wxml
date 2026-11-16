@@ -18,6 +18,7 @@
         <view class="document-icon"><image class="document-icon-image" src="/assets/home-icons/unattended-{{iconTone || 'day'}}.svg" /></view>
         <view class="service-choice-copy">
           <text class="document-choice-label">{{text.arrival}}</text>
+          <text class="hint-copy service-choice-note">{{text.arrivalHours}}</text>
           <text wx:if="{{!arrivalEnabled}}" class="hint-copy service-choice-note">{{text.serviceUnavailable}}</text>
         </view>
         <text class="option-arrow">›</text>

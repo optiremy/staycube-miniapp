@@ -9,13 +9,14 @@ const { SelfCheckinApiError, selfCheckinApi } = require('../../utils/self-checki
 const paymentApi = require('../../utils/self-checkin-payment')
 const {
   normalizeAccessCode,
+  getSelfCheckinContactFields,
   isSixDigitCode,
   validateSelfCheckinStep,
   buildSelfCheckinPayload,
 } = require('../../utils/self-checkin-flow')
 const globalCopy = require('../../data/global-copy')
 const appLocale = require('../../utils/app-locale')
-const { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, parsePhone } = require('../../utils/phone-input')
+const { COUNTRY_CODES, DEFAULT_COUNTRY_CODE } = require('../../utils/phone-input')
 const share = require('../../utils/share')
 const timeTheme = require('../../utils/time-theme')
 
@@ -53,6 +54,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
     rulesFinalConfirmed: false,
     form: {
       guest_name: '',
+      contact_method: 'phone',
       country_code: DEFAULT_COUNTRY_CODE,
       contact: '',
       guest_note: '',
@@ -120,6 +122,13 @@ Page(share.withShare('pages/index/index', 'checkin', {
     this.stopRuleTimer()
     if (getCurrentPages().length > 1) wx.navigateBack()
     else wx.reLaunch({ url: '/pages/home/index' })
+  },
+
+  updateContactMethod(event) {
+    const method = event.detail.value
+    if (!['phone', 'email'].includes(method) || method === this.data.form.contact_method) return
+    this.setData({ 'form.contact_method': method, 'form.contact': '', errorText: '' })
+    this.queueDraftSave()
   },
 
   updateCountryCode(event) {
@@ -211,6 +220,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
         docTypeConfirmed: false,
         form: {
           guest_name: '',
+          contact_method: 'phone',
           country_code: DEFAULT_COUNTRY_CODE,
           contact: '',
           guest_note: '',
@@ -275,8 +285,8 @@ Page(share.withShare('pages/index/index', 'checkin', {
           docTypeConfirmed: false,
           form: {
             guest_name: context.guest_name || '',
-            country_code: parsePhone(context.contact).countryCode,
-            contact: parsePhone(context.contact).number,
+            country_code: DEFAULT_COUNTRY_CODE,
+            ...getSelfCheckinContactFields(context.contact),
             guest_note: context.guest_note || '',
             police_code: '',
             police_completed_confirmed: false,
@@ -366,8 +376,9 @@ Page(share.withShare('pages/index/index', 'checkin', {
       depositProofPhoto: depositExists ? files.depositProof : '',
       signatureLocalPath: !rulesChanged && signatureExists ? files.signature : '',
     }
+    const savedForm = state.form
     this.setData({
-      form: { ...this.data.form, ...(state.form || {}) },
+      form: savedForm ? { ...this.data.form, contact_method: 'phone', ...savedForm } : this.data.form,
       documentType: state.documentType || '',
       docTypeConfirmed: Boolean(state.documentType && state.docTypeConfirmed),
       step,
@@ -497,6 +508,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
     const messages = {
       basicInfo: text.basicInfoError,
       guestNameMissing: text.nameMissingError,
+      contactEmail: globalText.phone.emailInvalid,
       contactPhone: form.country_code === '+86' ? globalText.phone.invalidMainland : globalText.phone.invalid,
       documentType: globalText.documentType.required,
       rules: text.rulesIncompleteError,

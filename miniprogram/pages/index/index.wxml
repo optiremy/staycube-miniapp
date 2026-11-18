@@ -48,12 +48,19 @@
     <view wx:if="{{step === 0}}" class="step-content">
       <view class="section-heading"><text>{{text.basicSectionTitle}}</text></view>
       <view class="field-block"><text class="field-label">{{text.guestNameLabel}}</text><input class="text-input" value="{{form.guest_name}}" disabled /><text class="hint-copy">{{form.guest_name ? text.nameCorrectionHint : text.nameMissingError}}</text></view>
-      <view class="field-block"><text class="field-label">{{text.contactLabel}}</text>
-        <view class="phone-row">
-          <picker mode="selector" range="{{countryCodes}}" bindchange="updateCountryCode"><view class="country-code">{{form.country_code}}<text class="country-code-arrow">▼</text></view></picker>
-          <input class="text-input phone-number-input" value="{{form.contact}}" data-field="contact" bindinput="updateForm" type="number" maxlength="{{form.country_code === '+86' ? 11 : 15}}" />
-        </view>
-        <text wx:if="{{form.country_code === '+86'}}" class="hint-copy phone-hint">{{globalText.phone.mainlandHint}}</text>
+      <view class="field-block"><text class="field-label">{{globalText.contact.method}}</text>
+        <radio-group class="checkin-contact-options" aria-label="{{globalText.contact.method}}" bindchange="updateContactMethod">
+          <label class="checkin-contact-option"><radio value="phone" checked="{{form.contact_method === 'phone'}}" color="#176BE8" /><text>{{globalText.contact.phone}}</text></label>
+          <label class="checkin-contact-option"><radio value="email" checked="{{form.contact_method === 'email'}}" color="#176BE8" /><text>{{globalText.contact.email}}</text></label>
+        </radio-group>
+        <block wx:if="{{form.contact_method === 'phone'}}">
+          <view class="phone-row">
+            <picker mode="selector" range="{{countryCodes}}" bindchange="updateCountryCode"><view class="country-code">{{form.country_code}}<text class="country-code-arrow">▼</text></view></picker>
+            <input class="text-input phone-number-input" aria-label="{{globalText.contact.phoneLabel}}" value="{{form.contact}}" data-field="contact" bindinput="updateForm" type="number" maxlength="{{form.country_code === '+86' ? 11 : 15}}" />
+          </view>
+          <text wx:if="{{form.country_code === '+86'}}" class="hint-copy phone-hint">{{globalText.phone.mainlandHint}}</text>
+        </block>
+        <input wx:else class="text-input" aria-label="{{globalText.contact.email}}" value="{{form.contact}}" data-field="contact" bindinput="updateForm" type="text" maxlength="254" placeholder="name@example.com" />
       </view>
       <view class="field-block"><text class="field-label">{{text.guestNoteLabel}}</text><textarea class="text-area" value="{{form.guest_note}}" data-field="guest_note" auto-height maxlength="300" bindinput="updateForm" /></view>
     </view>

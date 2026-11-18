@@ -1,6 +1,14 @@
 const { isValidPhone, formatPhone, parsePhone } = require('./phone-input')
 
 const DOCUMENT_TYPES = ['mainland_id', 'passport']
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function getSelfCheckinContactFields(value) {
+  const contact = String(value || '').trim()
+  if (contact.includes('@')) return { contact_method: 'email', contact }
+  const phone = parsePhone(contact)
+  return { contact_method: 'phone', country_code: phone.countryCode, contact: phone.number }
+}
 
 // 表单有 country_code 时用它；旧草稿只有完整号码时从号码解析。
 function phoneOf(form) {
@@ -42,7 +50,11 @@ function validateSelfCheckinStep(step, documentType, state) {
   const form = state.form || {}
   if (step === 0 && !String(form.guest_name || '').trim()) return 'guestNameMissing'
   if (step === 0 && !String(form.contact || '').trim()) return 'basicInfo'
-  if (step === 0 && !isValidPhone(phoneOf(form).countryCode, phoneOf(form).number)) return 'contactPhone'
+  if (step === 0 && form.contact_method === 'email' && !EMAIL_PATTERN.test(form.contact.trim())) return 'contactEmail'
+  if (step === 0 && form.contact_method !== 'email') {
+    const phone = phoneOf(form)
+    if (!/^[+\d\s()-]+$/.test(form.contact) || !isValidPhone(phone.countryCode, phone.number)) return 'contactPhone'
+  }
   if (step === 1 && (!state.rules || !state.rules.items.every((rule) => (state.confirmedRuleIds || []).includes(rule.id)))) return 'rules'
   if (step === 2 && (!state.rulesFinalConfirmed || !state.signaturePath)) return 'signature'
   if (step === 3 && !DOCUMENT_TYPES.includes(documentType)) return 'documentType'
@@ -71,12 +83,14 @@ function buildSelfCheckinPayload(state, locale, phoneLast4) {
   const rules = state.rules
   const mainlandId = state.documentType === 'mainland_id'
   const phone = phoneOf(form)
-  const contact = formatPhone(phone.countryCode, phone.number)
+  const contactMethod = form.contact_method === 'email' ? 'email' : 'phone'
+  const contact = contactMethod === 'email' ? form.contact.trim() : formatPhone(phone.countryCode, phone.number)
   return {
     locale,
     document_type: state.documentType,
     guest_name: String(form.guest_name || '').trim(),
     contact,
+    contact_method: contactMethod,
     phone_last4: resolvePhoneLast4(phoneLast4, contact),
     guest_note: String(form.guest_note || '').trim(),
     police_code: mainlandId ? String(form.police_code || '').trim() : '',
@@ -100,6 +114,7 @@ function buildSelfCheckinPayload(state, locale, phoneLast4) {
 module.exports = {
   DOCUMENT_TYPES,
   normalizeAccessCode,
+  getSelfCheckinContactFields,
   normalizeRules,
   isSixDigitCode,
   validateSelfCheckinStep,

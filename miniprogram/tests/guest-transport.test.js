@@ -6,12 +6,12 @@ const { requestGuest, uploadGuestFile } = require('../utils/guest-transport')
 // 旅客请求只发往当前后端（正式默认腾讯云），失败时不转发到任何中转站点。
 const gateway = `https://${config.cloudbaseEnvId}.api.tcloudbasegateway.com`
 
-test('direct RPC failure is reported, never replayed through another host', async () => {
+test('background save timeout is reported without replaying the submission', async () => {
   const calls = []
   global.wx = { request(options) { calls.push(options); options.fail({ errMsg: 'request:fail timeout' }) } }
   await assert.rejects(requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', { p_request_id: 'request-1' }, 100), error => error.kind === 'timeout')
   assert.equal(calls.length, 1)
-  assert.equal(calls[0].url, `${gateway}/v1/rdb/rest/rpc/submit_pre_arrival_v2`)
+  assert.equal(calls[0].url, `${gateway}/v1/functions/background-save`)
 })
 
 test('upload failure is reported, never replayed through another host', async () => {

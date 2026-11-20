@@ -15,14 +15,21 @@ async function run() {
   global.wx = {
     request(options) {
       requests.push(options)
-      const data = options.url.endsWith('create_luggage_storage_public_draft_v2')
-        ? [{ id: 'draft-id', token: 'draft-token' }]
-        : options.url.endsWith('submit_luggage_storage_record')
-          ? [{ id: 'luggage-id', status: 'submitted' }]
-          : options.url.endsWith('submit_pre_arrival_v2')
-            ? [{ id: 'arrival-id', status: 'submitted' }]
-            : [{ id: 'checkin-id', status: 'submitted' }]
-      options.success({ statusCode: 200, data })
+      if (options.url.endsWith('/rpc/create_luggage_storage_public_draft_v2')) {
+        options.success({ statusCode: 200, data: [{ id: 'draft-id', token: 'draft-token' }] })
+        return
+      }
+      assert.ok(options.url.endsWith('/functions/background-save'))
+      const ids = {
+        '/rpc/submit_luggage_storage_record': 'luggage-id',
+        '/rpc/submit_pre_arrival_v2': 'arrival-id',
+        '/rpc/submit_self_checkin_record': 'checkin-id',
+      }
+      const id = ids[JSON.parse(options.data.body).path]
+      assert.ok(id)
+      options.success({ statusCode: 200, data: {
+        statusCode: 200, body: JSON.stringify([{ id, status: 'submitted' }]),
+      } })
     },
     uploadFile(options) {
       uploads.push(options)

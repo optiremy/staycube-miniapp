@@ -55,6 +55,7 @@ async function callCloudbaseFunction(path, data, timeout) {
   const target = functionTarget(path)
   if (!target) throw failure('request', 'INVALID_FUNCTION_PATH')
   const event = { httpMethod: 'POST', path: target.path, headers: { 'content-type': 'application/json' }, queryStringParameters: {}, body: JSON.stringify(data == null ? {} : data), isBase64Encoded: false }
+  if (target.name === 'background-save') event.headers.authorization = backend.guestHeaders().Authorization
   const result = await requestOnce(backend.functionUrl(target.name), event, timeout, backend.guestHeaders({ 'Content-Type': 'application/json' }))
   if (!result || typeof result.statusCode !== 'number') throw failure('service', 'FUNCTION_RESULT_INVALID', 502)
   const body = parseBody(result.body)
@@ -65,7 +66,14 @@ async function callCloudbaseFunction(path, data, timeout) {
   return body
 }
 
+const backgroundSaveRpcs = new Set([
+  'submit_self_checkin_record', 'submit_luggage_storage_record', 'submit_pre_arrival_v2',
+  'submit_special_cancellation_guest', 'submit_special_cancellation_supplement',
+])
 async function requestGuest(path, data, timeout = 12000) {
+  if (backend.isCloudbase() && path.startsWith('/rest/v1/rpc/') && backgroundSaveRpcs.has(path.slice('/rest/v1/rpc/'.length))) {
+    return callCloudbaseFunction('/functions/v1/background-save', { path: path.slice('/rest/v1'.length), method: 'POST', body: data }, timeout)
+  }
   if (backend.isCloudbase() && backend.isFunctionPath(path)) return callCloudbaseFunction(path, data, timeout)
   return requestOnce(backend.guestUrl(path), data, timeout, backend.guestHeaders({ 'Content-Type': 'application/json' }))
 }

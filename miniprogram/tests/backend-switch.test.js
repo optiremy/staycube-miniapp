@@ -1,4 +1,4 @@
-// 默认腾讯云正式环境；旅客数据、存储和云函数都直连所选后端，不经任何中转。wx 为离线模拟对象。
+// 默认腾讯云正式环境；产生后台任务的保存经受限服务端适配器，wx 为离线模拟对象。
 const assert = require('assert')
 const config = require('../config')
 const testMode = require('../utils/test-mode')
@@ -46,17 +46,23 @@ async function run() {
   // ---- 腾讯云模式 ----
   Object.assign(config, { backend: 'cloudbase', cloudbaseEnvId: 'env-test', cloudbasePublishableKey: 'cb-publishable' })
   try {
-    calls = mockWx(() => ({ statusCode: 200, data: [] }))
+    calls = mockWx(() => fnResult(200, []))
     await requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', { p_request_id: 'r' })
-    assert.strictEqual(calls[0].url, `${gateway}/v1/rdb/rest/rpc/submit_pre_arrival_v2`)
+    assert.strictEqual(calls[0].url, fnUrl('background-save'))
     assert.strictEqual(calls[0].header.Authorization, 'Bearer cb-publishable')
     assert.strictEqual(calls[0].header.apikey, undefined)
 
     for (const name of ['submit_self_checkin_record', 'submit_luggage_storage_record', 'submit_pre_arrival_v2', 'save_special_cancellation_guest', 'submit_special_cancellation_guest', 'submit_special_cancellation_supplement']) {
-      calls = mockWx(() => ({ statusCode: 200, data: {} }))
+      calls = mockWx(() => name === 'save_special_cancellation_guest' ? {statusCode:200,data:{}} : fnResult(200, {}))
       await requestGuest(`/rest/v1/rpc/${name}`, {})
       assert.strictEqual(calls.length, 1)
-      assert.strictEqual(calls[0].url, `${gateway}/v1/rdb/rest/rpc/${name}`)
+      if (name === 'save_special_cancellation_guest') {
+        assert.strictEqual(calls[0].url, `${gateway}/v1/rdb/rest/rpc/${name}`)
+      } else {
+        assert.strictEqual(calls[0].url, fnUrl('background-save'))
+        assert.strictEqual(calls[0].data.headers.authorization, 'Bearer cb-publishable')
+        assert.deepStrictEqual(JSON.parse(calls[0].data.body), { path: `/rpc/${name}`, method: 'POST', body: {} })
+      }
     }
 
     calls = mockWx(() => ({ statusCode: 200, data: '{}' }))
@@ -77,7 +83,7 @@ async function run() {
     calls = mockWx(() => ({ statusCode: 503, data: { message: 'unavailable' } }))
     await assert.rejects(requestGuest('/rest/v1/rpc/submit_pre_arrival_v2', { p_request_id: 'r' }))
     assert.strictEqual(calls.length, 1)
-    assert.strictEqual(calls[0].url, `${gateway}/v1/rdb/rest/rpc/submit_pre_arrival_v2`)
+    assert.strictEqual(calls[0].url, fnUrl('background-save'))
 
     // 特殊取消：签名和登记走云函数，文件直传腾讯云存储。
     calls = mockWx(options => options.url === fnUrl('special-cancellation-storage')

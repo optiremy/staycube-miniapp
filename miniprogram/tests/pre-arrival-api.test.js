@@ -20,14 +20,24 @@ async function run() {
   const originalKey = config.cloudbasePublishableKey
   config.cloudbasePublishableKey = 'test-publishable'
   let request
-  global.wx = { request(options) { request = options; options.success({ statusCode: 200, data: [{ id: 'test-record-id', status: 'submitted' }] }) } }
+  global.wx = { request(options) {
+    request = options
+    options.success({ statusCode: 200, data: {
+      statusCode: 200, body: JSON.stringify([{ id: 'test-record-id', status: 'submitted' }]),
+    } })
+  } }
   const result = await preArrivalApi.submit(input)
   assert.deepStrictEqual(result, { id: 'test-record-id', status: 'submitted' })
-  assert.match(request.url, /staycube-prod-d0g2d759v95954cd6\.api\.tcloudbasegateway\.com\/v1\/rdb\/rest\/rpc\/submit_pre_arrival_v2$/)
-  assert.deepStrictEqual(request.data, {
-    p_request_id: input.requestId,
-    p_locale: 'zh-CN', p_guest_name: '张三', p_contact_method: 'phone', p_contact_value: '13800138000',
-    p_arrival_time: '18:00', p_bed_preference: 'lower', p_guest_note: '靠窗',
+  assert.equal(request.url, `https://${config.cloudbaseEnvId}.api.tcloudbasegateway.com/v1/functions/background-save`)
+  assert.equal(request.data.headers.authorization, 'Bearer test-publishable')
+  assert.deepStrictEqual(JSON.parse(request.data.body), {
+    path: '/rpc/submit_pre_arrival_v2',
+    method: 'POST',
+    body: {
+      p_request_id: input.requestId,
+      p_locale: 'zh-CN', p_guest_name: '张三', p_contact_method: 'phone', p_contact_value: '13800138000',
+      p_arrival_time: '18:00', p_bed_preference: 'lower', p_guest_note: '靠窗',
+    },
   })
 
   let failed = false

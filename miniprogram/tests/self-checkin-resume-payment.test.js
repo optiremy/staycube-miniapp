@@ -72,6 +72,15 @@ async function run() {
     assert.equal(page.data.errorText, '')
     assert.equal(uploadedSource, '/saved/signature.png')
     assert.equal(statusCalls, 3, 'restore and both submit payment checks use current status')
+
+    const emailDraft = { ...draft, state: {
+      ...draft.state, form: { ...draft.state.form, contact_method: 'email', contact: 'guest@example.test' },
+    } }
+    await page.restoreDraft(page.data.context, emailDraft)
+    assert.equal(page.data.step, 0)
+    assert.equal(page.data.form.contact_method, 'phone')
+    assert.equal(page.data.form.contact, '')
+    assert.equal(page.data.signatureLocalPath, '/saved/signature.png')
   } finally {
     drafts.fileExists = originals.fileExists
     payment.callPayment = originals.callPayment

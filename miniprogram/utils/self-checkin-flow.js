@@ -1,11 +1,14 @@
-const { isValidPhone, formatPhone, parsePhone } = require('./phone-input')
+const { DEFAULT_COUNTRY_CODE, isValidPhone, formatPhone, parsePhone } = require('./phone-input')
 
 const DOCUMENT_TYPES = ['mainland_id', 'passport']
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-function getSelfCheckinContactFields(value) {
+function getSelfCheckinContactFields(value, locale) {
   const contact = String(value || '').trim()
-  if (contact.includes('@')) return { contact_method: 'email', contact }
+  if (contact.includes('@')) {
+    if (locale === 'zh-CN') return { contact_method: 'phone', country_code: DEFAULT_COUNTRY_CODE, contact: '' }
+    return { contact_method: 'email', contact }
+  }
   const phone = parsePhone(contact)
   return { contact_method: 'phone', country_code: phone.countryCode, contact: phone.number }
 }
@@ -50,7 +53,10 @@ function validateSelfCheckinStep(step, documentType, state) {
   const form = state.form || {}
   if (step === 0 && !String(form.guest_name || '').trim()) return 'guestNameMissing'
   if (step === 0 && !String(form.contact || '').trim()) return 'basicInfo'
-  if (step === 0 && form.contact_method === 'email' && !EMAIL_PATTERN.test(form.contact.trim())) return 'contactEmail'
+  if (step === 0 && form.contact_method === 'email') {
+    if (state.locale === 'zh-CN') return 'contactPhone'
+    if (!EMAIL_PATTERN.test(form.contact.trim())) return 'contactEmail'
+  }
   if (step === 0 && form.contact_method !== 'email') {
     const phone = phoneOf(form)
     if (!/^[+\d\s()-]+$/.test(form.contact) || !isValidPhone(phone.countryCode, phone.number)) return 'contactPhone'

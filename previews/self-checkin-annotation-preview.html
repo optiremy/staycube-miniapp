@@ -76,7 +76,7 @@
     .contact-phone .country-prefix { flex:0 0 auto; width:auto; font-size:13px; }
     .contact-phone input { min-width:0; }
     .contact-email { font-size:14px; }
-    .contact-phone[hidden], .contact-email[hidden] { display:none; }
+    .contact-phone[hidden], .contact-email[hidden], .contact-choices[hidden] { display:none; }
     .two-actions { display:flex; gap:7px; margin-top:12px; }
     .rule-actions .action:first-child { flex:0 0 32%; }
     .action { display:flex; flex:1; min-width:0; height:44px; align-items:center; justify-content:center; gap:7px; border:1px solid #c9d5e1; border-radius:8px; background:#fff; color:#25415f; font-size:13px; font-weight:650; }
@@ -206,8 +206,8 @@
               <div class="step-content"><h2 class="section-title">1. 基础信息登记</h2>
                 <label class="field">旅客真实姓名<span class="input-box" aria-readonly="true">由前台档案带入（只读）</span><small class="note-text">姓名如有误，请联系前台更正。</small></label>
                 <div class="field">
-                  <span id="contact-label">联系方式</span>
-                  <div class="contact-choices" role="radiogroup" aria-labelledby="contact-label">
+                  <span id="contact-label">手机号</span>
+                  <div class="contact-choices" role="radiogroup" aria-labelledby="contact-label" hidden>
                     <label><input type="radio" name="contact-method" value="phone" checked>手机号</label>
                     <label><input type="radio" name="contact-method" value="email">邮箱</label>
                   </div>
@@ -337,6 +337,17 @@
     }
     buttons.forEach((button) => button.addEventListener('click', () => showPage(Number(button.dataset.index))))
     if (window.location.hash === '#basic-info') showPage(2)
+    document.querySelector('.language-grid').addEventListener('click', (event) => {
+      const choice = event.target.closest('.language-choice')
+      if (!choice) return
+      const chinese = choice === choice.parentElement.firstElementChild
+      document.querySelector('#contact-label').textContent = chinese ? '手机号' : '联系方式'
+      document.querySelector('.contact-choices').hidden = chinese
+      document.querySelector('[name="contact-method"][value="phone"]').checked = true
+      document.querySelector('.contact-phone').hidden = false
+      document.querySelector('.contact-email').hidden = true
+      showPage(2)
+    })
     document.querySelector('.contact-choices').addEventListener('change', (event) => {
       const email = event.target.value === 'email'
       document.querySelector('.contact-phone').hidden = email

@@ -126,6 +126,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
 
   updateContactMethod(event) {
     const method = event.detail.value
+    if (this.data.locale === 'zh-CN') return
     if (!['phone', 'email'].includes(method) || method === this.data.form.contact_method) return
     this.setData({ 'form.contact_method': method, 'form.contact': '', errorText: '' })
     this.queueDraftSave()
@@ -286,7 +287,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
           form: {
             guest_name: context.guest_name || '',
             country_code: DEFAULT_COUNTRY_CODE,
-            ...getSelfCheckinContactFields(context.contact),
+            ...getSelfCheckinContactFields(context.contact, this.data.locale),
             guest_note: context.guest_note || '',
             police_code: '',
             police_completed_confirmed: false,
@@ -377,8 +378,12 @@ Page(share.withShare('pages/index/index', 'checkin', {
       signatureLocalPath: !rulesChanged && signatureExists ? files.signature : '',
     }
     const savedForm = state.form
+    const form = savedForm ? { ...this.data.form, contact_method: 'phone', ...savedForm } : this.data.form
+    const needsPhone = this.data.locale === 'zh-CN' &&
+      (form.contact_method === 'email' || String(form.contact || '').includes('@'))
+    if (needsPhone) step = 0
     this.setData({
-      form: savedForm ? { ...this.data.form, contact_method: 'phone', ...savedForm } : this.data.form,
+      form: needsPhone ? { ...form, contact_method: 'phone', contact: '' } : form,
       documentType: state.documentType || '',
       docTypeConfirmed: Boolean(state.documentType && state.docTypeConfirmed),
       step,
@@ -500,6 +505,7 @@ Page(share.withShare('pages/index/index', 'checkin', {
       paymentChannel: this.data.paymentChannel,
       paymentStatus: this.data.paymentStatus,
       documentType: this.data.documentType,
+      locale: this.data.locale,
     }
   },
 

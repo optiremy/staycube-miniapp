@@ -49,6 +49,7 @@ assert.equal(chinesePassport.passport_photo_path, state.passportPath)
 assert.equal(chinesePassport.contact, '+44 7700900123')
 assert.equal(chinesePassport.phone_last4, '0123')
 const emailState = { ...state, documentType: 'mainland_id', form: { ...state.form, contact_method: 'email', contact: '  guest2026@example.net ' } }
+assert.equal(validateSelfCheckinStep(0, 'mainland_id', { ...emailState, locale: 'zh-CN' }), 'contactPhone')
 assert.equal(validateSelfCheckinStep(0, 'mainland_id', emailState), '')
 assert.equal(validateSelfCheckinStep(0, 'mainland_id', { ...emailState, form: { ...emailState.form, contact: 'guest@@example.net' } }), 'contactEmail')
 assert.equal(validateSelfCheckinStep(0, 'mainland_id', { ...emailState, form: { ...emailState.form, contact_method: 'phone' } }), 'contactPhone')
@@ -59,6 +60,9 @@ assert.equal(emailPayload.phone_last4, null)
 const payload = buildSelfCheckinPayload({ ...state, documentType: 'mainland_id' }, 'zh-CN')
 assert.equal(payload.contact_method, 'phone')
 assert.deepEqual(getSelfCheckinContactFields('existing@example.net'), { contact_method: 'email', contact: 'existing@example.net' })
+assert.deepEqual(getSelfCheckinContactFields('existing@example.net', 'zh-CN'), {
+  contact_method: 'phone', country_code: '+86', contact: '',
+})
 assert.equal(payload.deposit_confirmed_by_guest, true)
 assert.equal(payload.police_code, '123456')
 assert.equal(payload.confirmed_rules[0].text, 'Title\nBody')
